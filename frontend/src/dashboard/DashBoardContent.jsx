@@ -9,13 +9,13 @@ const DashboardContent = () => {
   
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className=" flex flex-col">
       {/* Header */}
-      <Header />
+      {/* <Header /> */}
 
       {/* Main Content */}
       <motion.div
-        className="flex-grow flex flex-col items-center bg-gradient-to-r from-indigo-50 via-white to-indigo-50 pt-8 overflow-y-auto"
+        className="flex-grow flex flex-col items-center bg-gradient-to-r from-indigo-50 via-white to-indigo-50 "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.5 }}

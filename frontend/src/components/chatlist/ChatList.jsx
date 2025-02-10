@@ -190,16 +190,8 @@ function ChatList() {
   const isActive = (path) => location.pathname === path;
   
   return (
-    <div className={`h-full bg-white shadow-md fixed top-0 left-0 flex flex-col justify-between items-center p-2 z-50 transition-all duration-300 ${isSidebarOpen ? 'w-16 md:w-20' : 'w-10 overflow-hidden'}`}>
-      {/* Sidebar Toggle Button */}
-      <button
-        onClick={toggleSidebar}
-        title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
-        className="flex flex-col items-center p-2 rounded-md hover:bg-gray-200"
-      >
-        {isSidebarOpen ? <LuPanelRightOpen className="w-5 h-5" /> : <LuPanelLeftOpen className="w-5 h-5" />}
-        <span className="text-xs">Menu</span>
-      </button>
+    <div className={`h-full bg-white shadow-md fixed flex flex-col justify-between items-center  transition-all duration-300`}>
+      
 
       {/* Navigation Links */}
       {isSidebarOpen && (

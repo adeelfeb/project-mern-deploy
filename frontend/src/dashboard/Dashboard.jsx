@@ -69,7 +69,7 @@ function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header inputText={currentMessage} />
+      {/* <Header inputText={currentMessage} /> */}
       <div className="flex-1 overflow-y-hidden">
         <ChatBody />
       </div>
