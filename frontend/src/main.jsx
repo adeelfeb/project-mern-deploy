@@ -15,6 +15,7 @@ import DashboardLayout from './dashboard/DashboardLayout.jsx';
 import Settings from './pages/Settings.jsx';
 import Info from './info/Info.jsx';
 import UploadPdf from './chroma/UploadPdf.jsx'
+import InputURL from './pages/InputUrl.jsx';
 
 const router = createBrowserRouter([
     {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
             {
               path: "/dashboard/info",
               element: <Info />, // Info component
+            },
+            {
+              path: "/dashboard/input-url",
+              element: <InputURL />, // Info component
             },
           ],
         },

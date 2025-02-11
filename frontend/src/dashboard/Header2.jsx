@@ -17,14 +17,14 @@ const Header = ({ inputText, currentModel = "💎 Summarizer" }) => {
   };
 
   return (
-    <div className="sticky top-0 flex items-center justify-between  bg-[#fff4f4] border-b border-gray-300">
+    <div className="sticky top-0 flex items-center justify-between bg-[#fff4f4] border-b border-gray-300">
       {/* Sidebar Toggle Button */}
       <button
         onClick={toggleSidebar}
         title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
         className="flex flex-col items-center p-2 rounded-md hover:bg-gray-200"
       >
-        {isSidebarOpen ? <LuPanelRightOpen className="w-4 h-4" /> : <LuPanelLeftOpen className="w-5 h-5" />}
+        {isSidebarOpen ? <LuPanelRightOpen className="w-5 h-5" /> : <LuPanelLeftOpen className="w-5 h-5" />}
         <span className="text-xs">Menu</span>
       </button>
 

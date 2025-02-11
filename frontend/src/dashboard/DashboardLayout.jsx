@@ -129,8 +129,6 @@
 
 
 
-
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
@@ -140,10 +138,8 @@ import authService from '../AserverAuth/auth';
 import { useSelector } from 'react-redux';
 import DashboardContent from './DashBoardContent';
 import { resetUploadState } from '../store/fileSlice.js';
-import ToastNotification from "../components/toastNotification/ToastNotification.jsx"
+import ToastNotification from "../components/toastNotification/ToastNotification.jsx";
 import Header from './Header2.jsx';
-
-
 
 function DashboardLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -154,10 +150,10 @@ function DashboardLayout() {
   const dispatch = useDispatch();
   const isUploaded = useSelector((state) => state.file?.isUploaded || null);
   const erroUpload = useSelector((state) => state.file?.fileUploadError || null);
-  
+
   const [toastMessage, setToastMessage] = useState(null);
   const [isError, setIsError] = useState(false);
-  
+
   useEffect(() => {
     if (isUploaded) {
       setToastMessage(`File Uploaded.`);
@@ -207,29 +203,22 @@ function DashboardLayout() {
   return (
     <div className="flex flex-col h-screen">
       {/* Fixed Header */}
-      <Header />
-  
+
       {/* Main Layout Container */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="lg:w-1/8 bg-[#fff4f4] text-gray transition-all duration-300 flex flex-col h-full">
-          {/* Chat List Stays at the Top */}
-          <div className="flex-none">
-            <ChatList onLogout={handleLogout} /> 
-          </div>
-  
-          {/* Scrollable Sidebar Content (if needed in future) */}
-          <div className="flex-1 overflow-y-auto">
-            {/* Add Sidebar Content Here if Needed */}
-          </div>
+        {/* Sidebar on the Left */}
+        <aside className={`${isSidebarOpen ? 'w-20' : 'w-0'} bg-[#fff4f4] transition-all duration-300 flex flex-col h-full`}>
+          <ChatList onLogout={handleLogout} />
         </aside>
-  
-        {/* Main Content Area */}
-        <main className="flex-1 bg-white text-gray-200 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+
+        {/* Main Content Area on the Right */}
+        <main className="flex-1 bg-white ">
+      <Header />
           <div>{isDashboardHome ? <DashboardContent /> : <Outlet />}</div>
         </main>
       </div>
-  
+
+      {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-0 left-0 w-full flex justify-center z-50">
           <ToastNotification message={toastMessage} duration={3000} isSuccess={!isError} />
@@ -237,8 +226,6 @@ function DashboardLayout() {
       )}
     </div>
   );
-  
 }
 
 export default DashboardLayout;
-
