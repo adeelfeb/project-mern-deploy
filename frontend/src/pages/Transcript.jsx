@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { MdContentCopy } from "react-icons/md"; // Copy icon
 import ToastNotification from "../components/toastNotification/ToastNotification";
@@ -47,48 +46,50 @@ const Transcript = ({ data }) => {
       setIsSuccess(false);
     }
   };
-  
 
   return (
-    <div className="w-full">
-      {/* Copy Button with Icon */}
-      <div className="flex gap-4 mb-4">
-        <button
-          className={`p-2 px-4 rounded ${view === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"}`}
-          onClick={() => setView("english")}
-        >
-          English
-        </button>
-        <button
-          className={`p-2 px-4 rounded ${view === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"}`}
-          onClick={() => setView("original")}
-        >
-          Original
-        </button>
-        <button
-          className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-          onClick={copyTranscript}
-        >
-          <MdContentCopy size={20} /> {/* Copy icon */}
-        </button>
+    <div className="w-full mb-8 flex flex-col h-screen">
+      {/* Heading and Buttons (Fixed) */}
+      <div className="flex flex-col gap-4 mb-2 p-2 bg-white shadow-md">
+        <h5 className="font-semibold text-lg">
+          {view === "original" ? "Original Transcript" : "English Transcript"}
+        </h5>
+        <div className="flex gap-4">
+          <button
+            className={`p-2 px-4 rounded ${
+              view === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+            }`}
+            onClick={() => setView("english")}
+          >
+            English
+          </button>
+          <button
+            className={`p-2 px-4 rounded ${
+              view === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+            }`}
+            onClick={() => setView("original")}
+          >
+            Original
+          </button>
+          <button
+            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            onClick={copyTranscript}
+          >
+            <MdContentCopy size={20} /> {/* Copy icon */}
+          </button>
+        </div>
       </div>
 
-      {/* Transcript Content */}
-      <div
-        className="overflow-y-auto scrollbar-thin bg-white p-4 rounded-md shadow-inner w-full"
-      
-      >
-        {view === "original" ? (
-          <>
-            <h5 className="font-semibold text-lg mb-2">Original Transcript</h5>
-            {data?.original ? renderTranscript(data.original) : <p>No data available.</p>}
-          </>
-        ) : (
-          <>
-            <h5 className="font-semibold text-lg mb-2">English Transcript</h5>
-            {data?.english ? renderTranscript(data.english) : <p>No data available.</p>}
-          </>
-        )}
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-4 bg-white rounded-md shadow-inner">
+        {view === "original"
+          ? data?.original
+            ? renderTranscript(data.original)
+            : <p>No data available.</p>
+          : data?.english
+            ? renderTranscript(data.english)
+            : <p>No data available.</p>
+        }
       </div>
 
       {/* ToastNotification for feedback */}

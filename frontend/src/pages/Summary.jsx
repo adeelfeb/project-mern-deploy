@@ -1,95 +1,62 @@
-
 import React, { useState } from "react";
-import { MdContentCopy } from "react-icons/md"; // Copy icon
+import { MdContentCopy } from "react-icons/md"; // Import the copy icon
 import ToastNotification from "../components/toastNotification/ToastNotification";
 
+const Summary = (data) => {
+  const { english, original } = data.data;
 
-const Transcript = ({ data }) => {
-  const [view, setView] = useState("original");
-  const [toastMessage, setToastMessage] = useState(""); // State for Toast Notification
+  const [selectedLanguage, setSelectedLanguage] = useState("english"); // State to toggle language
+  const [toastMessage, setToastMessage] = useState(""); // State to manage toast message visibility
+  const summaryText = selectedLanguage === "english" ? english : original;
   const [isSuccess, setIsSuccess] = useState(true);
 
-  const renderTranscript = (transcript) => {
-    return transcript.map((entry, index) => (
-      <div
-        key={entry._id || index}
-        className="flex items-center my-2 px-3 py-2 bg-white rounded-md shadow-sm w-full"
-      >
-        <span
-          className="inline-block px-2 py-1 bg-blue-500 text-white rounded-md mr-3"
-          style={{ backgroundColor: "#00BFFF" }}
-        >
-          {entry.timestamp[0]} - {entry.timestamp[1]}
-        </span>
-        <span className="flex-1 bg-gray-200 p-2 rounded-md">
-          {entry.text}
-        </span>
-      </div>
-    ));
-  };
-
-  const copyTranscript = () => {
-    const transcriptText = data?.[view]?.map((entry) => entry.text).join("\n");
-    if (transcriptText) {
-      navigator.clipboard
-        .writeText(transcriptText)
-        .then(() => {
-          // Basic if-else statement to set the toast message based on view
-          if (view === "original") {
-            setToastMessage("Original Transcript copied to clipboard!");
-          } else if (view === "english") {
-            setToastMessage("English Transcript copied to clipboard!");
-          }
-          setIsSuccess(true);
-        })
-        .catch((err) => setToastMessage("Failed to copy transcript: " + err));
-    } else {
-      setToastMessage("No transcript available to copy!");
+  const handleCopy = () => {
+    if (summaryText.trim() === "NA") {
+      setToastMessage("No summary available to copy!"); // Show error message if no summary available
       setIsSuccess(false);
+    } else {
+      navigator.clipboard.writeText(summaryText);
+      setToastMessage(`Summary Copied to clipboard`); // Show the toast message when copied
+      setIsSuccess(true);
     }
   };
-  
 
   return (
-    <div className="w-full">
-      {/* Copy Button with Icon */}
-      <div className="flex gap-4 mb-4">
-        <button
-          className={`p-2 px-4 rounded ${view === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"}`}
-          onClick={() => setView("english")}
-        >
-          English
-        </button>
-        <button
-          className={`p-2 px-4 rounded ${view === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"}`}
-          onClick={() => setView("original")}
-        >
-          Original
-        </button>
+    <div className="min-w-[250px] max-w-[80vw] mx-auto flex flex-col h-screen">
+      {/* Fixed Heading and Buttons */}
+      <div className="flex justify-between items-center mb-4 p-4 bg-white shadow-md">
+        <div className="flex gap-4">
+          <button
+            className={`p-2 px-4 rounded ${
+              selectedLanguage === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+            }`}
+            onClick={() => setSelectedLanguage("english")}
+          >
+            English
+          </button>
+          <button
+            className={`p-2 px-4 rounded ${
+              selectedLanguage === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+            }`}
+            onClick={() => setSelectedLanguage("original")}
+          >
+            Original
+          </button>
+        </div>
         <button
           className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-          onClick={copyTranscript}
+          onClick={handleCopy}
         >
-          <MdContentCopy size={20} /> {/* Copy icon */}
+          <MdContentCopy size={20} />
         </button>
       </div>
 
-      {/* Transcript Content */}
-      <div
-        className="overflow-y-auto scrollbar-thin bg-white p-4 rounded-md shadow-inner w-full"
-      
-      >
-        {view === "original" ? (
-          <>
-            <h5 className="font-semibold text-lg mb-2">Original Transcript</h5>
-            {data?.original ? renderTranscript(data.original) : <p>No data available.</p>}
-          </>
-        ) : (
-          <>
-            <h5 className="font-semibold text-lg mb-2">English Transcript</h5>
-            {data?.english ? renderTranscript(data.english) : <p>No data available.</p>}
-          </>
-        )}
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-4 bg-white rounded-md border shadow-inner">
+        <p>
+          <strong>{selectedLanguage === "english" ? "English" : "Original"} Summary:</strong>
+        </p>
+        <p>{summaryText || "Not yet provided"}</p>
       </div>
 
       {/* ToastNotification for feedback */}
@@ -106,4 +73,4 @@ const Transcript = ({ data }) => {
   );
 };
 
-export default Transcript;
+export default Summary;

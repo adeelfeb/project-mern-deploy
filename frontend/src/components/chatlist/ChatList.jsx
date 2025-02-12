@@ -309,9 +309,9 @@ function ChatList() {
           <span className="text-xs mt-1 text-gray-600">Home</span>
         </Link>
 
-        <Link to="/dashboard/info" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/info') ? 'bg-gray-100' : ''}`}>
+        <Link to="/dashboard/user-history" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/user-history') ? 'bg-gray-100' : ''}`}>
           <PiTreeStructureLight className="w-4 h-4 rotate-90" />
-          <span className="text-xs mt-1 text-gray-600">Info</span>
+          <span className="text-xs mt-1 text-gray-600">History</span>
         </Link>
         <button onClick={handleReload} className="flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200">
           <TfiReload className="w-4 h-4" />

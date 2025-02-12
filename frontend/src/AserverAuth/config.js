@@ -169,7 +169,7 @@ class VideoService {
               withCredentials: false, // No need to send cookies with this request
             }
           );
-          console.log("The api response was:", response.data.data)
+          // console.log("The api response was:", response.data.data)
     
           return response; // Return the summary data
         } catch (error) {
@@ -180,6 +180,7 @@ class VideoService {
     
       async getqnas(videoId) {
         try {
+          console.log(  "The Video id is: ",videoId)
           const accessToken = localStorage.getItem('accessToken');
           if (!accessToken) {
             console.log('No access token found in localStorage');
@@ -196,14 +197,46 @@ class VideoService {
               withCredentials: false, // No need to send cookies with this request
             }
           );
-    
-          return response.data; // Return the summary data
+          // console.log("response of QNA is:", response.data)
+          return response.data; 
         } catch (error) {
-          console.error('Error fetching Qnas:', error);
+          console.error('Error fetching Quiz:', error);
+          throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
+        }
+      }
+
+
+
+
+      async submitQuiz(videoId, quiz) {
+        try {
+          
+          const accessToken = localStorage.getItem('accessToken');
+          if (!accessToken) {
+            console.log('No access token found in localStorage');
+            return null; // Return null if access token is not found
+          }
+    
+          const response = await axios.get(
+            `${this.apiUrl}/users/qnas`, // API endpoint for getting the summary
+            {
+              headers: {
+                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
+              },
+              params: { videoId, quiz }, // Pass videoId as a query parameter
+              withCredentials: false, // No need to send cookies with this request
+            }
+          );
+          
+          return response; 
+        } catch (error) {
+          console.error('Error Submitting Quiz:', error);
           throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
         }
       }
        
+
+      
       async getCurrentUser() {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -265,7 +298,7 @@ class VideoService {
                 }
             );
     
-            console.log('Server Response:', response.data); // Log response for debugging
+            // console.log('Server Response:', response.data); // Log response for debugging
             return response.data; // Return the full response
         } catch (error) {
             console.error('Error fetching user history:', error);
