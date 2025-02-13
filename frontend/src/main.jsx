@@ -24,7 +24,7 @@ import Quiz from './pages/Quiz.jsx';
 import KeyConcepts from './pages/KeyConcepts.jsx';
 import CurrentScore from './pages/CurrentScore.jsx';
 import UserHistory from './pages/UserHistory.jsx';
-
+import NotFound from './pages/NotFound.jsx';
 
 
 
@@ -101,6 +101,10 @@ const router = createBrowserRouter([
       {
         path: "/forgot-password",
         element: <ForgetPassword />,
+      },
+      {
+        path: "*", // Wildcard route for 404
+        element: <NotFound />,
       },
     ],
   },
