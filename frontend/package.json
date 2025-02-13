@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "ngrok": "node server.js",
-    "start": "npm run ngrok & npm run dev"
+    "start": "npm run ngrok & npm run dev",
+    "build": "vite build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
