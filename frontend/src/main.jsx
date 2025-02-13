@@ -15,7 +15,7 @@ import DashboardLayout from './dashboard/DashboardLayout.jsx';
 import Settings from './pages/Settings.jsx';
 import Info from './info/Info.jsx';
 import UploadPdf from './chroma/UploadPdf.jsx'
-import InputURL from './pages/InputUrl.jsx';
+import InputURL from './pages/InputURL.jsx';
 import FrontendPage from './pages/FrontendPage.jsx';
 import conf from './conf/conf.js';
 import Transcript from './pages/Transcript.jsx';
