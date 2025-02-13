@@ -6,14 +6,9 @@ import { setCurrentMessage } from "../store/messageSlice"; // Import Redux actio
 const ChatInput = ({ handleInputSubmit, inputRef }) => {
   const dispatch = useDispatch();
   const currentMessage = useSelector((state) => state.chatSlice.currentMessage);
-  const [uploadedImage, setUploadedImage] = React.useState(null);
-
+  
   const handleInputChange = (e) => {
     dispatch(setCurrentMessage(e.target.value)); // Update currentMessage in Redux
-  };
-
-  const handleImageUpload = (image) => {
-    setUploadedImage(image);
   };
 
   const resetTextArea = () => {
@@ -25,7 +20,7 @@ const ChatInput = ({ handleInputSubmit, inputRef }) => {
   const handleSendMessage = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevent the default behavior of adding a new line
-      if (currentMessage.trim() || uploadedImage) {
+      if (currentMessage.trim() ) {
         handleInputSubmit(e); // Pass event to the handler
         dispatch(setCurrentMessage("")); // Clear currentMessage in Redux
         resetTextArea(); // Reset textarea height
@@ -34,7 +29,7 @@ const ChatInput = ({ handleInputSubmit, inputRef }) => {
   };
 
   const handleSendMessageClick = () => {
-    if (currentMessage.trim() || uploadedImage) {
+    if (currentMessage.trim()  ) {
       const syntheticEvent = { target: { value: currentMessage }, type: "click" }; // Simulated event
       handleInputSubmit(syntheticEvent); // Call the submit handler with the simulated event
       dispatch(setCurrentMessage("")); // Clear currentMessage in Redux
@@ -62,12 +57,7 @@ const ChatInput = ({ handleInputSubmit, inputRef }) => {
         className="flex flex-col space-y-2 bg-gray-100 rounded-3xl max-w-2xl mx-auto p-2 shadow-md"
       >
         <div className="flex items-center bg-gray-100 rounded-3xl px-4 py-2">
-          {/* Uploaded Image Notification */}
-          {uploadedImage && (
-            <div className="mr-2 bg-gray-200 px-3 py-1 rounded-full text-sm truncate max-w-[70%]">
-              {"Image uploaded"}
-            </div>
-          )}
+          
           {/* Input Field */}
           <textarea
             ref={inputRef}
@@ -93,7 +83,7 @@ const ChatInput = ({ handleInputSubmit, inputRef }) => {
               <button
                 onClick={handleSendMessageClick}
                 className={`p-2 text-black rounded-full ${
-                  currentMessage.length > 0 || uploadedImage
+                  currentMessage.length > 0 
                     ? "bg-white hover:bg-gray-200"
                     : "bg-gray-200 cursor-not-allowed"
                 }`}

@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 const NoMessagesPlaceholder = () => {
   const navigate = useNavigate();
 
-
-  
   const animationVariants = {
     initial: { opacity: 0, y: -20 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -15,15 +13,15 @@ const NoMessagesPlaceholder = () => {
 
   return (
     <motion.div
-      className="flex justify-center items-center h-full text-gray-500"
+      className="flex justify-center items-center h-full text-gray-500 p-4"
       variants={animationVariants}
       initial="initial"
       animate="animate"
       exit="exit"
     >
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 max-w-md">
         <p className="text-2xl font-semibold text-gray-800 mb-4">
-          🌟 Welcome to Your PDF Chat Assistant! 🌟
+          🌟 Welcome to Your Chat Assistant! 🌟
         </p>
 
         <motion.div
@@ -31,9 +29,9 @@ const NoMessagesPlaceholder = () => {
           animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         />
-        
+
         <p className="text-lg font-medium text-gray-700 mb-4">
-          🤖 Upload a PDF to begin your chat. The model will process it and help you with any questions about the content. 📚
+          🤖 Begin your chat. The model will process the video, generate a transcript summary, and help you with any questions about the content. 🎥
         </p>
 
         <motion.div
@@ -43,10 +41,10 @@ const NoMessagesPlaceholder = () => {
           transition={{ delay: 0.5, duration: 0.8 }}
         >
           <p className="text-sm text-gray-600">
-            📄 **Current PDF**: <span className="font-semibold text-blue-600">"Your PDF File.pdf"</span> (You can change this anytime!)
+            📹 **Current Video**: <span className="font-semibold text-blue-600">"Your YouTube Video"</span> (You can change this anytime!)
           </p>
           <p className="text-sm text-gray-600">
-            🔄 Want to upload a new PDF? Simply go to the <span className="font-semibold text-blue-600">History</span> page from the left navigation bar to select a different document or upload a new one.
+            🔄 Want to process a new video? Simply go to the <span className="font-semibold text-blue-600">Input URL</span> page from the left navigation bar to paste a different YouTube URL.
           </p>
         </motion.div>
 
@@ -55,7 +53,7 @@ const NoMessagesPlaceholder = () => {
           animate={{ opacity: [0, 1, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <span role="img" aria-label="rocket">🚀</span> Ready to get started? Let's chat! 
+          <span role="img" aria-label="rocket">🚀</span> Ready to get started? Let's chat!
         </motion.div>
 
         <motion.div
@@ -66,9 +64,9 @@ const NoMessagesPlaceholder = () => {
         >
           <button
             className="px-6 py-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out"
-            onClick={() => navigate("/dashboard/uploadpdf")}
+            onClick={() => navigate("/dashboard/input-url")}
           >
-            📤 Upload New PDF
+            📤 Input YouTube URL
           </button>
         </motion.div>
       </div>

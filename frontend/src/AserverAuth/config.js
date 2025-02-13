@@ -115,7 +115,7 @@ class VideoService {
                     withCredentials: false, // No need to send cookies with this request
                 }
             );
-    
+            console.log("transcript is:", response.data)
             return response.data; // Return the transcript data
         } catch (error) {
             console.error('Error fetching transcript:', error);

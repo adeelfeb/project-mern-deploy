@@ -195,6 +195,7 @@ import { FiImage } from 'react-icons/fi'; // Importing FiImage from react-icons
 import conf from '../conf/conf';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { motion } from 'framer-motion'; // For animations
+import authService from '../AserverAuth/auth';
 
 function Signup() {
     const navigate = useNavigate();
@@ -287,7 +288,7 @@ function Signup() {
                             animate={{ opacity: 1, y: 0 }}
                             className="text-red-600 text-center mb-6"
                         >
-                            {error}
+                            {error} <p>temp</p>
                         </motion.div>
                     )}
 
