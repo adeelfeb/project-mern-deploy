@@ -31,7 +31,7 @@ const NoMessagesPlaceholder = () => {
         />
 
         <p className="text-lg font-medium text-gray-700 mb-4">
-          🤖 Begin your chat. The model will process the video, generate a transcript summary, and help you with any questions about the content. 🎥
+          The model will process the video, generate a transcript summary, and Qna assesment. 🎥
         </p>
 
         <motion.div
@@ -40,9 +40,6 @@ const NoMessagesPlaceholder = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         >
-          <p className="text-sm text-gray-600">
-            📹 **Current Video**: <span className="font-semibold text-blue-600">"Your YouTube Video"</span> (You can change this anytime!)
-          </p>
           <p className="text-sm text-gray-600">
             🔄 Want to process a new video? Simply go to the <span className="font-semibold text-blue-600">Input URL</span> page from the left navigation bar to paste a different YouTube URL.
           </p>
