@@ -1,14 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    port: 5000, // Define your desired port
-    hmr: {
-      protocol: 'ws', // WebSocket protocol
-      host: 'localhost', // WebSocket host
+  base: '/', // Set this to your subpath if needed
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          redux: ['@reduxjs/toolkit', 'react-redux'],
+          vendor: ['axios', 'react-router-dom'],
+        },
+      },
     },
+    chunkSizeWarningLimit: 1000, // Increase warning limit
   },
 });
