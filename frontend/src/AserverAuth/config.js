@@ -347,7 +347,7 @@ class VideoService {
         }
       }
     
-      async updateAccountDetails(fullname, email) {
+      async updateAccountDetails(data) {
         try {
           const accessToken = localStorage.getItem('accessToken');
           if (!accessToken) {
@@ -357,7 +357,7 @@ class VideoService {
       
           const response = await axios.patch(
             `${this.apiUrl}/users/update-account`,
-            { fullname, email },
+            data, // Send only the provided fields
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -369,11 +369,9 @@ class VideoService {
           return response.data;
         } catch (error) {
           console.error('Error updating account details:', error);
-          // Throwing a custom error message based on the server response
           const errorMessage = error.response
             ? error.response.data.message
             : error.message;
-      
           throw new Error(errorMessage);
         }
       }
