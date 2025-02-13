@@ -322,11 +322,119 @@ const VideoDetails = ({ data }) => {
     setIsPopupOpen(false);
     setSelectedSection(null);
   };
+//   return (
+//     <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden">
+//       {/* Left Section */}
+//       <div className="md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r max-h-[50vh] md:max-h-screen overflow-auto">
+//         {/* Video Section */}
+//         <div className="w-full mb-4">
+//           <iframe
+//             src={
+//               data.videoUrl
+//                 ? `https://www.youtube.com/embed/${new URLSearchParams(
+//                     new URL(data.videoUrl).search
+//                   ).get("v")}`
+//                 : ""
+//             }
+//             className="w-full aspect-video"
+//             title="YouTube Video"
+//             frameBorder="0"
+//             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//             allowFullScreen
+//           ></iframe>
+//         </div>
+  
+//         {/* Video Details */}
+//         <div>
+//           <h4 className="font-semibold text-lg">{data.title}</h4>
+//           <p className="text-sm font-semibold text-gray-600 mt-2">
+//             Duration: {data.duration}
+//           </p>
+//           <p className="text-sm font-semibold text-gray-600 mb-2">
+//             Watched: {new Date(data.createdAt).toLocaleString()}
+//           </p>
+//         </div>
+  
+//         {/* Buttons Section */}
+//         <div className="flex flex-col gap-2 mt-4">
+//           {[
+//             { label: "Transcript", loading: transcriptisLoading, section: "transcript" },
+//             { label: "Summary", loading: summaryIsLoading, section: "summary" },
+//             { label: "Key Concepts", loading: keyConceptsIsLoading, section: "keyConcepts" },
+//             { label: "Take Quiz", loading: quizIsLoading, section: "quiz" },
+//             { label: "Current Score", loading: false, section: "currentScore" },
+//           ].map(({ label, loading, section }) => (
+//             <button
+//               key={section}
+//               onClick={() => handleSectionClick(section)}
+//               className={`w-full px-4 py-2 font-medium border rounded-lg transition-all duration-300 ${
+//                 selectedSection === section
+//                   ? "bg-blue-500 text-white"
+//                   : "bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95"
+//               }`}
+//             >
+//               {loading ? "Loading..." : label}
+//             </button>
+//           ))}
+//         </div>
+//       </div>
+  
+//       {/* Right Section (Desktop) */}
+//       <div className="hidden md:block md:flex-[7] w-full p-4 overflow-auto">
+//         <Suspense fallback={<div>Loading...</div>}>
+//           {!selectedSection && <Explanation />}
+//           {selectedSection === "transcript" && (
+//             <Transcript data={transcriptData || data.transcript} />
+//           )}
+//           {selectedSection === "summary" && (
+//             <Summary data={summaryData || data.summary} />
+//           )}
+//           {selectedSection === "keyConcepts" && (
+//             <KeyConcepts data={keyConceptsData} />
+//           )}
+//           {selectedSection === "quiz" && <Quiz data={qnaData} />}
+//           {selectedSection === "currentScore" && <CurrentScore />}
+//         </Suspense>
+//       </div>
+  
+//       {/* Popup (Mobile) */}
+//       {isMobile && isPopupOpen && (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+//           <div className="bg-white rounded-lg w-11/12 max-h-[90vh] overflow-auto p-4">
+//           <button
+//   onClick={closePopup}
+//   className="absolute top-2 right-2 bg-gray-100 text-gray-800 hover:text-gray-900 
+//              text-xl md:text-2xl w-6 h-6 md:w-12 md:h-12 
+//              flex items-center justify-center rounded-full shadow-md hover:bg-gray-200 leading-none"
+// >
+//   &times;
+// </button>
+
+//             <Suspense fallback={<div>Loading...</div>}>
+//               {selectedSection === "transcript" && (
+//                 <Transcript data={transcriptData || data.transcript} />
+//               )}
+//               {selectedSection === "summary" && (
+//                 <Summary data={summaryData || data.summary} />
+//               )}
+//               {selectedSection === "keyConcepts" && (
+//                 <KeyConcepts data={keyConceptsData} />
+//               )}
+//               {selectedSection === "quiz" && <Quiz data={qnaData} />}
+//               {selectedSection === "currentScore" && <CurrentScore />}
+//             </Suspense>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+
+
 
   return (
     <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden">
       {/* Left Section */}
-      <div className="md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r max-h-[50vh] md:max-h-screen overflow-auto">
+      <div className="flex-1 md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r h-full md:max-h-screen overflow-auto">
         {/* Video Section */}
         <div className="w-full mb-4">
           <iframe
@@ -344,7 +452,7 @@ const VideoDetails = ({ data }) => {
             allowFullScreen
           ></iframe>
         </div>
-
+  
         {/* Video Details */}
         <div>
           <h4 className="font-semibold text-lg">{data.title}</h4>
@@ -355,7 +463,7 @@ const VideoDetails = ({ data }) => {
             Watched: {new Date(data.createdAt).toLocaleString()}
           </p>
         </div>
-
+  
         {/* Buttons Section */}
         <div className="flex flex-col gap-2 mt-4">
           {[
@@ -379,37 +487,38 @@ const VideoDetails = ({ data }) => {
           ))}
         </div>
       </div>
-
+  
       {/* Right Section (Desktop) */}
-      {!isMobile && (
-        <div className="md:flex-[7] w-full p-4 overflow-auto">
-          <Suspense fallback={<div>Loading...</div>}>
-            {!selectedSection && <Explanation />}
-            {selectedSection === "transcript" && (
-              <Transcript data={transcriptData || data.transcript} />
-            )}
-            {selectedSection === "summary" && (
-              <Summary data={summaryData || data.summary} />
-            )}
-            {selectedSection === "keyConcepts" && (
-              <KeyConcepts data={keyConceptsData} />
-            )}
-            {selectedSection === "quiz" && <Quiz data={qnaData} />}
-            {selectedSection === "currentScore" && <CurrentScore />}
-          </Suspense>
-        </div>
-      )}
-
+      <div className="hidden md:block md:flex-[7] w-full p-4 overflow-auto">
+        <Suspense fallback={<div>Loading...</div>}>
+          {!selectedSection && <Explanation />}
+          {selectedSection === "transcript" && (
+            <Transcript data={transcriptData || data.transcript} />
+          )}
+          {selectedSection === "summary" && (
+            <Summary data={summaryData || data.summary} />
+          )}
+          {selectedSection === "keyConcepts" && (
+            <KeyConcepts data={keyConceptsData} />
+          )}
+          {selectedSection === "quiz" && <Quiz data={qnaData} />}
+          {selectedSection === "currentScore" && <CurrentScore />}
+        </Suspense>
+      </div>
+  
       {/* Popup (Mobile) */}
       {isMobile && isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg w-11/12 max-h-[90vh] overflow-auto p-4">
             <button
               onClick={closePopup}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              className="absolute top-2 right-2 bg-gray-100 text-gray-800 hover:text-gray-900 
+                        text-xl md:text-2xl w-6 h-6 md:w-12 md:h-12 
+                        flex items-center justify-center rounded-full shadow-md hover:bg-gray-200 leading-none"
             >
               &times;
             </button>
+  
             <Suspense fallback={<div>Loading...</div>}>
               {selectedSection === "transcript" && (
                 <Transcript data={transcriptData || data.transcript} />
@@ -428,6 +537,6 @@ const VideoDetails = ({ data }) => {
       )}
     </div>
   );
-};
+  };
 
 export default VideoDetails;

@@ -52,45 +52,44 @@ const InputURL = () => {
     const match = url.match(regex);
     return match ? match[1] : null;
   };
-
   return (
-    <div className="p-6 bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
-      <form className="flex space-x-2 mb-4" onSubmit={handleSubmit}>
+    <div className="p-4 sm:p-6 bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+      <form
+        className="flex flex-col sm:flex-row gap-2 mb-4"
+        onSubmit={handleSubmit}
+      >
         <input
           type="text"
-          className="flex-1 border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+          className="w-full border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Enter YouTube video URL"
         />
         <button
           type="submit"
-          className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-all transform hover:scale-105"
+          className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition-all transform hover:scale-105"
           disabled={isLoading}
         >
           {isLoading ? "Loading..." : "Submit"}
         </button>
       </form>
-
-      {error && (
-        <p className="text-red-500 mb-2 animate-fade-in">{error}</p>
-      )}
-
+  
+      {error && <p className="text-red-500 mb-2 animate-fade-in text-sm">{error}</p>}
+  
       <div className="relative">
-        {/* Overlay loader on top of the video details or placeholder */}
+        {/* Overlay loader */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10 rounded-lg">
-            <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            <div className="animate-spin h-8 w-8 sm:h-10 sm:w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
           </div>
         )}
-
+  
         {videoData ? (
-          // Wrap VideoDetails in Suspense for lazy loading
           <Suspense fallback={<div>Loading Video Details...</div>}>
             <VideoDetails data={videoData} />
           </Suspense>
         ) : (
-          <div className="text-gray-500 text-center p-4 bg-white rounded-lg shadow-sm">
+          <div className="text-gray-500 text-center p-3 bg-white rounded-lg shadow-sm text-sm sm:text-base">
             <TypeAnimation
               sequence={[
                 "Enter a Valid URL to see details with duration limit",
@@ -108,6 +107,64 @@ const InputURL = () => {
       </div>
     </div>
   );
+  
+  
+
+  // return (
+  //   <div className="p-6 bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+  //     <form className="flex space-x-2 mb-4" onSubmit={handleSubmit}>
+  //       <input
+  //         type="text"
+  //         className="flex-1 border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+  //         value={url}
+  //         onChange={(e) => setUrl(e.target.value)}
+  //         placeholder="Enter YouTube video URL"
+  //       />
+  //       <button
+  //         type="submit"
+  //         className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-all transform hover:scale-105"
+  //         disabled={isLoading}
+  //       >
+  //         {isLoading ? "Loading..." : "Submit"}
+  //       </button>
+  //     </form>
+
+  //     {error && (
+  //       <p className="text-red-500 mb-2 animate-fade-in">{error}</p>
+  //     )}
+
+  //     <div className="relative">
+  //       {/* Overlay loader on top of the video details or placeholder */}
+  //       {isLoading && (
+  //         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10 rounded-lg">
+  //           <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+  //         </div>
+  //       )}
+
+  //       {videoData ? (
+  //         // Wrap VideoDetails in Suspense for lazy loading
+  //         <Suspense fallback={<div>Loading Video Details...</div>}>
+  //           <VideoDetails data={videoData} />
+  //         </Suspense>
+  //       ) : (
+  //         <div className="text-gray-500 text-center p-4 bg-white rounded-lg shadow-sm">
+  //           <TypeAnimation
+  //             sequence={[
+  //               "Enter a Valid URL to see details with duration limit",
+  //               1000,
+  //               "Paste your YouTube video link above",
+  //               1000,
+  //             ]}
+  //             speed={50}
+  //             repeat={Infinity}
+  //             cursor={true}
+  //             style={{ fontSize: "1rem", display: "inline-block" }}
+  //           />
+  //         </div>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default InputURL;
