@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
@@ -14,19 +14,19 @@ import Dashboard from './dashboard/Dashboard.jsx';
 import DashboardLayout from './dashboard/DashboardLayout.jsx';
 import Settings from './pages/Settings.jsx';
 import Info from './info/Info.jsx';
-import UploadPdf from './chroma/UploadPdf.jsx'
+import UploadPdf from './chroma/UploadPdf.jsx';
 import InputURL from './pages/InputURL.jsx';
 import FrontendPage from './pages/FrontendPage.jsx';
 import conf from './conf/conf.js';
-import Transcript from './pages/Transcript.jsx';
-import Summary from './pages/Summary.jsx';
-import Quiz from './pages/Quiz.jsx';
-import KeyConcepts from './pages/KeyConcepts.jsx';
-import CurrentScore from './pages/CurrentScore.jsx';
 import UserHistory from './pages/UserHistory.jsx';
-import NotFound from './pages/NotFound.jsx';
 
-
+// Lazy load components
+const Transcript = React.lazy(() => import('./pages/Transcript'));
+const Summary = React.lazy(() => import('./pages/Summary'));
+const Quiz = React.lazy(() => import('./pages/Quiz'));
+const KeyConcepts = React.lazy(() => import('./pages/KeyConcepts'));
+const CurrentScore = React.lazy(() => import('./pages/CurrentScore'));
+const VideoDetails = React.lazy(() => import('./pages/VideoDetails'));
 
 const router = createBrowserRouter([
   {
@@ -67,33 +67,33 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/dashboard/chat",
-            element: <Dashboard />, 
+            element: <Dashboard />,
           },
           {
             path: "/dashboard/uploadpdf",
-            element: <UploadPdf />, 
+            element: <UploadPdf />,
           },
           {
             path: "/dashboard/settings",
-            element: <Settings />, 
+            element: <Settings />,
           },
           {
             path: "/dashboard/user-history",
-            element: <UserHistory />, 
+            element: <UserHistory />,
           },
           {
             path: "/dashboard/info",
-            element: <Info />, 
+            element: <Info />,
           },
           {
             path: "/dashboard/input-url",
-            element: <InputURL />, 
+            element: <InputURL />,
             children: [
-              { path: "transcript", element: <Transcript/> },
-              { path: "summary", element: <Summary/> },
-              { path: "qna", element: <Quiz/> },
-              { path: "key-concepts", element: <KeyConcepts/> },
-              { path: "score", element: <CurrentScore/> },
+              { path: "transcript", element: <Transcript /> },
+              { path: "summary", element: <Summary /> },
+              { path: "qna", element: <Quiz /> },
+              { path: "key-concepts", element: <KeyConcepts /> },
+              { path: "score", element: <CurrentScore /> },
             ],
           },
         ],
@@ -102,25 +102,17 @@ const router = createBrowserRouter([
         path: "/forgot-password",
         element: <ForgetPassword />,
       },
-      {
-        path: "*", // Wildcard route for 404
-        element: <NotFound />,
-      },
     ],
   },
 ]);
 
-
-
-  ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </React.StrictMode>
-  );
-  
-
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </React.StrictMode>
+);
 
   
 // const router = createBrowserRouter([
