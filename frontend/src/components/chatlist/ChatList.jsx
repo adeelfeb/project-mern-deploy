@@ -255,6 +255,7 @@ import { TfiReload } from "react-icons/tfi";
 import { PiTreeStructureLight } from "react-icons/pi";
 import { CiSettings } from "react-icons/ci";
 import authService from '../../AserverAuth/auth';
+import { BiChat } from "react-icons/bi"; // Import the chat icon
 
 function ChatList() {
   const { isSidebarOpen } = useSidebar();
@@ -304,11 +305,23 @@ function ChatList() {
           <span className="text-xs mt-1 text-gray-600">Input</span>
         </Link>
 
-        <Link to="/dashboard/chat" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/chat') ? 'bg-gray-100' : ''}`}>
+        {/* <Link to="/dashboard/chat" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/chat') ? 'bg-gray-100' : ''}`}>
           <BiHomeAlt className="w-4 h-4" />
-          <span className="text-xs mt-1 text-gray-600">Home</span>
+          <span className="text-xs mt-1 text-gray-600">Chat</span>
+        </Link> */}
+
+
+      <Link
+          to="/dashboard/chat"
+          className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${
+            isActive("/dashboard/chat") ? "bg-gray-100" : ''
+          }`}
+        >
+          <BiChat className="w-5 h-5 text-gray-600" /> 
+          <span className="text-xs mt-1 text-gray-600">Chat</span>
         </Link>
 
+  
         <Link to="/dashboard/user-history" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/user-history') ? 'bg-gray-100' : ''}`}>
           <PiTreeStructureLight className="w-4 h-4 rotate-90" />
           <span className="text-xs mt-1 text-gray-600">History</span>

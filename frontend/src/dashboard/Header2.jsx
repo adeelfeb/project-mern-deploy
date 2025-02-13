@@ -4,7 +4,7 @@ import { LuPanelLeftOpen, LuPanelRightOpen } from "react-icons/lu";
 import { useSelector } from "react-redux";
 import { useSidebar } from "../contexts/SidebarContext";
 
-const Header = ({ inputText, currentModel = "🤖 Summarizer" }) => {
+const Header = ({ inputText, currentModel = "📑Watch To Work" }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
   
   // Redux selector for current PDF (file name)
