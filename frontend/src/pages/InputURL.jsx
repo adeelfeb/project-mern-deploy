@@ -31,8 +31,8 @@ const InputURL = () => {
     try {
       const response = await videoService.addVideo(url);
 
-      if (response.statusCode === 201) {
-        console.log("The Video data is:", response.data);
+      if (response.statusCode === 201 || 200) {
+        // console.log("The Video data is:", response.data);
         dispatch(setVideoData(response.data)); // Update Redux store with success response
       } else {
         setError(response.message); // Display error message
