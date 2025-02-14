@@ -27,6 +27,7 @@ const Quiz = React.lazy(() => import('./pages/Quiz'));
 const KeyConcepts = React.lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = React.lazy(() => import('./pages/CurrentScore'));
 const VideoDetails = React.lazy(() => import('./pages/VideoDetails'));
+import ApiRequestForm from './pages/ApiRequestForm.jsx';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/add-cors",
         element: <FrontendPage />,
+      },
+      {
+        path: "/add-api",
+        element: <ApiRequestForm />,
       },
       {
         path: "/login",
