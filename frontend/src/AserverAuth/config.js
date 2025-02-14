@@ -98,7 +98,7 @@ class VideoService {
     
     async getTranscript(videoId) {
         try {
-            // console.log("Inside the getTranscript:", videoId);
+            console.log("Inside the getTranscript:", videoId);
             const accessToken = localStorage.getItem('accessToken');
             if (!accessToken) {
                 console.log('No access token found in localStorage');
