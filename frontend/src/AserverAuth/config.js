@@ -4,37 +4,10 @@ import Cookies from 'js-cookie';
 
 class VideoService {
     constructor() {
-        this.apiUrl = conf.apiUrl; // API base URL from the configuration (e.g., `http://localhost:8000/api/v1`)
+        this.apiUrl = conf.apiUrl; 
     }
 
     
-    // async addVideo(videoUrl) {
-    //     try {
-    //         const accessToken = localStorage.getItem('accessToken');
-    //         // console.log("Access Token is :", accessToken)
-
-    //         if (!accessToken) {
-    //             console.log('No access token found in localStorage');
-    //             return null; // Return null if access token is not found
-    //         }
-            
-    //         const response = await axios.post(
-    //             `${this.apiUrl}/users/addVideo`, // API endpoint for adding the video
-    //             { videoUrl }, // Send the video URL in the request body
-    //             {
-    //                 headers: {
-    //                     "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-    //                 },
-    //                 withCredentials: false, // No need to send cookies with this request
-    //             }
-    //         );
-
-    //         return response.data; // Return the response data (e.g., success message or video data)
-    //     } catch (error) {
-    //         console.error('Error adding video to watch history:', error);
-    //         throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
-    //     }
-    // }
 
     async addVideo(videoUrl) {
       try {
@@ -93,6 +66,36 @@ class VideoService {
           }
       }
   }
+
+  async deleteFromHistory(videoId) {
+    try {
+        console.log("Deleting video from history:", videoId);
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            console.log('No access token found in localStorage');
+            return null; // Return null if access token is not found
+        }
+
+        const response = await axios.delete(
+            `${this.apiUrl}/users/delete-from-history`, // API endpoint for deleting from history
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
+                    "Content-Type": "application/json"
+                },
+                data: { videoId }, // Send videoId in the request body
+                withCredentials: false, // No need to send cookies with this request
+            }
+        );
+
+        console.log("Delete response:", response.data);
+        return response.data; // Return the response data
+    } catch (error) {
+        console.error('Error deleting video from history:', error);
+        throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
+    }
+}
+
   
   
     
@@ -180,7 +183,7 @@ class VideoService {
     
       async getqnas(videoId) {
         try {
-          console.log(  "The Video id is: ",videoId)
+          // console.log(  "The Video id is: ",videoId)
           const accessToken = localStorage.getItem('accessToken');
           if (!accessToken) {
             console.log('No access token found in localStorage');
@@ -210,31 +213,32 @@ class VideoService {
 
       async submitQuiz(videoId, quiz) {
         try {
-          
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null; // Return null if access token is not found
-          }
-    
-          const response = await axios.get(
-            `${this.apiUrl}/users/qnas`, // API endpoint for getting the summary
-            {
-              headers: {
-                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-              },
-              params: { videoId, quiz }, // Pass videoId as a query parameter
-              withCredentials: false, // No need to send cookies with this request
+          // console.log("video id:", videoId)
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                console.log('No access token found in localStorage');
+                return null; // Return null if access token is not found
             }
-          );
-          
-          return response; 
+    
+            const response = await axios.post(
+                `${this.apiUrl}/users/qnas`, // API endpoint for submitting quiz
+                { videoId, quiz }, // Send videoId and quiz inside the request body
+                {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`, // Attach the access token
+                        "Content-Type": "application/json" // Ensure JSON request format
+                    },
+                    withCredentials: false // No cookies needed
+                }
+            );
+    
+            return response;
         } catch (error) {
-          console.error('Error Submitting Quiz:', error);
-          throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
+            console.error('Error Submitting Quiz:', error);
+            throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
         }
-      }
-       
+    }
+    
 
       
       async getCurrentUser() {
@@ -255,31 +259,7 @@ class VideoService {
         }
     }
       
-      // async getUserHistory() {
-      //   try {
-      //     const accessToken = localStorage.getItem('accessToken');
-      //     if (!accessToken) {
-      //       console.log('No access token found in localStorage');
-      //       return null; // Return null if access token is not found
-      //     }
     
-      //     const response = await axios.get(
-      //       `${this.apiUrl}/users/history`, // API endpoint for getting the summary
-      //       {
-      //         headers: {
-      //           "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-      //         },
-      //         withCredentials: false, // No need to send cookies with this request
-      //       }
-      //     );
-    
-      //     return response.data; // Return the summary data
-      //   } catch (error) {
-      //     console.error('Error fetching Qnas:', error);
-      //     throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
-      //   }
-      // }
-
       async getUserHistory() {
         try {
             const accessToken = localStorage.getItem('accessToken');
