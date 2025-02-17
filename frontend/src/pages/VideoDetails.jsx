@@ -123,7 +123,12 @@ const VideoDetails = ({ data }) => {
     setSelectedSection(null);
   };
   const [videoId, setVideoId] = useState(null);
+
+
   // console.log("video Id in VideoDetails component:", videoId)
+
+
+  
   useEffect(() => {
     if (data?._id) {
       setVideoId(data._id);
@@ -134,7 +139,7 @@ const VideoDetails = ({ data }) => {
   return (
     <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden">
       {/* Left Section */}
-      <div className="flex-1 md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r h-full md:max-h-screen overflow-auto">
+      <div className="flex-1 md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r h-full md:max-h-screen flex flex-col">
         {/* Video Section */}
         <div className="w-full mb-4">
           <iframe
@@ -165,7 +170,7 @@ const VideoDetails = ({ data }) => {
         </div>
   
         {/* Buttons Section */}
-        <div className="flex flex-col gap-2 mt-4">
+        <div className="flex flex-col gap-2 mt-4 overflow-y-auto flex-grow max-h-[calc(100vh-300px)]">
           {[
             { label: "Transcript", loading: transcriptisLoading, section: "transcript" },
             { label: "Summary", loading: summaryIsLoading, section: "summary" },
@@ -174,16 +179,17 @@ const VideoDetails = ({ data }) => {
             { label: "Current Score", loading: false, section: "currentScore" },
           ].map(({ label, loading, section }) => (
             <button
-              key={section}
-              onClick={() => handleSectionClick(section)}
-              className={`w-full px-4 py-2 font-medium border rounded-lg transition-all duration-300 ${
-                selectedSection === section
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95"
-              }`}
-            >
-              {loading ? "Loading..." : label}
-            </button>
+  key={section}
+  onClick={() => handleSectionClick(section)}
+  className={`w-full px-3 py-1.5 text-sm md:px-4 md:py-2 md:text-base font-medium border rounded-lg transition-all duration-300 ${
+    selectedSection === section
+      ? "bg-blue-500 text-white"
+      : "bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95"
+  }`}
+>
+  {loading ? "Loading..." : label}
+</button>
+
           ))}
         </div>
       </div>
@@ -229,7 +235,7 @@ const VideoDetails = ({ data }) => {
               {selectedSection === "keyConcepts" && (
                 <KeyConcepts data={keyConceptsData} />
               )}
-              {selectedSection === "quiz" && videoId && <Quiz data={qnaData}  />}
+              {selectedSection === "quiz" && videoId && <Quiz data={qnaData} />}
               {selectedSection === "currentScore" && <CurrentScore />}
             </Suspense>
           </div>
@@ -237,6 +243,7 @@ const VideoDetails = ({ data }) => {
       )}
     </div>
   );
+  
   };
 
 export default VideoDetails;

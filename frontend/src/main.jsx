@@ -28,6 +28,7 @@ const KeyConcepts = React.lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = React.lazy(() => import('./pages/CurrentScore'));
 const VideoDetails = React.lazy(() => import('./pages/VideoDetails'));
 import ApiRequestForm from './pages/ApiRequestForm.jsx';
+import AddVideoDetailsInDataBase from './pages/AddVideoDetailsInDataBase.jsx';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "/add-api",
         element: <ApiRequestForm />,
+      },
+      {
+        path: "/add-VideoDetails",
+        element: <AddVideoDetailsInDataBase />,
       },
       {
         path: "/login",

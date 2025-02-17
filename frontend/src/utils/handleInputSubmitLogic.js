@@ -34,7 +34,7 @@ export const handleInputSubmitLogic = async ({
       let relevantChunks = [];
       try {
         const response = await getUserData.getVectorData(fileId, currentMessage);
-        console.log("The Vector response for this query was:", response);
+        // console.log("The Vector response for this query was:", response);
 
         // Check if vector data is retrieved successfully
         if (response?.status === 200 && Array.isArray(response?.data)) {
@@ -123,7 +123,7 @@ export const handleInputSubmitLogic = async ({
       Based on the conversation history provided, answer the user's query accurately.
       `;
 
-      console.log("Fallback prompt:", fallbackPrompt);
+      // console.log("Fallback prompt:", fallbackPrompt);
 
       const fallbackResponse = await generateContentWithRetry([fallbackPrompt]); // Fallback logic
       const fallbackMessage = { role: "model", text: fallbackResponse };

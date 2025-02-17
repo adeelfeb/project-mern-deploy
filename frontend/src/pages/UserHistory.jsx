@@ -88,7 +88,7 @@ const handleDelete = async (videoId) => {
             <div className="flex justify-center gap-4 flex-wrap mb-4">
             <button
                 onClick={() => fetchHistory(true)}
-                className={`px-4 py-2 text-white rounded-lg transition-all text-sm sm:text-base ${
+                className={`px-4 py-2 text-white rounded-3xl transition-all text-sm sm:text-base ${
                     isLoading
                         ? "bg-gray-400 cursor-not-allowed"
                         : fetchError
@@ -103,7 +103,7 @@ const handleDelete = async (videoId) => {
                 {selectedVideo && (
                     <button
                         onClick={() => setSelectedVideo(null)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm sm:text-base"
+                        className="px-4 py-2 bg-blue-500 text-white rounded-3xl hover:bg-blue-600 transition-all text-sm sm:text-base"
                     >
                         &lt; Back
                     </button>

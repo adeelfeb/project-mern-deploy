@@ -18,13 +18,7 @@ const Quiz = ({ data}) => {
     return <p className="text-center text-gray-500">Loading quiz...</p>;
   }
 
-
-  
-    
-
-
-
-  console.log("Video Id in Quiz component:", data.videoId); // Log videoId for debugging
+  // console.log("Video Id in Quiz component:", data.videoId); // Log videoId for debugging
 
   const { shortQuestions = [], mcqs = [], fillInTheBlanks = [] } = data.qnas;
 
@@ -90,22 +84,7 @@ const Quiz = ({ data}) => {
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
-  // const handleSubmit = async () => {
-  //   if (!validateResponses()) return; // Stop if validation fails
 
-  //   setIsSubmitting(true);
-  //   try {
-  //     // Use the videoId prop here
-  //     await videoService.submitQuiz(data.videoId, responses);
-  //     dispatch(saveQuizResponse(responses));
-  //     setShowToast(true);
-  //     setTimeout(() => setShowToast(false), 3000);
-  //   } catch (error) {
-  //     console.error("Error submitting quiz:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
 
   const handleSubmit = async () => {
     if (!validateResponses()) return; // Stop if validation fails
