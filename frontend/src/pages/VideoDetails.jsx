@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import videoService from "../AserverAuth/config";
+import { useDispatch } from "react-redux";
+import { setTranscript, clearTranscript } from "../store/currentVideoSlice";
 
 // Lazy load components
 const Transcript = lazy(() => import("./Transcript"));
@@ -21,6 +23,7 @@ const VideoDetails = ({ data }) => {
   const [keyConceptsIsLoading, setKeyConceptsIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Detect mobile screen
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Control popup visibility
+  const dispatch = useDispatch()
 
   
   // Reset state when data changes
@@ -74,7 +77,9 @@ const VideoDetails = ({ data }) => {
       let response;
       switch (section) {
         case "transcript":
+          dispatch(clearTranscript());
           response = await videoService.getTranscript(data._id);
+          dispatch(setTranscript(response.data.transcript));
           setTranscriptData(response.data.transcript);
           break;
         case "summary":
@@ -194,7 +199,7 @@ const VideoDetails = ({ data }) => {
         </div>
       </div>
   
-      {/* Right Section (Desktop) */}
+      {/* Right Section (Desktop) */} 
       <div className="hidden md:block md:flex-[7] w-full p-4 overflow-auto">
         <Suspense fallback={<div>Loading...</div>}>
           {!selectedSection && <Explanation />}
@@ -202,7 +207,7 @@ const VideoDetails = ({ data }) => {
             <Transcript data={transcriptData || data.transcript} />
           )}
           {selectedSection === "summary" && (
-            <Summary data={summaryData || data.summary} />
+            <Summary data={summaryData || data.summary} /> 
           )}
           {selectedSection === "keyConcepts" && (
             <KeyConcepts data={keyConceptsData} />

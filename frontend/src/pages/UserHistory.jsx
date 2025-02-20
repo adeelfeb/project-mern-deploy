@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserHistory } from "../store/currentVideoSlice";
 import videoService from "../AserverAuth/config";
 import { FaEllipsisV } from "react-icons/fa"; // Import three-dot menu icon
+import { clearTranscript } from "../store/currentVideoSlice";
 
 const VideoDetails = lazy(() => import("./VideoDetails"));
 
@@ -102,6 +103,7 @@ const handleDelete = async (videoId) => {
 
                 {selectedVideo && (
                     <button
+                        
                         onClick={() => setSelectedVideo(null)}
                         className="px-4 py-2 bg-blue-500 text-white rounded-3xl hover:bg-blue-600 transition-all text-sm sm:text-base"
                     >

@@ -67,37 +67,20 @@ export const generateContentWithRetry = async (prompt, imageUrl = null, retries 
 
 
 
-export const startChatWithMessage = async (message, history = [], updateCallback) => {
-  // Ensure history is initialized with a default conversation if empty
+
+
+
+export const startChatWithMessage = async (message, updateCallback) => {
   const chat = model.startChat({
-    history: history.length
-      ? history
-      : [
-          { role: "user", parts: [{ text: "Hello" }] },
-          { role: "model", parts: [{ text: "Great to meet you. What would you like to know?" }] },
-        ],
+    history: [], // No need to pass history here since it's already in the prompt
   });
 
   try {
-    // Format chat history into a readable string for the prompt
-    const formattedHistory = history
-      .map((entry) => `${entry.role === "user" ? "User" : "AI"}: ${entry.text}`)
-      .join("\n");
-
     // If the message contains an image URL, encode it
     let encodedMessage = message;
 
-    if (message[1] && message[1].startsWith("http")) {
-      // If the message contains an image URL, fetch and encode it
-      const encodedImage = await encodeImageFromUrl(message[1]);
-      encodedMessage[1] = encodedImage.inlineData; // Replace the URL with the formatted base64 image data
-    }
-
-    // Construct the full prompt with history and the new message
-    const fullPrompt = `${formattedHistory}\nUser: ${encodedMessage[0]}`;
-
     // Start streaming the response
-    const result = await chat.sendMessageStream([fullPrompt]);
+    const result = await chat.sendMessageStream([encodedMessage[0]]);
 
     let responseText = "";
 
@@ -108,13 +91,9 @@ export const startChatWithMessage = async (message, history = [], updateCallback
 
       // Use the callback to update the UI with streamed chunks
       if (updateCallback) {
-        updateCallback(chunkText); // Pass the current chunk to the callback
+        updateCallback(responseText); // Pass the accumulated response to the callback
       }
     }
-
-    // Update the history with the user message and AI response
-    history.push({ role: "user", text: message[0] || message }); // Handle both text and image data
-    history.push({ role: "model", text: responseText });
 
     return responseText;
   } catch (error) {
@@ -127,3 +106,44 @@ export const startChatWithMessage = async (message, history = [], updateCallback
     throw new Error("An unexpected error occurred during the chat session.");
   }
 };
+
+
+
+// export const startChatWithMessage = async (message, updateCallback) => {
+//   const chat = model.startChat({
+//     history: [], // No need to pass history here since it's already in the prompt
+//   });
+
+//   try {
+//     // If the message contains an image URL, encode it
+//     let encodedMessage = message;
+
+  
+
+//     // Start streaming the response
+//     const result = await chat.sendMessageStream([encodedMessage[0]]);
+
+//     let responseText = "";
+
+//     // Stream chunks in real-time
+//     for await (const chunk of result.stream) {
+//       const chunkText = chunk.text();
+//       responseText += chunkText;
+
+//       // Use the callback to update the UI with streamed chunks
+//       if (updateCallback) {
+//         updateCallback(chunkText); // Pass the current chunk to the callback
+//       }
+//     }
+
+//     return responseText;
+//   } catch (error) {
+//     console.error("Error during chat session:", error);
+
+//     if (error.message.includes("blocked due to SAFETY")) {
+//       throw new Error("Your message was flagged as unsafe. Please modify the input and try again.");
+//     }
+
+//     throw new Error("An unexpected error occurred during the chat session.");
+//   }
+// };

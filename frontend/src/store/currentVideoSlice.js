@@ -83,8 +83,6 @@
 
 // export default currentVideoSlice.reducer;
 
-
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const currentVideoSlice = createSlice({
@@ -93,6 +91,7 @@ const currentVideoSlice = createSlice({
     videoData: null,
     userHistory: [],
     quizResponses: {}, // Store user responses
+    transcript: null, // New field to hold the transcript
   },
   reducers: {
     setVideoData: (state, action) => {
@@ -116,6 +115,12 @@ const currentVideoSlice = createSlice({
     saveQuizResponse: (state, action) => {
       state.quizResponses = action.payload; // Save responses globally
     },
+    setTranscript: (state, action) => { // New reducer to set the transcript
+      state.transcript = action.payload;
+    },
+    clearTranscript: (state) => { // New reducer to clear the transcript
+      state.transcript = null;
+    },
   },
 });
 
@@ -126,7 +131,9 @@ export const {
   clearUserHistory,
   addToUserHistory,
   removeFromUserHistory,
-  saveQuizResponse, // Exported to be used elsewhere
+  saveQuizResponse,
+  setTranscript, // Export the new action
+  clearTranscript, // Export the new action
 } = currentVideoSlice.actions;
 
 export default currentVideoSlice.reducer;
