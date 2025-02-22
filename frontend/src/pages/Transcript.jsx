@@ -68,7 +68,7 @@ const Transcript = ({ data }) => {
   }
 
   return (
-    <div className="w-full mb-8 flex flex-col h-screen">
+    <div className="w-full flex flex-col h-[100vh]">
       {/* Heading and Buttons (Fixed) */}
       <div className="flex flex-col gap-4 mb-2 p-2 bg-white shadow-md">
         <h5 className="font-semibold text-lg">
@@ -95,13 +95,13 @@ const Transcript = ({ data }) => {
             className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
             onClick={copyTranscript}
           >
-            <MdContentCopy size={20} /> {/* Copy icon */}
+            <MdContentCopy size={20} />
           </button>
         </div>
       </div>
-
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 bg-white rounded-md shadow-inner">
+  
+      {/* Scrollable Content (Fix applied) */}
+      <div className="h-0 flex-grow overflow-y-auto bg-white rounded-md shadow-inner">
         {view === "original"
           ? data?.original
             ? renderTranscript(data.original)
@@ -111,19 +111,80 @@ const Transcript = ({ data }) => {
             : <p>No data available.</p>
         }
       </div>
-
-      {/* ToastNotification for feedback */}
+  
+      {/* ToastNotification (Ensuring it's not affecting layout) */}
       {toastMessage && (
-        <ToastNotification
-          message={toastMessage}
-          duration={3000} // Duration for the toast to show
-          onClose={() => setToastMessage("")} // Reset toast message on close
-          position="right"
-          isSuccess={isSuccess}
-        />
+        <div className="absolute bottom-4 right-4">
+          <ToastNotification
+            message={toastMessage}
+            duration={3000}
+            onClose={() => setToastMessage("")}
+            position="right"
+            isSuccess={isSuccess}
+          />
+        </div>
       )}
     </div>
   );
+  
+  
+  // return (
+  //   <div className="w-full  flex flex-col h-screen">
+  //     {/* Heading and Buttons (Fixed) */}
+  //     <div className="flex flex-col gap-4 mb-2 p-2 bg-white shadow-md">
+  //       <h5 className="font-semibold text-lg">
+  //         {view === "original" ? "Original Transcript" : "English Transcript"}
+  //       </h5>
+  //       <div className="flex gap-4">
+  //         <button
+  //           className={`p-2 px-4 rounded ${
+  //             view === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+  //           }`}
+  //           onClick={() => setView("english")}
+  //         >
+  //           English
+  //         </button>
+  //         <button
+  //           className={`p-2 px-4 rounded ${
+  //             view === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+  //           }`}
+  //           onClick={() => setView("original")}
+  //         >
+  //           Original
+  //         </button>
+  //         <button
+  //           className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+  //           onClick={copyTranscript}
+  //         >
+  //           <MdContentCopy size={20} /> {/* Copy icon */}
+  //         </button>
+  //       </div>
+  //     </div>
+
+  //     {/* Scrollable Content */}
+  //     <div className="flex-1 overflow-y-auto  bg-white rounded-md shadow-inner">
+  //       {view === "original"
+  //         ? data?.original
+  //           ? renderTranscript(data.original)
+  //           : <p>No data available.</p>
+  //         : data?.english
+  //           ? renderTranscript(data.english)
+  //           : <p>No data available.</p>
+  //       }
+  //     </div>
+
+  //     {/* ToastNotification for feedback */}
+  //     {toastMessage && (
+  //       <ToastNotification
+  //         message={toastMessage}
+  //         duration={3000} // Duration for the toast to show
+  //         onClose={() => setToastMessage("")} // Reset toast message on close
+  //         position="right"
+  //         isSuccess={isSuccess}
+  //       />
+  //     )}
+  //   </div>
+  // );
 };
 
 export default Transcript;
