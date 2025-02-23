@@ -50,9 +50,10 @@ const VideoDetails = ({ data }) => {
   }, []);
 
 
-  const fetchAndProcessTranscript = async (videoId) => {
+  const fetchAndProcessTranscript = async (videoId, includeOriginal = false) => {
     const transcriptResponse = await videoService.getTranscript(videoId);
     const transcriptData = transcriptResponse.data.transcript;
+    
   
     // If transcript is empty, return null
     if (!transcriptData || transcriptData.original === "NA") {
@@ -60,18 +61,23 @@ const VideoDetails = ({ data }) => {
       return null;
     }
   
-    // Extract transcript text
+    // Extract English transcript text
     const transcriptText = transcriptData?.["english"]?.map(entry => entry.text).join("\n") || "";
-    return { transcriptData, transcriptText };
+  
+    // Extract original transcript text only if includeOriginal is true
+    const transcriptTextOriginal = includeOriginal
+      ? transcriptData?.["original"]?.map(entry => entry.text).join("\n") || ""
+      : null;
+  
+    return {
+      transcriptData,
+      transcriptText,
+      transcriptTextOriginal: includeOriginal ? transcriptTextOriginal : undefined,
+    };
   };
 
 
-  const memoizedTranscript = useMemo(async () => {
-    if (!data._id) return null;
-    return await fetchAndProcessTranscript(data._id);
-  }, [data._id]);
-
-
+  
 
   const handleSectionClick = async (section) => {
     if (!data._id) {
@@ -116,12 +122,12 @@ const VideoDetails = ({ data }) => {
   
           // If summary is empty, generate it using the transcript
           if (response.data.summary.original === "NA") {
-            console.log("Summary is empty, generating...");
+            
             setSummaryIsLoading("generating");
             setIsGenerating(true);
   
             // Fetch and process transcript
-            const transcriptResult = await fetchAndProcessTranscript(data._id);
+            const transcriptResult = await fetchAndProcessTranscript(data._id, true);
             if (!transcriptResult) {
               console.log("Transcript is empty, cannot generate summary.");
               setSummaryData({ original: "NA", english: "NA" });
@@ -129,18 +135,30 @@ const VideoDetails = ({ data }) => {
             }
   
             const { transcriptText, transcriptTextOriginal } = transcriptResult;
+            // console.log("the original transcript is:", transcriptTextOriginal)
   
             // Generate summary using AI
-            const [aiResponseEnglish, aiResponseOriginal] = await Promise.all([
-              startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]),
-              startChatWithMessage([`Summarize this content in the original language as much as possible: ${transcriptTextOriginal}`])
-            ]);
+            if(transcriptTextOriginal && transcriptText){
+              const [aiResponseEnglish, aiResponseOriginal] = await Promise.all([
+                startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]),
+                startChatWithMessage([`Summarize this content in the original language as much as possible: ${transcriptTextOriginal}`])
+              ]);
+              setSummaryData({
+                original: aiResponseOriginal,
+                english: aiResponseEnglish,
+              });
+            }
+            else{
+              const aiResponseEnglish = await startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]);
+              
+              setSummaryData({
+                original: "NA",
+                english: aiResponseEnglish,
+              });
+            }
   
-            console.log("Summaries generated.");
-            setSummaryData({
-              original: aiResponseOriginal,
-              english: aiResponseEnglish,
-            });
+            
+            
           } else {
             setSummaryData(response.data.summary);
           }
@@ -381,7 +399,7 @@ const VideoDetails = ({ data }) => {
           
           {selectedSection === "currentScore" && 
             <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-2">
-              <CurrentScore /> 
+              <CurrentScore data={data._id} /> 
             </div>
           }
         </Suspense>
@@ -411,7 +429,7 @@ const VideoDetails = ({ data }) => {
                 <KeyConcepts data={keyConceptsData} />
               )}
               {selectedSection === "quiz" && videoId && <Quiz data={qnaData} />}
-              {selectedSection === "currentScore" && <CurrentScore />}
+              {selectedSection === "currentScore" && <CurrentScore data={data._id} />}
             </Suspense>
           </div>
         </div>

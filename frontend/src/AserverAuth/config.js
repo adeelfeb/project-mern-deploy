@@ -69,7 +69,7 @@ class VideoService {
 
   async deleteFromHistory(videoId) {
     try {
-        console.log("Deleting video from history:", videoId);
+        // console.log("Deleting video from history:", videoId);
         const accessToken = localStorage.getItem('accessToken');
         if (!accessToken) {
             console.log('No access token found in localStorage');
@@ -88,7 +88,7 @@ class VideoService {
             }
         );
 
-        console.log("Delete response:", response.data);
+        // console.log("Delete response:", response.data);
         return response.data; // Return the response data
     } catch (error) {
         console.error('Error deleting video from history:', error);
@@ -205,6 +205,36 @@ class VideoService {
         } catch (error) {
           console.error('Error fetching Quiz:', error);
           throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
+        }
+      }
+
+
+
+      async getScore(videoId) {
+        try {
+          // console.log(  "The Video id is: ",videoId)
+          const accessToken = localStorage.getItem('accessToken');
+          if (!accessToken) {
+            console.log('No access token found in localStorage');
+            return null; // Return null if access token is not found
+          }
+    
+          const response = await axios.get(
+            `${this.apiUrl}/users/score`, // API endpoint for getting the summary
+            {
+              headers: {
+                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
+              },
+              params: { videoId }, // Pass videoId as a query parameter
+              withCredentials: false, // No need to send cookies with this request
+            }
+          );
+          // console.log("response of QNA is:", response.data)
+          return response.data; 
+        } catch (error) {
+          // console.log('Error fetching Score:', error);
+          return error.response
+          
         }
       }
 

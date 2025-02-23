@@ -10,6 +10,9 @@ const Quiz = ({ data }) => {
   const [showToast, setShowToast] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // console.log("the quiz formate is:", data.qnas)
+
+  
   // Default empty structure for qnas
   const defaultQnas = {
     mcqs: [],
@@ -119,10 +122,10 @@ const Quiz = ({ data }) => {
   
       // Submit quiz with formatted data
       const tempResponse = await videoService.submitQuiz(data.videoId, formattedResponses);
-      // console.log("Temp response:", tempResponse);
+      console.log("Temp response:", tempResponse);
   
       // Check the API response status
-      if (tempResponse.data.status === "201") {
+      if (tempResponse.data.status === 201) {
         dispatch(saveQuizResponse(formattedResponses));
         setShowToast({ message: "Quiz submitted successfully!", type: "success" }); // Success toast
       } else {

@@ -3,7 +3,11 @@ import { MdContentCopy } from "react-icons/md"; // Copy icon
 import ToastNotification from "../components/toastNotification/ToastNotification";
 
 const Transcript = ({ data }) => {
-  const [view, setView] = useState("original");
+  let indexView = "original"
+  if(data.original === "NA"){
+    indexView = "english"
+  }
+  const [view, setView] = useState(indexView);
   const [toastMessage, setToastMessage] = useState(""); // State for Toast Notification
   const [isSuccess, setIsSuccess] = useState(true);
 
