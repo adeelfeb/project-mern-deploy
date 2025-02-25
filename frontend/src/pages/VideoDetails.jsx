@@ -218,7 +218,8 @@ const VideoDetails = ({ data }) => {
                   mcqs: parsedData.mcqs || [],
                   shortQuestions: parsedData.shortQuestions || [],
                   fillInTheBlanks: parsedData.fillInTheBlanks || [],
-                }
+                },
+                videoId:data._id
               };
               // console.log("formated quiz is:", formattedQuizData)
           

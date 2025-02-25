@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
@@ -10,25 +10,28 @@ import { AuthLayout } from './components';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import ForgetPassword from './pages/ForgetPassword.jsx';
-import Dashboard from './dashboard/Dashboard.jsx';
-import DashboardLayout from './dashboard/DashboardLayout.jsx';
-import Settings from './pages/Settings.jsx';
-import Info from './info/Info.jsx';
-import UploadPdf from './chroma/UploadPdf.jsx';
-import InputURL from './pages/InputURL.jsx';
 import FrontendPage from './pages/FrontendPage.jsx';
-import conf from './conf/conf.js';
-import UserHistory from './pages/UserHistory.jsx';
-
-// Lazy load components
-const Transcript = React.lazy(() => import('./pages/Transcript'));
-const Summary = React.lazy(() => import('./pages/Summary'));
-const Quiz = React.lazy(() => import('./pages/Quiz'));
-const KeyConcepts = React.lazy(() => import('./pages/KeyConcepts'));
-const CurrentScore = React.lazy(() => import('./pages/CurrentScore'));
-const VideoDetails = React.lazy(() => import('./pages/VideoDetails'));
 import ApiRequestForm from './pages/ApiRequestForm.jsx';
 import AddVideoDetailsInDataBase from './pages/AddVideoDetailsInDataBase.jsx';
+
+// Lazy load all components
+const Dashboard = lazy(() => import('./dashboard/Dashboard.jsx'));
+const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout.jsx'));
+const Settings = lazy(() => import('./pages/Settings.jsx'));
+const UserHistory = lazy(() => import('./pages/UserHistory.jsx'));
+const Info = lazy(() => import('./info/Info.jsx'));
+const UploadPdf = lazy(() => import('./chroma/UploadPdf.jsx'));
+const InputURL = lazy(() => import('./pages/InputURL.jsx'));
+const Transcript = lazy(() => import('./pages/Transcript'));
+const Summary = lazy(() => import('./pages/Summary'));
+const Quiz = lazy(() => import('./pages/Quiz'));
+const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
+const CurrentScore = lazy(() => import('./pages/CurrentScore'));
+
+// Global fallback component
+function GlobalFallback() {
+  return <div>Loading...</div>;
+}
 
 const router = createBrowserRouter([
   {
@@ -71,39 +74,100 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
           <AuthLayout authentication>
-            <DashboardLayout />
+            <Suspense fallback={<GlobalFallback />}>
+              <DashboardLayout />
+            </Suspense>
           </AuthLayout>
         ),
         children: [
           {
             path: "/dashboard/chat",
-            element: <Dashboard />,
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <Dashboard />
+              </Suspense>
+            ),
           },
           {
             path: "/dashboard/uploadpdf",
-            element: <UploadPdf />,
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <UploadPdf />
+              </Suspense>
+            ),
           },
           {
             path: "/dashboard/settings",
-            element: <Settings />,
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <Settings />
+              </Suspense>
+            ),
           },
           {
             path: "/dashboard/user-history",
-            element: <UserHistory />,
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <UserHistory />
+              </Suspense>
+            ),
           },
           {
             path: "/dashboard/info",
-            element: <Info />,
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <Info />
+              </Suspense>
+            ),
           },
           {
             path: "/dashboard/input-url",
-            element: <InputURL />,
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <InputURL />
+              </Suspense>
+            ),
             children: [
-              { path: "transcript", element: <Transcript /> },
-              { path: "summary", element: <Summary /> },
-              { path: "qna", element: <Quiz /> },
-              { path: "key-concepts", element: <KeyConcepts /> },
-              { path: "score", element: <CurrentScore /> },
+              {
+                path: "transcript",
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <Transcript />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "summary",
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <Summary />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "qna",
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <Quiz />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "key-concepts",
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <KeyConcepts />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "score",
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <CurrentScore />
+                  </Suspense>
+                ),
+              },
             ],
           },
         ],
@@ -123,73 +187,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </Provider>
   </React.StrictMode>
 );
-
-  
-// const router = createBrowserRouter([
-//     {
-//       path: "/",
-//       element: <App />,
-//       children: [
-//         {
-//           path: "/",
-//           element: <Home />,
-//         },
-//         {
-//           path: "/add-cors",
-//           element: <FrontendPage />,
-//         },
-//         {
-//           path: "/login",
-//           element: (
-//             <AuthLayout authentication={false}>
-//               <Login />
-//             </AuthLayout>
-//           ),
-//         },
-//         {
-//           path: "/signup",
-//           element: (
-//             <AuthLayout authentication={false}>
-//               <Signup />
-//             </AuthLayout>
-//           ),
-//         },
-//         {
-//           path: "/dashboard",
-//           element: (
-//             <AuthLayout authentication>
-//               <DashboardLayout />
-//             </AuthLayout>
-//           ),
-//           children: [
-//             {
-//               path: "/dashboard/chat",
-//               element: <Dashboard />, // Main dashboard/chat component
-//             },
-//             {
-//               path: "/dashboard/uploadpdf",
-//               element: <UploadPdf />, // Upload PDF component
-//             },
-//             {
-//               path: "/dashboard/settings",
-//               element: <Settings />, // Settings component
-//             },
-//             {
-//               path: "/dashboard/info",
-//               element: <Info />, // Info component
-//             },
-//             {
-//               path: "/dashboard/input-url",
-//               element: <InputURL />, // Info component
-//             },
-//           ],
-//         },
-      
-//         {
-//           path: "/forgot-password",
-//           element: <ForgetPassword />,
-//         },
-//       ],
-//     },
-//   ]);
-  

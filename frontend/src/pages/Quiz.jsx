@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { saveQuizResponse } from "../store/currentVideoSlice";
 import ToastNotification from "../components/toastNotification/ToastNotification";
 import videoService from "../AserverAuth/config";
+import { formatProdErrorMessage } from "@reduxjs/toolkit";
 
 const Quiz = ({ data }) => {
   const dispatch = useDispatch();
@@ -10,9 +11,6 @@ const Quiz = ({ data }) => {
   const [showToast, setShowToast] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // console.log("the quiz formate is:", data.qnas)
-
-  
   // Default empty structure for qnas
   const defaultQnas = {
     mcqs: [],
@@ -20,22 +18,14 @@ const Quiz = ({ data }) => {
     fillInTheBlanks: [],
   };
 
-  const ToastNotification = ({ message, type }) => {
-    const toastStyle = {
-      success: "bg-green-500 text-white",
-      error: "bg-red-500 text-white",
-    };
-  
-    return (
-      <div className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${toastStyle[type]}`}>
-        {message}
-      </div>
-    );
-  };
+  // console.log("the recieved quiz:", data)
 
   // Ensure qnas is always an object with the expected structure
   const { mcqs = [], shortQuestions = [], fillInTheBlanks = [] } = data?.qnas || defaultQnas;
+  // const videoId = data.videoId
+  // console.log("the video id inside the quize compoent is:", videoId)
 
+  // State to store responses
   const [responses, setResponses] = useState({
     shortAnswers: {},
     mcqAnswers: {},
@@ -98,7 +88,7 @@ const Quiz = ({ data }) => {
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
-
+  // Handle Quiz Submission
   const handleSubmit = async () => {
     if (!validateResponses()) return; // Stop if validation fails
   
@@ -113,16 +103,21 @@ const Quiz = ({ data }) => {
         mcqAnswers: mcqs.map((q, index) => ({
           question: q.question,
           selectedOption: responses.mcqAnswers[index] || "",
+          correctAnswer: q.correctAnswer,
+          options: q.options, // Include the options for MCQs
         })),
         fillInTheBlanks: fillInTheBlanks.map((q, index) => ({
           question: q.sentence || q.question, // Handle both formats
           givenAnswer: responses.fillInTheBlanks[index] || "",
+          missingWord: q.missingWord, // Include the missing word for fill-in-the-blanks
         })),
       };
   
       // Submit quiz with formatted data
+      
+      // console.log("Orignal quiz is:", mcqs, shortQuestions, fillInTheBlanks)
+      // console.log("Formated quiz is:", formattedResponses)
       const tempResponse = await videoService.submitQuiz(data.videoId, formattedResponses);
-      console.log("Temp response:", tempResponse);
   
       // Check the API response status
       if (tempResponse.data.status === 201) {
@@ -139,45 +134,6 @@ const Quiz = ({ data }) => {
       setTimeout(() => setShowToast(null), 3000); // Clear toast after 3 seconds
     }
   };
-  // const handleSubmit = async () => {
-  //   if (!validateResponses()) return; // Stop if validation fails
-
-  //   setIsSubmitting(true);
-  //   try {
-  //     // Transform responses to match backend format
-  //     const formattedResponses = {
-  //       shortAnswers: shortQuestions.map((q, index) => ({
-  //         question: q.question,
-  //         givenAnswer: responses.shortAnswers[index] || "",
-  //       })),
-  //       mcqAnswers: mcqs.map((q, index) => ({
-  //         question: q.question,
-  //         selectedOption: responses.mcqAnswers[index] || "",
-  //       })),
-  //       fillInTheBlanks: fillInTheBlanks.map((q, index) => ({
-  //         question: q.sentence || q.question, // Handle both formats
-  //         givenAnswer: responses.fillInTheBlanks[index] || "",
-  //       })),
-  //     };
-
-  //     // Submit quiz with formatted data
-  //     const tempresponse= await videoService.submitQuiz(data.videoId, formattedResponses);
-  //     console.log("Temp resposne:", tempresponse)
-  //     if(tempresponse.data.status === "201"){
-  //       dispatch(saveQuizResponse(formattedResponses));
-  //       setShowToast(true);
-  //       setTimeout(() => setShowToast(false), 3000);
-  //     }
-  //     else{
-  //       return
-  //     }
-      
-  //   } catch (error) {
-  //     console.error("Error submitting quiz:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
 
   return (
     <div className="p-6 mb-8 bg-white rounded-lg shadow-lg mx-auto mb-8 max-w-2xl h-[calc(100vh-100px)] overflow-y-auto">
@@ -278,8 +234,8 @@ const Quiz = ({ data }) => {
 
       {/* Toast Notification */}
       {showToast && (
-  <ToastNotification message={showToast.message} type={showToast.type} />
-)}
+        <ToastNotification message={showToast.message} type={showToast.type} />
+      )}
     </div>
   );
 };
