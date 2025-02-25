@@ -229,7 +229,7 @@ class VideoService {
               withCredentials: false, // No need to send cookies with this request
             }
           );
-          // console.log("response of QNA is:", response.data)
+          console.log("response of score is:", response.data)
           return response.data; 
         } catch (error) {
           // console.log('Error fetching Score:', error);

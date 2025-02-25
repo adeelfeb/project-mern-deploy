@@ -1,8 +1,8 @@
-
 // import React, { useState } from "react";
 // import { FaClipboardList, FaPen, FaQuestionCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 // import videoService from "../AserverAuth/config";
 // import { startChatWithMessage } from "../lib/geminiHelperFunc";
+// import ToastNotification from "../components/toastNotification/ToastNotification";
 
 // const CurrentScore = ({ data }) => {
 //   const [scores, setScores] = useState({
@@ -14,6 +14,11 @@
 //   });
 //   const [buttonState, setButtonState] = useState("default"); // 'default', 'loading', 'calculating'
 
+//   // Helper function to determine text color based on score
+//   const getScoreColor = (score) => {
+//     return score < 50 ? "text-red-600" : "text-green-600";
+//   };
+
 //   const handleGetScores = async () => {
 //     setButtonState("loading"); // Start loading
 //     try {
@@ -21,7 +26,6 @@
 //       if (!response.data.scoreIsEvaluated) {
 //         setButtonState("calculating"); // Show 'Calculating...' for 3 seconds
 
-//         // console.log("The data is", response.data.shortAnswers);
 //         const prompt = response.data.shortAnswers.map((q, index) => 
 //           `Q${index + 1}: ${q.question}
 //           User Answer: ${q.givenAnswer}
@@ -30,15 +34,11 @@
 //           Q${index + 1}: Score: <score>/2, Evaluation: <brief evaluation>`
 //         ).join("\n\n");
         
-//         // console.log("The prompt is:", prompt);
-        
 //         // Send a single request with all questions
 //         const aiResponse = await startChatWithMessage([prompt]);
-//         // console.log("AI response:", aiResponse);
         
 //         // Extract scores and evaluations from AI response
 //         const shortAnswersWithScores = response.data.shortAnswers.map((q, index) => {
-//           // Match the AI's response for the score and evaluation
 //           const scoreRegex = new RegExp(`Q${index + 1}: Score: (\\d+)/2, Evaluation: (.+)`);
 //           const match = aiResponse.match(scoreRegex);
         
@@ -69,8 +69,6 @@
 //           totalScore, // Add total score to the response
 //         };
         
-//         // console.log("Updated response with scores:", updatedResponse);
-
 //         // Calculate scores based on the updated response
 //         const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = updatedResponse;
 //         const quizTaken = [
@@ -155,6 +153,7 @@
 //       });
 //     } catch (error) {
 //       console.error("Error fetching scores:", error);
+
 //     } finally {
 //       if (buttonState !== "calculating") {
 //         setButtonState("default"); // Reset only if it's not already in 'calculating' state
@@ -186,28 +185,35 @@
 //           </p>
 //         ) : (
 //           <>
+//             {/* MCQ Score */}
 //             <div className="flex items-center space-x-3">
 //               <FaClipboardList className="text-indigo-600 text-3xl" />
-//               <p className="text-xl font-semibold text-green-600">
-//                 MCQ Score: <span className="font-bold">{scores.mcqScore}%</span>
+//               <p className="text-xl font-semibold">
+//                 MCQ Score: <span className={`font-bold ${getScoreColor(scores.mcqScore)}`}>{scores.mcqScore}%</span>
 //               </p>
 //             </div>
+
+//             {/* Fill-in-the-Blanks Score */}
 //             <div className="flex items-center space-x-3">
 //               <FaPen className="text-indigo-600 text-3xl" />
-//               <p className="text-xl font-semibold text-green-600">
-//                 Fill-in-the-Blanks Score: <span className="font-bold">{scores.fillInTheBlanksScore}%</span>
+//               <p className="text-xl font-semibold">
+//                 Fill-in-the-Blanks Score: <span className={`font-bold ${getScoreColor(scores.fillInTheBlanksScore)}`}>{scores.fillInTheBlanksScore}%</span>
 //               </p>
 //             </div>
+
+//             {/* Short Questions Score */}
 //             <div className="flex items-center space-x-3">
 //               <FaQuestionCircle className="text-indigo-600 text-3xl" />
-//               <p className="text-xl font-semibold text-green-600">
-//                 Short Questions Score: <span className="font-bold">{scores.shortQuestionsScore}%</span>
+//               <p className="text-xl font-semibold">
+//                 Short Questions Score: <span className={`font-bold ${getScoreColor(scores.shortQuestionsScore)}`}>{scores.shortQuestionsScore}%</span>
 //               </p>
 //             </div>
+
+//             {/* Overall Score */}
 //             <div className="flex items-center space-x-3">
 //               <FaQuestionCircle className="text-indigo-600 text-3xl" />
-//               <p className="text-xl font-semibold text-green-600">
-//                 Overall Score: <span className="font-bold">{scores.overallScore}%</span>
+//               <p className="text-xl font-semibold">
+//                 Overall Score: <span className={`font-bold ${getScoreColor(scores.overallScore)}`}>{scores.overallScore}%</span>
 //               </p>
 //             </div>
 
@@ -338,10 +344,17 @@
 
 
 
+
+
+
+
+
+
 import React, { useState } from "react";
 import { FaClipboardList, FaPen, FaQuestionCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import videoService from "../AserverAuth/config";
 import { startChatWithMessage } from "../lib/geminiHelperFunc";
+import ToastNotification from "../components/toastNotification/ToastNotification";
 
 const CurrentScore = ({ data }) => {
   const [scores, setScores] = useState({
@@ -352,6 +365,7 @@ const CurrentScore = ({ data }) => {
     overallScore: null,
   });
   const [buttonState, setButtonState] = useState("default"); // 'default', 'loading', 'calculating'
+  const [errorMessage, setErrorMessage] = useState(null); // State for error handling
 
   // Helper function to determine text color based on score
   const getScoreColor = (score) => {
@@ -360,8 +374,10 @@ const CurrentScore = ({ data }) => {
 
   const handleGetScores = async () => {
     setButtonState("loading"); // Start loading
+    setErrorMessage(null); // Clear any previous error message
     try {
       const response = await videoService.getScore(data);
+      // console.log("the repsonse was:", response)
       if (!response.data.scoreIsEvaluated) {
         setButtonState("calculating"); // Show 'Calculating...' for 3 seconds
 
@@ -491,7 +507,8 @@ const CurrentScore = ({ data }) => {
         overallScore,
       });
     } catch (error) {
-      console.error("Error fetching scores:", error);
+      // console.log("Error fetching scores:", error);
+      setErrorMessage("Error getting quiz score. Please submit a quiz or try later."); // Set error message
     } finally {
       if (buttonState !== "calculating") {
         setButtonState("default"); // Reset only if it's not already in 'calculating' state
@@ -515,6 +532,15 @@ const CurrentScore = ({ data }) => {
   return (
     <div className="max-w-4xl mx-auto py-8 px-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl font-extrabold text-center text-indigo-600 mb-6">Your Current Scores</h2>
+
+      {/* Display Error Toast Notification */}
+      {errorMessage && (
+        <ToastNotification
+          message={errorMessage}
+          isSuccess= {false}
+          onClose={() => setErrorMessage(null)} // Clear error message on close
+        />
+      )}
 
       <div className="space-y-6">
         {scores.mcqScore === null ? (
