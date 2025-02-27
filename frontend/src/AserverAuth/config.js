@@ -65,7 +65,104 @@ class VideoService {
               return { status: 500, message: error.message || 'An unknown error occurred' };
           }
       }
+
+
+
+    }
+
+
+
+
+
+
+    async deleteVideos(videoIds) {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          console.log('No access token found in localStorage');
+          return null;
+        }
+    
+        const response = await axios.delete(
+          `${this.apiUrl}/users/delete-videos`, // New API endpoint for bulk deletion
+          {
+            headers: {
+              "Authorization": `Bearer ${accessToken}`,
+              "Content-Type": "application/json"
+            },
+            data: { videoIds }, // Send array of video IDs in the request body
+            withCredentials: false,
+          }
+        );
+    
+        return response.data;
+      } catch (error) {
+        console.error('Error deleting videos:', error);
+        throw new Error(error.response ? error.response.data.message : error.message);
+      }
+    }
+
+
+
+
+
+  async deleteVideo(videoId) {
+    try {
+        // console.log("Deleting video from history:", videoId);
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            console.log('No access token found in localStorage');
+            return null; // Return null if access token is not found
+        }
+
+        const response = await axios.delete(
+            `${this.apiUrl}/users/delete-video`, // API endpoint for deleting from history
+            {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
+                    "Content-Type": "application/json"
+                },
+                data: { videoId }, // Send videoId in the request body
+                withCredentials: false, // No need to send cookies with this request
+            }
+        );
+
+        // console.log("Delete response:", response.data);
+        return response.data; // Return the response data
+    } catch (error) {
+        console.error('Error deleting video from history:', error);
+        throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
+    }
+}
+
+
+async getAllVideos() {
+  try {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+          console.log('No access token found in localStorage');
+          return null; // Return null if access token is missing
+      }
+
+      const response = await axios.get(
+          `${this.apiUrl}/users/getAllVideo`, // Ensure this matches your backend route
+          {
+              headers: {
+                  "Authorization": `Bearer ${accessToken}`,
+                  "Content-Type": "application/json"
+              },
+              withCredentials: false, // No cookies needed
+          }
+      );
+      // console.log("the response is:", response.data)
+
+      return response.data; // Return the video data
+  } catch (error) {
+      console.error('Error Getting videos:', error);
+      throw new Error(error.response ? error.response.data.message : error.message);
   }
+}
+
 
   async deleteFromHistory(videoId) {
     try {

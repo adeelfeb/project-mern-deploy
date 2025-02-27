@@ -27,6 +27,7 @@ const Summary = lazy(() => import('./pages/Summary'));
 const Quiz = lazy(() => import('./pages/Quiz'));
 const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = lazy(() => import('./pages/CurrentScore'));
+const VideoList = lazy(()=> import("./pages/VideoList.jsx"))
 
 // Global fallback component
 function GlobalFallback() {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "/add-cors",
         element: <FrontendPage />,
+      },
+      {
+        path: "/videos",
+        element: <VideoList />,
       },
       {
         path: "/add-api",
