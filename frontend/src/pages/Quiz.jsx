@@ -89,6 +89,53 @@ const Quiz = ({ data }) => {
   };
 
   // Handle Quiz Submission
+  // const handleSubmit = async () => {
+  //   if (!validateResponses()) return; // Stop if validation fails
+  
+  //   setIsSubmitting(true);
+  //   try {
+  //     // Transform responses to match backend format
+  //     const formattedResponses = {
+  //       shortAnswers: shortQuestions.map((q, index) => ({
+  //         question: q.question,
+  //         givenAnswer: responses.shortAnswers[index] || "",
+  //       })),
+  //       mcqAnswers: mcqs.map((q, index) => ({
+  //         question: q.question,
+  //         selectedOption: responses.mcqAnswers[index] || "",
+  //         correctAnswer: q.correctAnswer,
+  //         options: q.options, // Include the options for MCQs
+  //       })),
+  //       fillInTheBlanks: fillInTheBlanks.map((q, index) => ({
+  //         question: q.sentence || q.question, // Handle both formats
+  //         givenAnswer: responses.fillInTheBlanks[index] || "",
+  //         missingWord: q.missingWord, // Include the missing word for fill-in-the-blanks
+  //       })),
+  //     };
+  
+  //     // Submit quiz with formatted data
+      
+  //     // console.log("Orignal quiz is:", mcqs, shortQuestions, fillInTheBlanks)
+  //     // console.log("Formated quiz is:", formattedResponses)
+  //     const tempResponse = await videoService.submitQuiz(data.videoId, formattedResponses);
+  
+  //     // Check the API response status
+  //     if (tempResponse.data.status === 201) {
+  //       dispatch(saveQuizResponse(formattedResponses));
+  //       setShowToast({ message: "Quiz submitted successfully!", type: "success" }); // Success toast
+  //     } else {
+  //       setShowToast({ message: "Failed to submit quiz. Please try again.", type: "error" }); // Error toast
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting quiz:", error);
+  //     setShowToast({ message: "An error occurred while submitting the quiz. Please try again.", type: "error" }); // Error toast for unexpected errors
+  //   } finally {
+  //     setIsSubmitting(false);
+  //     setTimeout(() => setShowToast(null), 3000); // Clear toast after 3 seconds
+  //   }
+  // };
+
+
   const handleSubmit = async () => {
     if (!validateResponses()) return; // Stop if validation fails
   
@@ -99,24 +146,22 @@ const Quiz = ({ data }) => {
         shortAnswers: shortQuestions.map((q, index) => ({
           question: q.question,
           givenAnswer: responses.shortAnswers[index] || "",
+          correctAnswer: q.answer, // Include the correct answer for short questions
         })),
         mcqAnswers: mcqs.map((q, index) => ({
           question: q.question,
           selectedOption: responses.mcqAnswers[index] || "",
-          correctAnswer: q.correctAnswer,
+          correctAnswer: q.correctAnswer, // Include the correct answer for MCQs
           options: q.options, // Include the options for MCQs
         })),
         fillInTheBlanks: fillInTheBlanks.map((q, index) => ({
           question: q.sentence || q.question, // Handle both formats
           givenAnswer: responses.fillInTheBlanks[index] || "",
-          missingWord: q.missingWord, // Include the missing word for fill-in-the-blanks
+          correctAnswer: q.missingWord, // Include the missing word for fill-in-the-blanks
         })),
       };
   
       // Submit quiz with formatted data
-      
-      // console.log("Orignal quiz is:", mcqs, shortQuestions, fillInTheBlanks)
-      // console.log("Formated quiz is:", formattedResponses)
       const tempResponse = await videoService.submitQuiz(data.videoId, formattedResponses);
   
       // Check the API response status
@@ -134,6 +179,9 @@ const Quiz = ({ data }) => {
       setTimeout(() => setShowToast(null), 3000); // Clear toast after 3 seconds
     }
   };
+
+
+
 
   return (
     <div className="p-6 mb-8 bg-white rounded-lg shadow-lg mx-auto mb-8 max-w-2xl h-[calc(100vh-100px)] overflow-y-auto">

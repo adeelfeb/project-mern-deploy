@@ -43,6 +43,7 @@ const fetchHistory = useCallback(async (forceRefresh = false) => {
             }
 
             const response = await videoService.getUserHistory();
+            // console.log("the video history response is;", response)
             if (response.data && Array.isArray(response.data)) {
                 dispatch(setUserHistory(response.data));
                 localStorage.setItem("watchHistory", JSON.stringify(response.data));

@@ -29,7 +29,7 @@ class VideoService {
               }
           );
   
-          console.log('Server Response:', response.data); // Log the response from the server
+          // console.log('Server Response:', response.data); // Log the response from the server
           return response.data; // Return the response data (e.g., success message or video data)
       } catch (error) {
           console.error('Error adding video to watch history:', error);
@@ -326,7 +326,7 @@ async getAllVideos() {
               withCredentials: false, // No need to send cookies with this request
             }
           );
-          console.log("response of score is:", response.data)
+          // console.log("response of score is:", response.data)
           return response.data; 
         } catch (error) {
           // console.log('Error fetching Score:', error);

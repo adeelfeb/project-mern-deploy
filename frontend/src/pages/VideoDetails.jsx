@@ -201,6 +201,8 @@ const VideoDetails = ({ data }) => {
           
             
           
+
+            // console.log("the Quiz generated is in raw here:", aiResponse)
             // Extract JSON from AI response (removing the code block formatting)
             const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
             if (!jsonMatch) {
