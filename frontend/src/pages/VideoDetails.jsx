@@ -1,8 +1,7 @@
-import React, { useState, useEffect, Suspense, lazy, memo, useMemo } from "react";
+import React, { useState, useEffect, Suspense, lazy} from "react";
 import videoService from "../AserverAuth/config";
-import { useDispatch } from "react-redux";
 import { startChatWithMessage } from "../lib/geminiHelperFunc";
-import { original } from "@reduxjs/toolkit";
+
 
 // Lazy load components
 const Transcript = lazy(() => import("./Transcript"));
@@ -25,6 +24,8 @@ const VideoDetails = ({ data }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); 
   const [isPopupOpen, setIsPopupOpen] = useState(false); 
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // console.log("Video details are :", data)
 
   // Reset state when data changes
   useEffect(() => {
@@ -314,8 +315,153 @@ const VideoDetails = ({ data }) => {
     }
   }, [data]);
 
+
+
   return (
-    <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden ">
+    <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden">
+      {/* Left Section */}
+      <div className="flex-1 md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r h-full md:max-h-screen flex flex-col">
+        {/* Video Section */}
+        <div className="w-full mb-4">
+          {data.videoUrl ? (
+            // Check if the video is from YouTube
+            data.videoUrl.includes("youtube.com") || data.videoUrl.includes("youtu.be") ? (
+              // Render YouTube embed if it's a YouTube video
+              <iframe
+                src={`https://www.youtube.com/embed/${new URLSearchParams(
+                  new URL(data.videoUrl).search
+                ).get("v")}`}
+                className="w-full aspect-video"
+                title="YouTube Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              // Render a video player for non-YouTube videos
+              <video
+                src={data.videoUrl}
+                className="w-full aspect-video"
+                controls
+                title="Video Player"
+              >
+                Your browser does not support the video tag.
+              </video>
+            )
+          ) : (
+            // Show a placeholder if no video URL is available
+            <div className="w-full aspect-video bg-gray-200 flex items-center justify-center">
+              <p className="text-gray-500">No video available</p>
+            </div>
+          )}
+        </div>
+  
+        {/* Video Details */}
+        <div>
+          <h4 className="font-semibold text-lg">{data.title}</h4>
+          <p className="text-sm font-semibold text-gray-600 mt-2">
+            Duration: {data.duration}
+          </p>
+          <p className="text-sm font-semibold text-gray-600 mb-2">
+            Watched: {new Date(data.createdAt).toLocaleString()}
+          </p>
+        </div>
+  
+        {/* Buttons Section */}
+        <div className="flex flex-col gap-2 mt-4 overflow-y-auto flex-grow max-h-[calc(100vh-300px)] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-500">
+          {[
+            { label: "Transcript", loading: transcriptisLoading, section: "transcript" },
+            { label: "Summary", loading: summaryIsLoading, section: "summary" },
+            { label: "Key Concepts", loading: keyConceptsIsLoading, section: "keyConcepts" },
+            { label: "Take Quiz", loading: quizIsLoading, section: "quiz" },
+            { label: "Current Score", loading: false, section: "currentScore" },
+          ].map(({ label, loading, section }) => (
+            <button
+              key={section}
+              onClick={() => handleSectionClick(section)}
+              className={`w-full px-3 py-1.5 text-sm md:px-4 md:py-2 md:text-base font-medium border rounded-lg transition-all duration-300 ${
+                selectedSection === section
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95"
+              }`}
+            >
+              {loading === "generating" ? "Generating..." : loading ? "Fetching..." : label}
+            </button>
+          ))}
+        </div>
+      </div>
+  
+      {/* Right Section (Desktop) */}
+      <div className="hidden md:block md:flex-[7] w-full p-2 overflow-y-auto max-h-[calc(100vh-100px)]">
+        <Suspense fallback={<div>Loading...</div>}>
+          {!selectedSection && <Explanation />}
+  
+          {selectedSection === "transcript" && (
+            <div className="p-2">
+              <Transcript data={transcriptData || data.transcript} />
+            </div>
+          )}
+  
+          {selectedSection === "summary" && (
+            <div className="p-2">
+              <Summary data={summaryData || data.summary} />
+            </div>
+          )}
+  
+          {selectedSection === "keyConcepts" && (
+            <div className="p-2">
+              <KeyConcepts data={keyConceptsData} />
+            </div>
+          )}
+  
+          {selectedSection === "quiz" && (
+            <div className="p-2">
+              <Quiz data={qnaData} />
+            </div>
+          )}
+  
+          {selectedSection === "currentScore" && (
+            <div className="p-2">
+              <CurrentScore data={data._id} />
+            </div>
+          )}
+        </Suspense>
+      </div>
+  
+      {/* Popup (Mobile) */}
+      {isMobile && isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-11/12 max-h-[90vh] overflow-auto p-4">
+            <button
+              onClick={closePopup}
+              className="absolute top-2 right-2 bg-gray-100 text-gray-800 hover:text-gray-900 
+                        text-xl md:text-2xl w-6 h-6 md:w-12 md:h-12 
+                        flex items-center justify-center rounded-full shadow-md hover:bg-gray-200 leading-none"
+            >
+              &times;
+            </button>
+  
+            <Suspense fallback={<div>Loading...</div>}>
+              {selectedSection === "transcript" && (
+                <Transcript data={transcriptData || data.transcript} />
+              )}
+              {selectedSection === "summary" && (
+                <Summary data={summaryData || data.summary} />
+              )}
+              {selectedSection === "keyConcepts" && (
+                <KeyConcepts data={keyConceptsData} />
+              )}
+              {selectedSection === "quiz" && videoId && <Quiz data={qnaData} />}
+              {selectedSection === "currentScore" && <CurrentScore data={data._id} />}
+            </Suspense>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden">
       {/* Left Section */}
       <div className="flex-1 md:flex-[3] w-full p-2 border-b md:border-b-0 md:border-r h-full md:max-h-screen flex flex-col">
         {/* Video Section */}
@@ -348,7 +494,7 @@ const VideoDetails = ({ data }) => {
         </div>
   
         {/* Buttons Section */}
-        <div className="flex flex-col gap-2 mt-4 overflow-y-auto flex-grow max-h-[calc(100vh-300px)]">
+        <div className="flex flex-col gap-2 mt-4 overflow-y-auto flex-grow max-h-[calc(100vh-300px)] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-500">
           {[
             { label: "Transcript", loading: transcriptisLoading, section: "transcript" },
             { label: "Summary", loading: summaryIsLoading, section: "summary" },
@@ -371,43 +517,43 @@ const VideoDetails = ({ data }) => {
         </div>
       </div>
   
-      {/* Right Section (Desktop) */} 
-      <div className="hidden md:block md:flex-[7] w-full p-2">
+      {/* Right Section (Desktop) */}
+      <div className="hidden md:block md:flex-[7] w-full p-2 overflow-y-auto max-h-[calc(100vh-100px)]">
         <Suspense fallback={<div>Loading...</div>}>
           {!selectedSection && <Explanation />}
-
+  
           {selectedSection === "transcript" && (
-            <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-2">
+            <div className="p-2">
               <Transcript data={transcriptData || data.transcript} />
             </div>
           )}
-
+  
           {selectedSection === "summary" && (
-            <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-2">
-              <Summary data={summaryData || data.summary} /> 
+            <div className="p-2">
+              <Summary data={summaryData || data.summary} />
             </div>
           )}
-          
+  
           {selectedSection === "keyConcepts" && (
-            <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-2">
+            <div className="p-2">
               <KeyConcepts data={keyConceptsData} />
             </div>
           )}
-          
-          {selectedSection === "quiz" && 
-            <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-2">
+  
+          {selectedSection === "quiz" && (
+            <div className="p-2">
               <Quiz data={qnaData} />
             </div>
-          }
-          
-          {selectedSection === "currentScore" && 
-            <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-2">
-              <CurrentScore data={data._id} /> 
+          )}
+  
+          {selectedSection === "currentScore" && (
+            <div className="p-2">
+              <CurrentScore data={data._id} />
             </div>
-          }
+          )}
         </Suspense>
       </div>
-
+  
       {/* Popup (Mobile) */}
       {isMobile && isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -439,6 +585,7 @@ const VideoDetails = ({ data }) => {
       )}
     </div>
   );
-};
+
+  };
 
 export default VideoDetails;

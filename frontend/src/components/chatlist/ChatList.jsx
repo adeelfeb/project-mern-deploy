@@ -9,6 +9,7 @@ import { PiTreeStructureLight } from "react-icons/pi";
 import { CiSettings } from "react-icons/ci";
 import authService from '../../AserverAuth/auth';
 import { BiChat } from "react-icons/bi"; // Import the chat icon
+import { BiUpload } from "react-icons/bi";
 
 function ChatList() {
   const { isSidebarOpen } = useSidebar();
@@ -47,9 +48,9 @@ function ChatList() {
     `}>
       
       {/* Top Heading - Summarize Logo */}
-      <div className="flex items-center justify-center p-2 border-b">
+      {/* <div className="flex items-center justify-center p-2 border-b">
         <h1 className="text-lg font-bold text-gray-800">YS</h1>
-      </div>
+      </div> */}
 
       {/* Navigation Links */}
       <div className="flex flex-col flex-1 gap-4 mt-4">
@@ -58,13 +59,27 @@ function ChatList() {
           <span className="text-xs mt-1 text-gray-600">Input</span>
         </Link>
 
-        {/* <Link to="/dashboard/chat" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/chat') ? 'bg-gray-100' : ''}`}>
-          <BiHomeAlt className="w-4 h-4" />
-          <span className="text-xs mt-1 text-gray-600">Chat</span>
-        </Link> */}
+        <Link
+  to="/dashboard/upload-video"
+  className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${
+    isActive("/dashboard/upload-video") ? "bg-gray-100" : ''
+  }`}
+>
+  <BiUpload className="w-5 h-5 text-gray-600" /> {/* Upload icon */}
+  <span className="text-xs mt-1 text-gray-600">Upload</span>
+</Link>
 
 
-      <Link
+  
+        <Link to="/dashboard/user-history" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/user-history') ? 'bg-gray-100' : ''}`}>
+          <PiTreeStructureLight className="w-4 h-4 rotate-90" />
+          <span className="text-xs mt-1 text-gray-600">History</span>
+        </Link>
+
+
+
+
+        <Link
           to="/dashboard/chat"
           className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${
             isActive("/dashboard/chat") ? "bg-gray-100" : ''
@@ -74,11 +89,8 @@ function ChatList() {
           <span className="text-xs mt-1 text-gray-600">Chat</span>
         </Link>
 
-  
-        <Link to="/dashboard/user-history" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/user-history') ? 'bg-gray-100' : ''}`}>
-          <PiTreeStructureLight className="w-4 h-4 rotate-90" />
-          <span className="text-xs mt-1 text-gray-600">History</span>
-        </Link>
+
+
         <button onClick={handleReload} className="flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200">
           <TfiReload className="w-4 h-4" />
           <span className="text-xs mt-1 text-gray-600">Reload</span>

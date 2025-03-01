@@ -28,6 +28,7 @@ const Quiz = lazy(() => import('./pages/Quiz'));
 const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = lazy(() => import('./pages/CurrentScore'));
 const VideoList = lazy(()=> import("./pages/VideoList.jsx"))
+const VideoUpload = lazy(()=> import("./pages/VideoUpload.jsx"))
 
 // Global fallback component
 function GlobalFallback() {
@@ -90,6 +91,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <Dashboard />
+              </Suspense>
+            ),
+          },
+          {
+            path: "/dashboard/upload-video",
+            element: (
+              <Suspense fallback={<GlobalFallback />}>
+                <VideoUpload />
               </Suspense>
             ),
           },

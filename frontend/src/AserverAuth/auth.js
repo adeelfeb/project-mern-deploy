@@ -9,46 +9,31 @@ export class AuthService {
     }
     
 
-    // async createAccount({ email, password, fullname, username, avatar, coverImage }) {
-    //     try {
-    //         // Prepare FormData for the request
-    //         const formData = new FormData();
-    //         formData.append('email', email);
-    //         formData.append('password', password);
-    //         formData.append('fullname', fullname);
-    //         formData.append('username', username);
-    
-    //         if (avatar) {
-    //             formData.append('avatar', avatar);
-    //         }
-    //         if (coverImage) {
-    //             formData.append('coverImage', coverImage);
-    //         }
-    
-    //         // Send the request to the backend
-    //         const response = await axios.post(`${this.apiUrl}/users/register`, formData, {
-    //                 headers: {
-    //                     'Content-Type': 'multipart/form-data'
-    //                 },
-    //                 withCredentials: false,
-    //             });
-           
-    
-    //         if (response.data.success) {
-    //             const { temporaryToken } = response.data.data;
-    
-    //             // Automatically log in with the temporary token
-    //             return await this.loginWithTemporaryToken({ temporaryToken });
-    //         }
-    //     } catch (error) {
-    //         // Handle errors and propagate meaningful messages
-    //         const errorMessage = error.response || "Error Creating Account try later or Use other Credentials";
-    //         console.log(error)
-    //         throw new Error(errorMessage); // Pass the error to be handled in the UI
-    //     }
-    // }  
-
-
+    async uploadVideo (videoFile){
+        try {
+          // Prepare FormData for the request
+          const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) return null;
+          const formData = new FormData();
+          formData.append("video", videoFile);
+            // console.log("inside uploadVideo fucntion", this.apiUrl)
+          // Send the request to the backend
+          const response = await axios.post(`${this.apiUrl}/users/upload-video`, formData, 
+            { headers: { "Authorization": `Bearer ${accessToken}` }, withCredentials: false }
+          );
+          
+      
+          if (response.data.success) {
+            // console.log("the resposne was ", response.data)
+            return response.data.data; // Return video details
+          }
+        } catch (error) {
+          // Extract and return only the error message
+          console.log("the errror was:", error)
+          const errorMessage = error.response?.data?.message || "Video upload failed. Please try again.";
+          throw new Error(errorMessage);
+        }
+      };
 
 
     async createAccount({ email, password, fullname, username, avatar, coverImage }) {
