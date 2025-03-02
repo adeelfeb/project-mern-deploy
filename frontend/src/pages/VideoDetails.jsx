@@ -51,31 +51,62 @@ const VideoDetails = ({ data }) => {
   }, []);
 
 
+  // const fetchAndProcessTranscript = async (videoId, includeOriginal = false) => {
+  //   const transcriptResponse = await videoService.getTranscript(videoId);
+  //   const transcriptData = transcriptResponse.data.transcript;
+    
+  
+  //   // If transcript is empty, return null
+  //   if (!transcriptData || transcriptData.original === "NA") {
+  //     console.log("Transcript is empty.");
+  //     return null;
+  //   }
+  
+  //   // Extract English transcript text
+  //   const transcriptText = transcriptData?.["english"]?.map(entry => entry.text).join("\n") || "";
+  
+  //   // Extract original transcript text only if includeOriginal is true
+  //   const transcriptTextOriginal = includeOriginal
+  //     ? transcriptData?.["original"]?.map(entry => entry.text).join("\n") || ""
+  //     : null;
+  
+  //   return {
+  //     transcriptData,
+  //     transcriptText,
+  //     transcriptTextOriginal: includeOriginal ? transcriptTextOriginal : undefined,
+  //   };
+  // };
+
+
+
   const fetchAndProcessTranscript = async (videoId, includeOriginal = false) => {
     const transcriptResponse = await videoService.getTranscript(videoId);
     const transcriptData = transcriptResponse.data.transcript;
-    
-  
-    // If transcript is empty, return null
-    if (!transcriptData || transcriptData.original === "NA") {
-      console.log("Transcript is empty.");
+
+    // If transcript is missing, empty, or contains "NA", return null
+    if (
+      !transcriptData || 
+      (!transcriptData.english?.length && !transcriptData.original?.length) || 
+      transcriptData.original === "NA"
+    ) {
+      // console.log("Transcript is empty. Skipping chat message request.");
       return null;
     }
-  
+
     // Extract English transcript text
-    const transcriptText = transcriptData?.["english"]?.map(entry => entry.text).join("\n") || "";
-  
+    const transcriptText = transcriptData.english?.map(entry => entry.text).join("\n") || "";
+
     // Extract original transcript text only if includeOriginal is true
     const transcriptTextOriginal = includeOriginal
-      ? transcriptData?.["original"]?.map(entry => entry.text).join("\n") || ""
+      ? transcriptData.original?.map(entry => entry.text).join("\n") || ""
       : null;
-  
+
     return {
       transcriptData,
       transcriptText,
       transcriptTextOriginal: includeOriginal ? transcriptTextOriginal : undefined,
     };
-  };
+};
 
 
   
@@ -130,7 +161,7 @@ const VideoDetails = ({ data }) => {
             // Fetch and process transcript
             const transcriptResult = await fetchAndProcessTranscript(data._id, true);
             if (!transcriptResult) {
-              console.log("Transcript is empty, cannot generate summary.");
+              // console.log("Transcript is empty, cannot generate summary.");
               setSummaryData({ original: "NA", english: "NA" });
               return;
             }
@@ -178,7 +209,7 @@ const VideoDetails = ({ data }) => {
             // Fetch and process transcript
             const transcriptResult = await fetchAndProcessTranscript(data._id);
             if (!transcriptResult) {
-              console.log("Transcript is empty, cannot generate quiz.");
+              // console.log("Transcript is empty, cannot generate quiz.");
               setQnatData({ qnas: "NA" });
               return;
             }
@@ -250,7 +281,7 @@ const VideoDetails = ({ data }) => {
             // Fetch and process transcript
             const transcriptResult = await fetchAndProcessTranscript(data._id);
             if (!transcriptResult) {
-              console.log("Transcript is empty, cannot generate key concepts.");
+              // console.log("Transcript is empty, cannot generate key concepts.");
               setKeyConceptsData({ keyconcept: { description: "", primary: "NA" } });
               return;
             }
