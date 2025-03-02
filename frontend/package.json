@@ -5,23 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "analyze2": "source-map-explorer build/static/js/*.js",
+    "analyze": "npx depcheck"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "@heroicons/react": "^2.2.0",
-    "@material-tailwind/react": "^2.1.10",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
-    "cookies": "^0.9.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
     "framer-motion": "^11.15.0",
-    "html-react-parser": "^5.1.18",
     "imagekitio-react": "^4.2.0",
     "js-cookie": "^3.0.5",
-    "query-string": "^9.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
@@ -31,11 +26,11 @@
     "react-router-dom": "^6.28.0",
     "react-type-animation": "^3.2.0",
     "tailwind-scrollbar": "^3.1.0",
-    "uuid": "^11.0.3",
-    "ytdl-core": "^4.11.5"
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",
@@ -45,8 +40,11 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.12.0",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14",
-    "vite": "^5.4.8"
+    "postcss": "^8.5.3",
+    "source-map-explorer": "^2.5.3",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.8",
+    "vite-plugin-compression": "^0.5.1",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

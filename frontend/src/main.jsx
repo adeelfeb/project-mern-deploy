@@ -28,7 +28,9 @@ const Quiz = lazy(() => import('./pages/Quiz'));
 const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = lazy(() => import('./pages/CurrentScore'));
 const VideoList = lazy(()=> import("./pages/VideoList.jsx"))
-const VideoUpload = lazy(()=> import("./pages/VideoUpload.jsx"))
+// const VideoUpload = lazy(()=> import("./pages/VideoUpload.jsx"))
+const VideoUpload = React.lazy(() => import('./pages/VideoUpload.jsx'));
+
 
 // Global fallback component
 function GlobalFallback() {
@@ -197,7 +199,11 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      {/* <RouterProvider router={router} /> */}
+      <Suspense fallback={<GlobalFallback />}>
+  <RouterProvider router={router} />
+</Suspense>
+
     </Provider>
   </React.StrictMode>
 );

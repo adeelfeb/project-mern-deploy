@@ -47,37 +47,27 @@ function ChatList() {
       ${isSidebarOpen ? 'w-20 p-2 ' : 'hidden'}
     `}>
       
-      {/* Top Heading - Summarize Logo */}
-      {/* <div className="flex items-center justify-center p-2 border-b">
-        <h1 className="text-lg font-bold text-gray-800">YS</h1>
-      </div> */}
-
       {/* Navigation Links */}
-      <div className="flex flex-col flex-1 gap-4 mt-4">
+      <div className="flex flex-col flex-1 gap-4 mt-2">
         <Link to="/dashboard/input-url" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/uploadpdf') ? 'bg-gray-100' : ''}`}>
           <LuPlus className="w-4 h-4" />
           <span className="text-xs mt-1 text-gray-600">Input</span>
         </Link>
 
         <Link
-  to="/dashboard/upload-video"
-  className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${
-    isActive("/dashboard/upload-video") ? "bg-gray-100" : ''
-  }`}
->
-  <BiUpload className="w-5 h-5 text-gray-600" /> {/* Upload icon */}
-  <span className="text-xs mt-1 text-gray-600">Upload</span>
-</Link>
+          to="/dashboard/upload-video"
+          className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${
+            isActive("/dashboard/upload-video") ? "bg-gray-100" : ''
+          }`}
+        >
+          <BiUpload className="w-4 h-4 text-gray-600" /> {/* Upload icon */}
+          <span className="text-xs mt-1 text-gray-600">Upload</span>
+        </Link>
 
-
-  
         <Link to="/dashboard/user-history" className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/dashboard/user-history') ? 'bg-gray-100' : ''}`}>
           <PiTreeStructureLight className="w-4 h-4 rotate-90" />
           <span className="text-xs mt-1 text-gray-600">History</span>
         </Link>
-
-
-
 
         <Link
           to="/dashboard/chat"
@@ -89,13 +79,10 @@ function ChatList() {
           <span className="text-xs mt-1 text-gray-600">Chat</span>
         </Link>
 
-
-
         <button onClick={handleReload} className="flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200">
           <TfiReload className="w-4 h-4" />
           <span className="text-xs mt-1 text-gray-600">Reload</span>
         </button>
-
       </div>
 
       {/* Bottom Section - User Avatar & Settings */}
