@@ -147,7 +147,7 @@ const VideoDetails = ({ data }) => {
             if(transcriptTextOriginal && transcriptText){
               const [aiResponseEnglish, aiResponseOriginal] = await Promise.all([
                 startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]),
-                startChatWithMessage([`Summarize this content in the original language as much as possible: ${transcriptTextOriginal}`])
+                startChatWithMessage([`Summarize this content: ${transcriptTextOriginal}`])
               ]);
               setSummaryData({
                 original: aiResponseOriginal,
