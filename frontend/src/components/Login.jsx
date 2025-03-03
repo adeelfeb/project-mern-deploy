@@ -1,177 +1,13 @@
-// import React, { useState } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
-// import { setLoginStatus, setUserData } from '../store/authSlice';
-// import { Button, Input, Logo } from "./index";
-// import { useDispatch } from "react-redux";
-// import authService from "../AserverAuth/auth";
-// import { useForm } from "react-hook-form";
-// import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-// import conf from '../conf/conf';
-// import {Header} from './index';
-
-// function Login() {
-//     const navigate = useNavigate();
-//     const dispatch = useDispatch();
-//     const { register, handleSubmit } = useForm();
-//     const [error, setError] = useState("");
-//     const [loading, setLoading] = useState(false); // Loading state
-
-//     // Success and failure handlers for Google Login
-//     const handleGoogleSuccess = async (credentialResponse) => {
-//         const { credential } = credentialResponse;
-//         setLoading(true); // Start loading
-//         try {
-//             const response = await authService.googleLogin({ tokenId: credential });
-//             console.log('Backend response:', response);
-            
-//             // Assuming successful login also retrieves user data
-//             const userData = await authService.getCurrentUser();
-//             dispatch(setUserData(userData));
-//             dispatch(setLoginStatus(true));
-
-//         } catch (error) {
-//             console.error('Login failed:', error);
-//             setError(error.response ? error.response.data.message : error.message);
-//         } finally {
-//             setLoading(false); // Stop loading
-//         }
-//     };
-
-//     const handleGoogleFailure = () => {
-//         console.error('Google Login Failed');
-//     };
-
-//     // Handle login attempt
-//     const login = async (data) => {
-//         setError(""); // Clear any previous errors
-//         setLoading(true); // Start loading
-//         try {
-//             const { accessToken, refreshToken } = await authService.login({
-//                 emailOrUsername: data.email,
-//                 password: data.password
-//             });
-
-//             const userData = await authService.getCurrentUser();
-
-//             // Dispatch the user data to Redux store
-//             dispatch(setUserData(userData));
-//             dispatch(setLoginStatus(true));
-
-//             // Redirect to the dashboard after successful login
-//             navigate("/dashboard");
-//         } catch (error) {
-//             setError(error.response ? error.response.data.message : error.message);
-//         } finally {
-//             setLoading(false); // Stop loading
-//         }
-//     };
-
-//     return (
-
-//         <>
-//     {/* <Header/> */}
-//     <div className='flex items-center justify-center w-full min-h-screen bg-gray-50'>
-//     {loading && ( // Conditional rendering for loading screen
-//         <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 z-50">
-//             <div className="w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-//         </div>
-//     )}
-
-//     <div className='mx-auto w-full max-w-lg bg-white rounded-xl p-10 shadow-xl border border-gray-200'>
-        
-//         <h2 className="text-center text-3xl font-bold leading-tight text-gray-800">Sign in to your account</h2>
-//         <p className="mt-2 text-center text-base text-gray-600">
-//             Don&apos;t have an account?&nbsp;
-//             <Link to="/signup" className="font-medium text-blue-500 transition-all duration-200 hover:underline">
-//                 Sign Up
-//             </Link>
-//         </p>
-//         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-
-//         <form onSubmit={handleSubmit(login)} className='mt-8'>
-//             <div className='space-y-5'>
-//                 <Input
-//                     label="Email / Username"
-//                     placeholder="Enter your email or username"
-//                     type="text"
-//                     {...register("email", { required: "Email or Username is required" })}
-//                     className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md"
-//                 />
-//                 <Input
-//                     label="Password"
-//                     type="password"
-//                     placeholder="Enter your password"
-//                     {...register("password", { required: "Password is required" })}
-//                     className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md"
-//                 />
-                
-//                 {/* Sign In Button */}
-//                 <Button type="submit" className="w-full py-3 mt-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
-//                     Sign In
-//                 </Button>
-
-//                 {/* Divider for Google Sign In */}
-//                 <div className="mt-4 flex items-center justify-between">
-//                     <hr className="border-gray-300 flex-grow" />
-//                     <span className="text-gray-600 mx-4">or</span>
-//                     <hr className="border-gray-300 flex-grow" />
-//                 </div>
-
-//                 {/* Google Login Button */}
-//                 <div className="mt-4">
-//                     <GoogleOAuthProvider clientId={conf.googleClientId}>
-//                         <GoogleLogin
-//                             onSuccess={handleGoogleSuccess}
-//                             onError={handleGoogleFailure}
-//                             useOneTap
-//                             redirectUri={conf.googleRedirectUri}
-//                             render={(renderProps) => (
-//                                 <Button
-//                                     onClick={renderProps.onClick}
-//                                     disabled={renderProps.disabled}
-//                                     className="w-full py-3 bg-red-600 text-white rounded-md flex justify-center items-center gap-2 hover:bg-red-700 transition-colors duration-200"
-//                                 >
-//                                     Sign in with Google
-//                                 </Button>
-//                             )}
-//                         />
-//                     </GoogleOAuthProvider>
-//                 </div>
-
-//                 {/* Forgot Password */}
-//                 <p className="mt-4 text-center text-sm text-gray-500">
-//                     <Link to="/forgot-password" className="font-medium text-blue-500 hover:underline">
-//                         Forgot Password?
-//                     </Link>
-//                 </p>
-//             </div>
-//         </form>
-//     </div>
-// </div>
-
-
-// </>
-
-        
-//     );
-// }
-
-// export default Login;
-
-
-
-
-
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { setLoginStatus, setUserData } from '../store/authSlice';
-import { Button, Input } from "./index";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import authService from "../AserverAuth/auth";
+import { setLoginStatus, setUserData } from "../store/authSlice";
+import { Button, Input } from "./index";
 import { useForm } from "react-hook-form";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import conf from '../conf/conf';
-import { motion } from 'framer-motion'; // For animations
+import { auth, googleProvider } from "../utils/firebase"; // ✅ Import once
+import {signInWithPopup } from "firebase/auth";
+import { motion } from "framer-motion";
+import authService from "../AserverAuth/auth";
 
 function Login() {
     const navigate = useNavigate();
@@ -180,31 +16,39 @@ function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Handle Google Login Success
-    const handleGoogleSuccess = async (credentialResponse) => {
-        const { credential } = credentialResponse;
+    // Handle Google Login
+    const handleGoogleLogin = async () => {
         setLoading(true);
+        setError(""); // Clear previous errors
+    
         try {
-            const response = await authService.googleLogin({ tokenId: credential });
-            console.log('Backend response:', response);
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            const idToken = await user.getIdToken(); // Get Firebase ID token
 
-            const userData = await authService.getCurrentUser();
-            dispatch(setUserData(userData));
+            // console.log("the idToken recieved is:", idToken)
+
+            // Send token to your backend
+            const response = await authService.googleLogin(idToken)
+    
+            
+            // Extract user data & tokens
+            const { user: backendUser } = response.data;
+
+    
+            // Update Redux state
+            dispatch(setUserData(backendUser));
             dispatch(setLoginStatus(true));
+    
             navigate("/dashboard");
         } catch (error) {
-            console.error('Login failed:', error);
-            setError(error.response ? error.response.data.message : error.message);
+            console.error("Google Sign-in failed:", error);
+            setError(error.response?.data?.message || error.message);
         } finally {
             setLoading(false);
         }
     };
-
-    const handleGoogleFailure = () => {
-        console.error('Google Login Failed');
-    };
-
-    // Handle Email/Password Login
+    
     const login = async (data) => {
         setError("");
         setLoading(true);
@@ -224,6 +68,8 @@ function Login() {
             setLoading(false);
         }
     };
+ 
+    
 
     return (
         <>
@@ -260,18 +106,16 @@ function Login() {
 
                     <form onSubmit={handleSubmit(login)} className="space-y-6">
                         <Input
-                            label="Email / Username"
-                            placeholder="Enter your email or username"
-                            type="text"
-                            {...register("email", { required: "Email or Username is required" })}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            label="Email"
+                            placeholder="Enter your email"
+                            type="input"
+                            {...register("email", { required: "Email is required" })} // ✅ Correctly spread props
                         />
                         <Input
                             label="Password"
                             type="password"
                             placeholder="Enter your password"
-                            {...register("password", { required: "Password is required" })}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            {...register("password", { required: "Password is required" })} // ✅ Correctly spread props
                         />
 
                         <Button
@@ -287,27 +131,19 @@ function Login() {
                             <hr className="border-gray-300 flex-grow" />
                         </div>
 
-                        <GoogleOAuthProvider clientId={conf.googleClientId}>
-                            <GoogleLogin
-                                onSuccess={handleGoogleSuccess}
-                                onError={handleGoogleFailure}
-                                useOneTap
-                                render={(renderProps) => (
-                                    <Button
-                                        onClick={renderProps.onClick}
-                                        disabled={renderProps.disabled}
-                                        className="w-full py-3 bg-red-600 text-white rounded-lg flex justify-center items-center gap-2 hover:bg-red-700 transition-colors duration-200"
-                                    >
-                                        <img
-                                            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-                                            alt="Google Logo"
-                                            className="w-5 h-5"
-                                        />
-                                        Sign in with Google
-                                    </Button>
-                                )}
-                            />
-                        </GoogleOAuthProvider>
+                        <Button
+  onClick={handleGoogleLogin}
+  type="button"
+  className="w-full py-3 bg-gray-200 text-black font-medium rounded-lg flex justify-center items-center gap-3 border border-gray-300 shadow-md hover:shadow-lg hover:bg-gray-100 transition-all duration-200"
+>
+  <img
+    src="https://developers.google.com/identity/images/g-logo.png"
+    alt="Google Logo"
+    className="w-6 h-6"
+  />
+  <span className='text-black'>Sign up with Google</span>
+</Button>
+
 
                         <p className="text-center text-sm text-gray-500">
                             <Link to="/forgot-password" className="font-medium text-blue-500 hover:underline">

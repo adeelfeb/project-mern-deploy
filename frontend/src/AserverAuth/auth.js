@@ -36,28 +36,51 @@ export class AuthService {
       };
 
 
+    //   async createAccount({ email, password, fullname, username, avatar, coverImage }) {
+    //     try {
+    //         const formData = new FormData();
+    //         formData.append('email', email);
+    //         formData.append('password', password);
+    //         formData.append('fullname', fullname);
+    //         formData.append('username', username);
+    
+    //         // Append avatar and cover image only if they exist
+    //         if (avatar) formData.append('avatar', avatar);
+    //         if (coverImage) formData.append('coverImage', coverImage);
+    
+    //         const response = await axios.post(`${this.apiUrl}/users/register`, formData, {
+    //             headers: { 'Content-Type': 'multipart/form-data' },
+    //             withCredentials: true, // Enable credentials if required by backend
+    //         });
+    
+    //         // console.log("Response while creating account:", response);
+            
+    //         if (response.data.success) {
+    //             const { temporaryToken } = response.data.data;
+    //             return await this.loginWithTemporaryToken({ temporaryToken });
+    //         }
+    //     } catch (error) {
+    //         console.error("Error while creating account:", error);
+    //         const errorMessage = error.response?.data?.message || "Error Creating Account. Try later or use other credentials.";
+    //         throw new Error(errorMessage);
+    //     }
+    // }
+    
+
     async createAccount({ email, password, fullname, username, avatar, coverImage }) {
         try {
-            // Prepare FormData for the request
             const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('fullname', fullname);
-            formData.append('username', username);
+            formData.append("email", email);
+            formData.append("password", password);
+            formData.append("fullname", fullname);
+            formData.append("username", username);
     
-            if (avatar) {
-                formData.append('avatar', avatar);
-            }
-            if (coverImage) {
-                formData.append('coverImage', coverImage);
-            }
+            if (avatar) formData.append("avatar", avatar);
+            if (coverImage) formData.append("coverImage", coverImage);
     
-            // Send the request to the backend
             const response = await axios.post(`${this.apiUrl}/users/register`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                withCredentials: false,
+                headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: true,
             });
     
             if (response.data.success) {
@@ -65,11 +88,17 @@ export class AuthService {
                 return await this.loginWithTemporaryToken({ temporaryToken });
             }
         } catch (error) {
-            // Extract and return only the error message
-            const errorMessage = error.response?.data?.message || "Error Creating Account. Try later or use other credentials.";
+            console.error("Error while creating account:", error);
+            
+            // Extracting error message from response
+            const errorMessage = error.response?.data?.messsage || "Error Creating Account. Try again later.";
+            
+            // Displaying error message on frontend
+            // alert(errorMessage);
             throw new Error(errorMessage);
         }
     }
+    
     
 
 
@@ -146,18 +175,23 @@ export class AuthService {
         }
     }
 
-    async googleLogin({ tokenId }) {
+    async googleLogin(idToken) {
         try {
-            const response = await axios.post(`${this.apiUrl}/users/google-login`, { tokenId }, {
+            // console.log("the firebase idToken:", idToken)
+            const response = await axios.post(`${this.apiUrl}/users/google-auth`, { idToken }, {
                 headers: { 'Content-Type': 'application/json' },
-                withCredentials: false,
+                withCredentials: true,
             });
+            // console.log("the response was:", response)
 
             const { accessToken, refreshToken } = response.data.data || {};
             if (accessToken && refreshToken) {
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('refreshToken', refreshToken);
             }
+
+            
+            // return { accessToken, refreshToken };
 
             return response.data;
         } catch (error) {
