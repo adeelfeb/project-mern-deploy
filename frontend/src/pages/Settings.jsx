@@ -1,19 +1,48 @@
 import React, { useState } from "react";
-import { ChangePassword, UpdateAvatar, UpdateAccountDetails, CurrentUserDetails } from "../components";
+import {
+  ChangePassword,
+  UpdateAvatar,
+  UpdateAccountDetails,
+  CurrentUserDetails,
+} from "../components";
+import videoService from "../AserverAuth/config.js";
+import ToastNotification from "../components/toastNotification/ToastNotification.jsx";
 
 function Settings() {
-  const [currentView, setCurrentView] = useState(null); // Track which functionality is active
+  const [currentView, setCurrentView] = useState(null);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [isValid, setIsValid] = useState(true)
+
+  // Function to handle checking password status before changing it
+  const handlePasswordCheck = async () => {
+    try {
+      const response = await videoService.checkUserPasswordStatus();
+      
+      if (response.statusCode === 202) {
+        setToastMessage("Please create a passwrod");
+        setIsValid(false)
+        // setIsSuccess(false);
+        setCurrentView("changePassword")
+      } else {
+        setCurrentView("changePassword");
+      }
+    } catch (error) {
+      setToastMessage("Error checking password status.");
+      setIsSuccess(false);
+    }
+  };
 
   // Render different sections based on `currentView`
   const renderView = () => {
     switch (currentView) {
       case "changePassword":
-        return <ChangePassword />;
+        return <ChangePassword isValid= {isValid}/>;
       case "updateAccount":
         return <UpdateAccountDetails />;
       case "updateAvatar":
         return <UpdateAvatar />;
-      case "currentUser": // Rendering condition for "View Current User"
+      case "currentUser":
         return <CurrentUserDetails />;
       default:
         return <p className="text-gray-600 text-center">Select an action</p>;
@@ -27,7 +56,7 @@ function Settings() {
       {/* Buttons for Navigation */}
       <div className="flex flex-wrap justify-center gap-2 mb-8">
         <button
-          onClick={() => setCurrentView("changePassword")}
+          onClick={handlePasswordCheck} // Check before navigating
           className={`px-2 py-1 md:px-4 md:py-2 rounded text-xs md:text-base ${
             currentView === "changePassword"
               ? "bg-blue-700 text-white"
@@ -68,10 +97,21 @@ function Settings() {
         </button>
       </div>
 
-      {/* Render the view based on the current selection */}
+      {/* Render the selected view */}
       <div className="bg-white p-4 md:p-6 rounded shadow-md w-full max-w-4xl mx-auto mb-8 overflow-y-auto max-h-[calc(100vh-200px)]">
         {renderView()}
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <ToastNotification
+          message={toastMessage}
+          duration={3000}
+          onClose={() => setToastMessage("")}
+          position="bottom-right"
+          isSuccess={isSuccess}
+        />
+      )}
     </div>
   );
 }

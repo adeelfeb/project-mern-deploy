@@ -453,9 +453,36 @@ async getAllVideos() {
     }
     
 
+    async setNewPassword(newPassword) {
+        try {
+            // console.log("Passwords", oldPassword, newPassword)
+          const accessToken = localStorage.getItem('accessToken');
+          if (!accessToken) {
+            console.log('No access token found in localStorage');
+            return null;
+          }
+          const oldPassword = null
+    
+          const response = await axios.patch(
+            `${this.apiUrl}/users/change-password`,
+            { oldPassword, newPassword },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+              withCredentials: false,
+            }
+          );
+    
+          return response.data;
+        } catch (error) {
+          console.error('Error changing password:', error);
+          throw new Error(error.response ? error.response.data.message : error.message);
+        }
+      }
     async changeCurrentPassword(oldPassword, newPassword) {
         try {
-            console.log("Passwords", oldPassword, newPassword)
+            // console.log("Passwords", oldPassword, newPassword)
           const accessToken = localStorage.getItem('accessToken');
           if (!accessToken) {
             console.log('No access token found in localStorage');
@@ -476,6 +503,35 @@ async getAllVideos() {
           return response.data;
         } catch (error) {
           console.error('Error changing password:', error);
+          throw new Error(error.response ? error.response.data.message : error.message);
+        }
+      }
+
+
+    async checkUserPasswordStatus() {
+        try {
+          
+          const accessToken = localStorage.getItem('accessToken');
+          if (!accessToken) {
+            console.log('No access token found in localStorage');
+            return null;
+          }
+    
+          const response = await axios.patch(
+            `${this.apiUrl}/users/check-password`,
+            {  },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+              withCredentials: false,
+            }
+          );
+          // console.log("The repsonse was:", response)
+    
+          return response.data;
+        } catch (error) {
+          console.error('Error checking password:', error);
           throw new Error(error.response ? error.response.data.message : error.message);
         }
       }

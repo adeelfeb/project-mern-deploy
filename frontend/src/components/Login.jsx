@@ -6,7 +6,6 @@ import { Button, Input } from "./index";
 import { useForm } from "react-hook-form";
 import { auth, googleProvider } from "../utils/firebase"; // ✅ Import once
 import {signInWithPopup } from "firebase/auth";
-import { motion } from "framer-motion";
 import authService from "../AserverAuth/auth";
 
 function Login() {
@@ -69,8 +68,7 @@ function Login() {
         }
     };
  
-    
-
+   
     return (
         <>
             {loading && (
@@ -78,14 +76,9 @@ function Login() {
                     <div className="w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
                 </div>
             )}
-
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
-                <motion.div
-                    initial={{ opacity: 0, y: -50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full max-w-lg bg-white rounded-xl p-8 shadow-2xl border border-gray-100"
-                >
+    
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="w-full max-w-lg bg-white rounded-xl p-8 shadow-2xl border border-gray-100">
                     <h2 className="text-center text-3xl font-bold text-gray-800 mb-6">Welcome Back!</h2>
                     <p className="text-center text-gray-600 mb-8">
                         Don&apos;t have an account?&nbsp;
@@ -93,68 +86,65 @@ function Login() {
                             Sign Up
                         </Link>
                     </p>
-
+    
                     {error && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-red-600 text-center mb-6"
-                        >
+                        <div className="text-red-600 text-center mb-6">
                             {error}
-                        </motion.div>
+                        </div>
                     )}
-
+    
                     <form onSubmit={handleSubmit(login)} className="space-y-6">
                         <Input
                             label="Email"
                             placeholder="Enter your email"
                             type="input"
-                            {...register("email", { required: "Email is required" })} // ✅ Correctly spread props
+                            {...register("email", { required: "Email is required" })}
                         />
                         <Input
                             label="Password"
                             type="password"
                             placeholder="Enter your password"
-                            {...register("password", { required: "Password is required" })} // ✅ Correctly spread props
+                            {...register("password", { required: "Password is required" })}
                         />
-
+    
                         <Button
                             type="submit"
                             className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                         >
                             Sign In
                         </Button>
-
+    
                         <div className="flex items-center justify-between my-6">
                             <hr className="border-gray-300 flex-grow" />
                             <span className="text-gray-500 mx-4">or</span>
                             <hr className="border-gray-300 flex-grow" />
                         </div>
-
+    
                         <Button
-  onClick={handleGoogleLogin}
-  type="button"
-  className="w-full py-3 bg-gray-200 text-black font-medium rounded-lg flex justify-center items-center gap-3 border border-gray-300 shadow-md hover:shadow-lg hover:bg-gray-100 transition-all duration-200"
->
-  <img
-    src="https://developers.google.com/identity/images/g-logo.png"
-    alt="Google Logo"
-    className="w-6 h-6"
-  />
-  <span className='text-black'>Login with Google</span>
-</Button>
-
-
+                            onClick={handleGoogleLogin}
+                            type="button"
+                            className="w-full py-3 bg-gray-200 text-black font-medium rounded-lg flex justify-center items-center gap-3 border border-gray-300 shadow-md hover:shadow-lg hover:bg-gray-100 transition-all duration-200"
+                        >
+                            <img
+                                src="https://developers.google.com/identity/images/g-logo.png"
+                                alt="Google Logo"
+                                className="w-6 h-6"
+                            />
+                            <span className='text-black'>Login with Google</span>
+                        </Button>
+    
                         <p className="text-center text-sm text-gray-500">
                             <Link to="/forgot-password" className="font-medium text-blue-500 hover:underline">
                                 Forgot Password?
                             </Link>
                         </p>
                     </form>
-                </motion.div>
+                </div>
             </div>
         </>
     );
+
+    
 }
 
 export default Login;

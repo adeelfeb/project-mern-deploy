@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Input } from '../components';
 import authService from '../AserverAuth/auth';
+import { useNavigate } from 'react-router-dom';
 
 function ForgetPassword() {
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false); // To track success or error
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
 
   const handleForgotPassword = async (data) => {
     setLoading(true);
@@ -35,8 +37,40 @@ function ForgetPassword() {
   };
 
   return (
-    <div className="flex items-center justify-center w-full min-h-screen bg-gray-50">
-      <div className="mx-auto w-full max-w-lg bg-white rounded-xl p-10 shadow-xl border border-gray-200">
+    <div className="flex flex-col items-center justify-start w-full min-h-screen bg-gray-50">
+      {/* Button Container */}
+      <div className="w-full p-4 bg-gray-200 shadow-lg">
+        <div className="flex justify-between space-x-4">
+          {/* Homepage Button */}
+          <button
+            onClick={() => navigate('/')}
+            className="px-4 py-2 bg-white text-purple-600 rounded-lg shadow-md hover:bg-gray-100 transition duration-200"
+          >
+            Homepage
+          </button>
+
+          {/* Login Button */}
+          <div>
+          <button
+            onClick={() => navigate('/login')}
+            className="px-4 mx-2 py-2 bg-white text-purple-600 rounded-lg shadow-md hover:bg-gray-100 transition duration-200"
+          >
+            Login
+          </button>
+
+          {/* Signup Button */}
+          <button
+            onClick={() => navigate('/signup')}
+            className="px-4 mx-2 py-2 bg-white text-purple-600 rounded-lg shadow-md hover:bg-gray-100 transition duration-200"
+          >
+            Signup
+          </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Forgot Password Form */}
+      <div className="mx-auto w-full max-w-lg bg-white rounded-xl p-10 shadow-xl border border-gray-200 mt-8">
         <h2 className="text-center text-3xl font-bold leading-tight text-gray-800">Forgot Password</h2>
         <p className="mt-2 text-center text-base text-gray-600">
           Enter your email to receive a password reset link.
