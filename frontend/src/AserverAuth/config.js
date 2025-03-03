@@ -196,6 +196,32 @@ async getAllVideos() {
   
   
     
+    async getvideoDetails(videoId) {
+        try {
+            // console.log("Inside the getTranscript:", videoId);
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                console.log('No access token found in localStorage');
+                return null; // Return null if access token is not found
+            }
+    
+            const response = await axios.get(
+                `${this.apiUrl}/users/videoDetails`, // API endpoint for getting the transcript
+                {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
+                    },
+                    params: { videoId }, // Pass videoId as a query parameter
+                    withCredentials: false, // No need to send cookies with this request
+                }
+            );
+            // console.log("transcript is:", response.data)
+            return response.data; // Return the transcript data
+        } catch (error) {
+            console.error('Error fetching transcript:', error);
+            throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
+        }
+    }
     async getTranscript(videoId) {
         try {
             // console.log("Inside the getTranscript:", videoId);

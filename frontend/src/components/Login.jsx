@@ -141,7 +141,7 @@ function Login() {
     alt="Google Logo"
     className="w-6 h-6"
   />
-  <span className='text-black'>Sign up with Google</span>
+  <span className='text-black'>Login with Google</span>
 </Button>
 
 

@@ -14,7 +14,7 @@ import FrontendPage from './pages/FrontendPage.jsx';
 import ApiRequestForm from './pages/ApiRequestForm.jsx';
 import AddVideoDetailsInDataBase from './pages/AddVideoDetailsInDataBase.jsx';
 
-// Lazy load all components
+// // Lazy load all components
 const Dashboard = lazy(() => import('./dashboard/Dashboard.jsx'));
 const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout.jsx'));
 const Settings = lazy(() => import('./pages/Settings.jsx'));
@@ -30,6 +30,7 @@ const CurrentScore = lazy(() => import('./pages/CurrentScore'));
 const VideoList = lazy(()=> import("./pages/VideoList.jsx"))
 // const VideoUpload = lazy(()=> import("./pages/VideoUpload.jsx"))
 const VideoUpload = React.lazy(() => import('./pages/VideoUpload.jsx'));
+
 
 
 // Global fallback component
@@ -199,11 +200,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-      {/* <RouterProvider router={router} /> */}
       <Suspense fallback={<GlobalFallback />}>
-  <RouterProvider router={router} />
-</Suspense>
-
+        <RouterProvider router={router} />
+      </Suspense>
     </Provider>
   </React.StrictMode>
 );

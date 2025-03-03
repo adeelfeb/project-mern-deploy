@@ -17,26 +17,7 @@ const conf = {
     googleAiApiKey: isNode ? process.env.VITE_GOOGLE_AI_API_KEY : import.meta.env.VITE_GOOGLE_AI_API_KEY,
     ngrokApiKey: isNode ? process.env.VITE_NGROK_AI_API_KEY : import.meta.env.VITE_NGROK_AI_API_KEY,
 
-    // Firebase Configuration
-    firebaseConfig: {
-        type: isNode ? process.env.VITE_FIREBASE_TYPE : import.meta.env.VITE_FIREBASE_TYPE,
-        projectId: isNode ? process.env.VITE_FIREBASE_PROJECT_ID : import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        privateKeyId: isNode ? process.env.VITE_FIREBASE_PRIVATE_KEY_ID : import.meta.env.VITE_FIREBASE_PRIVATE_KEY_ID,
-        privateKey: isNode
-            ? process.env.VITE_FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-            : import.meta.env.VITE_FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-        clientEmail: isNode ? process.env.VITE_FIREBASE_CLIENT_EMAIL : import.meta.env.VITE_FIREBASE_CLIENT_EMAIL,
-        clientId: isNode ? process.env.VITE_FIREBASE_CLIENT_ID : import.meta.env.VITE_FIREBASE_CLIENT_ID,
-        authUri: isNode ? process.env.VITE_FIREBASE_AUTH_URI : import.meta.env.VITE_FIREBASE_AUTH_URI,
-        tokenUri: isNode ? process.env.VITE_FIREBASE_TOKEN_URI : import.meta.env.VITE_FIREBASE_TOKEN_URI,
-        authProviderX509CertUrl: isNode
-            ? process.env.VITE_FIREBASE_AUTH_PROVIDER_X509_CERT_URL
-            : import.meta.env.VITE_FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
-        clientX509CertUrl: isNode
-            ? process.env.VITE_FIREBASE_CLIENT_X509_CERT_URL
-            : import.meta.env.VITE_FIREBASE_CLIENT_X509_CERT_URL,
-        universeDomain: isNode ? process.env.VITE_FIREBASE_UNIVERSE_DOMAIN : import.meta.env.VITE_FIREBASE_UNIVERSE_DOMAIN,
-    }
+    
 };
 
 export default conf;
