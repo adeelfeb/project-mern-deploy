@@ -1,28 +1,36 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Input } from '../components';
+import authService from '../AserverAuth/auth';
 
 function ForgetPassword() {
   const [message, setMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false); // To track success or error
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const handleForgotPassword = async (data) => {
     setLoading(true);
     setMessage(''); // Reset the message before making the request
-    try {
-      // Assuming a function to handle the password reset request
-      // You should implement the API call or service for the password reset logic
-      // Example: await authService.sendPasswordResetEmail(data.email);
+    setIsSuccess(false); // Reset success state
 
-      // Simulating a successful response
-      setTimeout(() => {
-        setLoading(false);
-        setMessage('Check your email for the password reset link!');
-      }, 2000);
+    try {
+      const response = await authService.forgetPassword(data.email);
+      // console.log("The response was:", response);
+
+      if (response.success) {
+        setMessage(response.message); // Set success message
+        setIsSuccess(true); // Mark as success
+      } else {
+        setMessage(response.message || 'Something went wrong. Please try again later.'); // Set error message
+        setIsSuccess(false); // Mark as error
+      }
     } catch (error) {
-      setLoading(false);
-      setMessage('Something went wrong. Please try again later.');
+      console.error("Error:", error);
+      setMessage('Something went wrong. Please try again later.'); // Set generic error message
+      setIsSuccess(false); // Mark as error
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -50,6 +58,9 @@ function ForgetPassword() {
               })}
               className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
 
             <Button
               type="submit"
@@ -63,7 +74,7 @@ function ForgetPassword() {
 
         {/* Message after form submission */}
         {message && (
-          <p className={`mt-4 text-center ${message.includes('Check') ? 'text-green-600' : 'text-red-600'}`}>
+          <p className={`mt-4 text-center ${isSuccess ? 'text-green-600' : 'text-red-600'}`}>
             {message}
           </p>
         )}

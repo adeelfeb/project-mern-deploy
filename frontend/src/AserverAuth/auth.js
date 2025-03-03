@@ -36,36 +36,7 @@ export class AuthService {
       };
 
 
-    //   async createAccount({ email, password, fullname, username, avatar, coverImage }) {
-    //     try {
-    //         const formData = new FormData();
-    //         formData.append('email', email);
-    //         formData.append('password', password);
-    //         formData.append('fullname', fullname);
-    //         formData.append('username', username);
-    
-    //         // Append avatar and cover image only if they exist
-    //         if (avatar) formData.append('avatar', avatar);
-    //         if (coverImage) formData.append('coverImage', coverImage);
-    
-    //         const response = await axios.post(`${this.apiUrl}/users/register`, formData, {
-    //             headers: { 'Content-Type': 'multipart/form-data' },
-    //             withCredentials: true, // Enable credentials if required by backend
-    //         });
-    
-    //         // console.log("Response while creating account:", response);
-            
-    //         if (response.data.success) {
-    //             const { temporaryToken } = response.data.data;
-    //             return await this.loginWithTemporaryToken({ temporaryToken });
-    //         }
-    //     } catch (error) {
-    //         console.error("Error while creating account:", error);
-    //         const errorMessage = error.response?.data?.message || "Error Creating Account. Try later or use other credentials.";
-    //         throw new Error(errorMessage);
-    //     }
-    // }
-    
+      
 
     async createAccount({ email, password, fullname, username, avatar, coverImage }) {
         try {
@@ -91,7 +62,7 @@ export class AuthService {
             console.error("Error while creating account:", error);
             
             // Extracting error message from response
-            const errorMessage = error.response?.data?.messsage || "Error Creating Account. Try again later.";
+            const errorMessage = error.response?.data?.message || "Error Creating Account. Try again later.";
             
             // Displaying error message on frontend
             // alert(errorMessage);
@@ -175,6 +146,7 @@ export class AuthService {
         }
     }
 
+    
     async googleLogin(idToken) {
         try {
             // console.log("the firebase idToken:", idToken)
@@ -199,6 +171,24 @@ export class AuthService {
         }
     }
 
+
+    async forgetPassword(email) {
+        try {
+            // console.log("the firebase idToken:", email)
+            const response = await axios.post(`${this.apiUrl}/users/forget-password`, { email }, {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true,
+            });
+            
+            return response.data;
+        } catch (error) {
+            if(error.response.data.statusCode === 401){
+                return error.response.data
+                
+            }
+            throw new Error(error.response ? error.response.data.message : error.message);
+        }
+    }
     async getCurrentUser() {
         try {
             const accessToken = localStorage.getItem('accessToken');
