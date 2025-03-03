@@ -25,7 +25,7 @@ const VideoDetails = ({ data }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); 
   const [isGenerating, setIsGenerating] = useState(false);
 
-  console.log("Video details are :", data)
+  // console.log("Video details are :", data)
 
   // Reset state when data changes
   useEffect(() => {
@@ -147,7 +147,7 @@ const VideoDetails = ({ data }) => {
             if(transcriptTextOriginal && transcriptText){
               const [aiResponseEnglish, aiResponseOriginal] = await Promise.all([
                 startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]),
-                startChatWithMessage([`Summarize this content: ${transcriptTextOriginal}`])
+                startChatWithMessage([`Summarize this content in language it is moslty 80 percent in: ${transcriptTextOriginal}`])
               ]);
               setSummaryData({
                 original: aiResponseOriginal,
