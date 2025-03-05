@@ -15,7 +15,7 @@ const VideoList = () => {
     setLoading(true);
     try {
       const response = await videoService.getAllVideos();
-      console.log("data of videos is:", response.data);
+      // console.log("data of videos is:", response.data);
       if (response?.data) {
         setVideos(response.data);
       }

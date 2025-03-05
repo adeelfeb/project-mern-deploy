@@ -11,6 +11,7 @@ const KeyConcepts = lazy(() => import("./KeyConcepts"));
 const Explanation = lazy(() => import("./Explanation"));
 const CurrentScore = lazy(() => import("./CurrentScore"));
 
+
 const VideoDetails = ({ data }) => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [transcriptData, setTranscriptData] = useState(null);
@@ -211,6 +212,7 @@ const VideoDetails = ({ data }) => {
             // console.log("the Quiz generated is in raw here:", aiResponse)
             // Extract JSON from AI response (removing the code block formatting)
             const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
+            // console.log("QUiz is:", jsonMatch)
             if (!jsonMatch) {
               console.error("Failed to parse AI response as JSON.");
               setQnatData({ qnas: "NA" });

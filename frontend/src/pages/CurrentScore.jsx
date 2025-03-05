@@ -3,6 +3,7 @@ import { FaClipboardList, FaPen, FaQuestionCircle, FaCheckCircle, FaTimesCircle 
 import videoService from "../AserverAuth/config";
 import { startChatWithMessage } from "../lib/geminiHelperFunc";
 import ToastNotification from "../components/toastNotification/ToastNotification";
+import ApiService from "../AserverAuth/ApiService";
 
 const CurrentScore = ({ data }) => {
   const [scores, setScores] = useState({
@@ -20,21 +21,24 @@ const CurrentScore = ({ data }) => {
     return score < 50 ? "text-red-600" : "text-green-600";
   };
 
+  
+
   const handleGetScores = async () => {
     setButtonState("loading"); // Start loading
     setErrorMessage(null); // Clear any previous error message
     try {
       const response = await videoService.getScore(data);
-      // console.log("the repsonse was:", response)
+      // console.log("the response is:", response)
+      
       if (!response.data.scoreIsEvaluated) {
         setButtonState("calculating"); // Show 'Calculating...' for 3 seconds
-
+  
         const prompt = response.data.shortAnswers.map((q, index) => 
           `Q${index + 1}: ${q.question}
           User Answer: ${q.givenAnswer}
-          Evaluate the user's answer based on your knowledge and provide a score out of 2. 
+          Evaluate the user's answer based on your knowledge and provide a score out of 10. 
           Format your response as: 
-          Q${index + 1}: Score: <score>/2, Evaluation: <brief evaluation>`
+          Q${index + 1}: Score: <score>/10, Evaluation: <brief evaluation>`
         ).join("\n\n");
         
         // Send a single request with all questions
@@ -42,7 +46,7 @@ const CurrentScore = ({ data }) => {
         
         // Extract scores and evaluations from AI response
         const shortAnswersWithScores = response.data.shortAnswers.map((q, index) => {
-          const scoreRegex = new RegExp(`Q${index + 1}: Score: (\\d+)/2, Evaluation: (.+)`);
+          const scoreRegex = new RegExp(`Q${index + 1}: Score: (\\d+)/10, Evaluation: (.+)`);
           const match = aiResponse.match(scoreRegex);
         
           if (match) {
@@ -51,14 +55,16 @@ const CurrentScore = ({ data }) => {
             return { 
               ...q, 
               score, 
-              evaluation 
+              evaluation,
+              isCorrect: score >= 5, // Add isCorrect based on score
             };
           } else {
             // Default to 0 if no score is found
             return { 
               ...q, 
               score: 0, 
-              evaluation: "No evaluation provided by AI." 
+              evaluation: "No evaluation provided by AI.",
+              isCorrect: false, // Default to false if no score is found
             };
           }
         });
@@ -71,6 +77,7 @@ const CurrentScore = ({ data }) => {
           shortAnswers: shortAnswersWithScores,
           totalScore, // Add total score to the response
         };
+        // console.log("Updated response for quiz evaluation: ", updatedResponse);
         
         // Calculate scores based on the updated response
         const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = updatedResponse;
@@ -80,8 +87,9 @@ const CurrentScore = ({ data }) => {
             userAnswer: q.givenAnswer,
             correctAnswer: q.correctAnswer,
             type: 'shortAnswer',
-            isCorrect: q.isCorrect,
-            evaluation: q.evaluation, // Add the evaluation field
+            isCorrect: q.isCorrect, 
+            evaluation: q.evaluation, 
+            score: q.score,
           })),
           ...mcqs.map((q) => ({
             question: q.question,
@@ -95,14 +103,15 @@ const CurrentScore = ({ data }) => {
             userAnswer: q.givenAnswer,
             correctAnswer: q.correctAnswer,
             type: 'fillInTheBlank',
-            isCorrect: q.givenAnswer === q.correctAnswer,
+            isCorrect: q.score ? true: false,
+            score: q.score
           })),
         ];
-
+  
         setScores({
           mcqScore: calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length),
           fillInTheBlanksScore: calculatePercentage(
-            fillInTheBlanks.filter((q) => q.givenAnswer === q.correctAnswer).length,
+            fillInTheBlanks.filter((q) => q.isCorrect).length,
             fillInTheBlanks.length
           ),
           shortQuestionsScore: calculatePercentage(
@@ -113,17 +122,36 @@ const CurrentScore = ({ data }) => {
           overallScore: totalScore,
         });
 
+
+        const scoreData = {
+          userId: response.data.userId,
+          videoId: response.data.videoId,
+          evaluation: quizTaken
+        }
+
+        
+
+        ApiService.setScore(scoreData).catch((error) => {
+          console.error("Error storing score evaluation:", error);
+        });
+        
+        
+
+        
+  
         return; // Exit function early
       }
-
+  
       const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = response.data;
       const quizTaken = [
         ...shortAnswers.map((q) => ({
           question: q.question,
           userAnswer: q.givenAnswer,
           correctAnswer: q.correctAnswer,
+          evaluation: q.aiEvaluation, 
           type: 'shortAnswer',
-          isCorrect: q.givenAnswer === q.correctAnswer,
+          isCorrect: q.score >= 5, // Add isCorrect based on score
+          score: q.score, // Add the score field
         })),
         ...mcqs.map((q) => ({
           question: q.question,
@@ -137,25 +165,24 @@ const CurrentScore = ({ data }) => {
           userAnswer: q.givenAnswer,
           correctAnswer: q.correctAnswer,
           type: 'fillInTheBlank',
-          isCorrect: q.givenAnswer === q.correctAnswer,
+          isCorrect: q.score ? true: false,
         })),
       ];
-
+  
       setScores({
         mcqScore: calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length),
         fillInTheBlanksScore: calculatePercentage(
-          fillInTheBlanks.filter((q) => q.givenAnswer === q.correctAnswer).length,
+          fillInTheBlanks.filter((q) => q.isCorrect).length,
           fillInTheBlanks.length
         ),
         shortQuestionsScore: calculatePercentage(
-          shortAnswers.filter((q) => q.givenAnswer === q.correctAnswer).length,
+          shortAnswers.filter((q) => q.score >= 5).length, // Use isCorrect logic
           shortAnswers.length
         ),
         quizTaken,
         overallScore,
       });
     } catch (error) {
-      // console.log("Error fetching scores:", error);
       setErrorMessage("Error getting quiz score. Please submit a quiz or try later."); // Set error message
     } finally {
       if (buttonState !== "calculating") {
@@ -163,6 +190,7 @@ const CurrentScore = ({ data }) => {
       }
     }
   };
+
 
   const calculatePercentage = (correct, total) => {
     return total === 0 ? 0 : ((correct / total) * 100).toFixed(2);
@@ -185,7 +213,7 @@ const CurrentScore = ({ data }) => {
       {errorMessage && (
         <ToastNotification
           message={errorMessage}
-          isSuccess= {false}
+          isSuccess={false}
           onClose={() => setErrorMessage(null)} // Clear error message on close
         />
       )}
@@ -197,6 +225,17 @@ const CurrentScore = ({ data }) => {
           </p>
         ) : (
           <>
+
+
+
+            {/* Short Questions Score */}
+            <div className="flex items-center space-x-3">
+              <FaQuestionCircle className="text-indigo-600 text-3xl" />
+              <p className="text-xl font-semibold">
+                Short Questions Score: <span className={`font-bold ${getScoreColor(scores.shortQuestionsScore)}`}>{scores.shortQuestionsScore}%</span>
+              </p>
+            </div>
+
             {/* MCQ Score */}
             <div className="flex items-center space-x-3">
               <FaClipboardList className="text-indigo-600 text-3xl" />
@@ -213,14 +252,7 @@ const CurrentScore = ({ data }) => {
               </p>
             </div>
 
-            {/* Short Questions Score */}
-            <div className="flex items-center space-x-3">
-              <FaQuestionCircle className="text-indigo-600 text-3xl" />
-              <p className="text-xl font-semibold">
-                Short Questions Score: <span className={`font-bold ${getScoreColor(scores.shortQuestionsScore)}`}>{scores.shortQuestionsScore}%</span>
-              </p>
-            </div>
-
+            
             {/* Overall Score */}
             <div className="flex items-center space-x-3">
               <FaQuestionCircle className="text-indigo-600 text-3xl" />
@@ -232,6 +264,41 @@ const CurrentScore = ({ data }) => {
             {/* Display All Questions Grouped by Type */}
             <div className="mt-8">
               <h3 className="text-2xl font-bold text-indigo-600 mb-4">All Questions</h3>
+
+              {/* Short Questions Section */}
+              {groupedQuestions.shortAnswer && (
+                <div className="mb-8">
+                  <h4 className="text-xl font-semibold text-indigo-500 mb-4">Short Questions</h4>
+                  {groupedQuestions.shortAnswer.map((q, index) => (
+                    <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+                      <div className="flex items-center space-x-2">
+                        {q.isCorrect ? (
+                          <FaCheckCircle className="text-green-500 text-xl" />
+                        ) : (
+                          <FaTimesCircle className="text-red-500 text-xl" />
+                        )}
+                        <p className="text-lg font-semibold text-gray-800">{q.question}</p>
+                      </div>
+                      <div className="ml-8">
+                        {/* Apply green color if score is above 5 */}
+                        <p className={`text-gray-600 `}>
+                          <span className="font-medium">Your Answer:</span> {q.userAnswer}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-medium">Correct Answer:</span> {q.correctAnswer}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-medium">Score:</span> {q.score}
+                        </p>
+                        {/* Add the evaluation line */}
+                        <p className="text-gray-600">
+                          <span className="font-medium">Evaluation:</span> {q.evaluation}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* MCQs Section */}
               {groupedQuestions.mcq && (
@@ -253,37 +320,6 @@ const CurrentScore = ({ data }) => {
                         </p>
                         <p className="text-gray-600">
                           <span className="font-medium">Correct Answer:</span> {q.correctAnswer}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Short Questions Section */}
-              {groupedQuestions.shortAnswer && (
-                <div className="mb-8">
-                  <h4 className="text-xl font-semibold text-indigo-500 mb-4">Short Questions</h4>
-                  {groupedQuestions.shortAnswer.map((q, index) => (
-                    <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
-                      <div className="flex items-center space-x-2">
-                        {q.isCorrect ? (
-                          <FaCheckCircle className="text-green-500 text-xl" />
-                        ) : (
-                          <FaTimesCircle className="text-red-500 text-xl" />
-                        )}
-                        <p className="text-lg font-semibold text-gray-800">{q.question}</p>
-                      </div>
-                      <div className="ml-8">
-                        <p className="text-gray-600">
-                          <span className="font-medium">Your Answer:</span> {q.userAnswer}
-                        </p>
-                        <p className="text-gray-600">
-                          <span className="font-medium">Correct Answer:</span> {q.correctAnswer}
-                        </p>
-                        {/* Add the evaluation line */}
-                        <p className="text-gray-600">
-                          <span className="font-medium">Evaluation:</span> {q.evaluation}
                         </p>
                       </div>
                     </div>

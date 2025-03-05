@@ -26,7 +26,7 @@ const ApiService = {
                 }
             );
 
-            console.log(`Response from ${endpoint}:`, response.data);
+            // console.log(`Response from ${endpoint}:`, response.data);
             return response.data;
         } catch (error) {
             console.error(`Error in ${apiUrl}:`, error);
@@ -49,6 +49,10 @@ const ApiService = {
 
     async addTranscript(id, english, original) {
         return this.sendRequest('/addTranscript', { id, english, original });
+    },
+    async setScore(scoreData) {
+        // console.log("the data inside API service is:",scoreData )
+        return this.sendRequest('/score', scoreData);
     },
 
     async addVideoDetails(id, title, thumbnailUrl, duration) { // Fixed typo
