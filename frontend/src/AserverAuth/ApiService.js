@@ -59,12 +59,14 @@ const ApiService = {
         return this.sendRequest('/addVideoDetails', { id, title, thumbnailUrl, duration });
     },
 
-    async addSummary(id, original, english, Summary_eng) {
-        return this.sendRequest('/addSummary', { id, original, english, Summary_eng });
+    async addSummary(id, original, english) {
+        // console.log("inside the API service fucntion:", id)
+        return this.sendRequest('/addSummary', { id, original, english });
     },
 
-    async addQnas(id, Questions, mcqs) {
-        return this.sendRequest('/addQnas', { id, Questions, mcqs });
+    async addQnas(id, formattedQuizData) {
+        // console.log("inside the addKeyconcept function")
+        return this.sendRequest('/addQnas-formated', { id, formattedQuizData});
     },
 
     async addKeyconcept(id, concept) {

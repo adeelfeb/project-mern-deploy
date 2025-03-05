@@ -1,20 +1,16 @@
 import React, { Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
-import { Provider } from 'react-redux';
 import store from './store/store.js';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Home from './pages/Home';
 import { AuthLayout } from './components';
+import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import ForgetPassword from './pages/ForgetPassword.jsx';
-import FrontendPage from './pages/FrontendPage.jsx';
-import ApiRequestForm from './pages/ApiRequestForm.jsx';
-import AddVideoDetailsInDataBase from './pages/AddVideoDetailsInDataBase.jsx';
 
-// // Lazy load all components
+// Lazy load all components
 const Dashboard = lazy(() => import('./dashboard/Dashboard.jsx'));
 const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout.jsx'));
 const Settings = lazy(() => import('./pages/Settings.jsx'));
@@ -27,44 +23,68 @@ const Summary = lazy(() => import('./pages/Summary'));
 const Quiz = lazy(() => import('./pages/Quiz'));
 const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = lazy(() => import('./pages/CurrentScore'));
-const VideoList = lazy(()=> import("./pages/VideoList.jsx"))
-// const VideoUpload = lazy(()=> import("./pages/VideoUpload.jsx"))
-const VideoUpload = React.lazy(() => import('./pages/VideoUpload.jsx'));
+const VideoList = lazy(() => import('./pages/VideoList.jsx'));
+const VideoUpload = lazy(() => import('./pages/VideoUpload.jsx'));
 
-
+// Lazy load additional components
+const ForgetPassword = lazy(() => import('./pages/ForgetPassword.jsx'));
+const FrontendPage = lazy(() => import('./pages/FrontendPage.jsx'));
+const ApiRequestForm = lazy(() => import('./pages/ApiRequestForm.jsx'));
+const AddVideoDetailsInDataBase = lazy(() => import('./pages/AddVideoDetailsInDataBase.jsx'));
 
 // Global fallback component
 function GlobalFallback() {
-  return <div>Loading...</div>;
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+    </div>
+  );
 }
 
+// Create routes
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <Home />,
       },
       {
-        path: "/add-cors",
-        element: <FrontendPage />,
+        path: '/add-cors',
+        element: (
+          <Suspense fallback={<GlobalFallback />}>
+            <FrontendPage />
+          </Suspense>
+        ),
       },
       {
-        path: "/videos",
-        element: <VideoList />,
+        path: '/videos',
+        element: (
+          <Suspense fallback={<GlobalFallback />}>
+            <VideoList />
+          </Suspense>
+        ),
       },
       {
-        path: "/add-api",
-        element: <ApiRequestForm />,
+        path: '/add-api',
+        element: (
+          <Suspense fallback={<GlobalFallback />}>
+            <ApiRequestForm />
+          </Suspense>
+        ),
       },
       {
-        path: "/add-VideoDetails",
-        element: <AddVideoDetailsInDataBase />,
+        path: '/add-VideoDetails',
+        element: (
+          <Suspense fallback={<GlobalFallback />}>
+            <AddVideoDetailsInDataBase />
+          </Suspense>
+        ),
       },
       {
-        path: "/login",
+        path: '/login',
         element: (
           <AuthLayout authentication={false}>
             <Login />
@@ -72,7 +92,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/signup",
+        path: '/signup',
         element: (
           <AuthLayout authentication={false}>
             <Signup />
@@ -80,7 +100,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/dashboard",
+        path: '/dashboard',
         element: (
           <AuthLayout authentication>
             <Suspense fallback={<GlobalFallback />}>
@@ -90,7 +110,7 @@ const router = createBrowserRouter([
         ),
         children: [
           {
-            path: "/dashboard/chat",
+            path: '/dashboard/chat',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <Dashboard />
@@ -98,7 +118,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/upload-video",
+            path: '/dashboard/upload-video',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <VideoUpload />
@@ -106,7 +126,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/uploadpdf",
+            path: '/dashboard/uploadpdf',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <UploadPdf />
@@ -114,7 +134,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/settings",
+            path: '/dashboard/settings',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <Settings />
@@ -122,7 +142,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/user-history",
+            path: '/dashboard/user-history',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <UserHistory />
@@ -130,7 +150,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/info",
+            path: '/dashboard/info',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <Info />
@@ -138,7 +158,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "/dashboard/input-url",
+            path: '/dashboard/input-url',
             element: (
               <Suspense fallback={<GlobalFallback />}>
                 <InputURL />
@@ -146,7 +166,7 @@ const router = createBrowserRouter([
             ),
             children: [
               {
-                path: "transcript",
+                path: 'transcript',
                 element: (
                   <Suspense fallback={<GlobalFallback />}>
                     <Transcript />
@@ -154,7 +174,7 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "summary",
+                path: 'summary',
                 element: (
                   <Suspense fallback={<GlobalFallback />}>
                     <Summary />
@@ -162,7 +182,7 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "qna",
+                path: 'qna',
                 element: (
                   <Suspense fallback={<GlobalFallback />}>
                     <Quiz />
@@ -170,7 +190,7 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "key-concepts",
+                path: 'key-concepts',
                 element: (
                   <Suspense fallback={<GlobalFallback />}>
                     <KeyConcepts />
@@ -178,7 +198,7 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "score",
+                path: 'score',
                 element: (
                   <Suspense fallback={<GlobalFallback />}>
                     <CurrentScore />
@@ -190,13 +210,18 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/forgot-password",
-        element: <ForgetPassword />,
+        path: '/forgot-password',
+        element: (
+          <Suspense fallback={<GlobalFallback />}>
+            <ForgetPassword />
+          </Suspense>
+        ),
       },
     ],
   },
 ]);
 
+// Render the app
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>

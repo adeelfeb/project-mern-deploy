@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy} from "react";
 import videoService from "../AserverAuth/config";
 import { startChatWithMessage } from "../lib/geminiHelperFunc";
+import ApiService from "../AserverAuth/ApiService";
+import transcriptFetchService from "../utils/transcriptFetch";
 
 
 // Lazy load components
@@ -50,38 +52,6 @@ const VideoDetails = ({ data }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  
-
-
-  const fetchAndProcessTranscript = async (videoId, includeOriginal = false) => {
-    const transcriptResponse = await videoService.getTranscript(videoId);
-    const transcriptData = transcriptResponse.data.transcript;
-
-    // If transcript is missing, empty, or contains "NA", return null
-    if (
-      !transcriptData || 
-      (!transcriptData.english?.length && !transcriptData.original?.length) || 
-      transcriptData.original === "NA"
-    ) {
-      // console.log("Transcript is empty. Skipping chat message request.");
-      return null;
-    }
-
-    // Extract English transcript text
-    const transcriptText = transcriptData.english?.map(entry => entry.text).join("\n") || "";
-
-    // Extract original transcript text only if includeOriginal is true
-    const transcriptTextOriginal = includeOriginal
-      ? transcriptData.original?.map(entry => entry.text).join("\n") || ""
-      : null;
-
-    return {
-      transcriptData,
-      transcriptText,
-      transcriptTextOriginal: includeOriginal ? transcriptTextOriginal : undefined,
-    };
-};
 
 
   
@@ -134,7 +104,7 @@ const VideoDetails = ({ data }) => {
             setIsGenerating(true);
   
             // Fetch and process transcript
-            const transcriptResult = await fetchAndProcessTranscript(data._id, true);
+            const transcriptResult = await transcriptFetchService.fetchAndProcessTranscript(data._id, true);
             if (!transcriptResult) {
               // console.log("Transcript is empty, cannot generate summary.");
               setSummaryData({ original: "NA", english: "NA" });
@@ -150,6 +120,17 @@ const VideoDetails = ({ data }) => {
                 startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]),
                 startChatWithMessage([`Summarize this content in language it is moslty 80 percent in: ${transcriptTextOriginal}`])
               ]);
+
+              // console.log("the data in videoDetails is:", data)
+              const id = data._id
+              const original = aiResponseOriginal
+              const english = aiResponseEnglish
+
+              //stroing the summary in database
+              ApiService.addSummary(id, original, english).catch((error) => {
+                console.error("Error storing Summary:", error);
+              });
+
               setSummaryData({
                 original: aiResponseOriginal,
                 english: aiResponseEnglish,
@@ -182,7 +163,7 @@ const VideoDetails = ({ data }) => {
             setIsGenerating(true);
           
             // Fetch and process transcript
-            const transcriptResult = await fetchAndProcessTranscript(data._id);
+            const transcriptResult = await transcriptFetchService.fetchAndProcessTranscript(data._id);
             if (!transcriptResult) {
               // console.log("Transcript is empty, cannot generate quiz.");
               setQnatData({ qnas: "NA" });
@@ -231,7 +212,22 @@ const VideoDetails = ({ data }) => {
                 },
                 videoId:data._id
               };
+
+
+
+              //storing the quiz in database
+
               // console.log("formated quiz is:", formattedQuizData)
+              //  console.log("the data in videoDetails is:", data)
+               const id = data._id
+              
+ 
+               //stroing the summary in database
+               ApiService.addQnas(id, formattedQuizData).catch((error) => {
+                 console.error("Error storing Quiz:", error);
+               });
+
+
           
               setQnatData(formattedQuizData);
             } catch (error) {
@@ -254,8 +250,9 @@ const VideoDetails = ({ data }) => {
             setKeyConceptsIsLoading("generating");
             setIsGenerating(true);
   
+            
             // Fetch and process transcript
-            const transcriptResult = await fetchAndProcessTranscript(data._id);
+            const transcriptResult = await transcriptFetchService.fetchAndProcessTranscript(data._id);
             if (!transcriptResult) {
               // console.log("Transcript is empty, cannot generate key concepts.");
               setKeyConceptsData({ keyconcept: { description: "", primary: "NA" } });
@@ -266,13 +263,24 @@ const VideoDetails = ({ data }) => {
             const aiResponse = await startChatWithMessage([`Extract key concepts from this content this is transcript of an educational video so make it accordingly: ${transcriptText}`]);
   
             
-            const keyconceptGenerated = {
+            const concept = {
               keyconcept: {
                 description: "",
                 primary: aiResponse,
               },
             };
-            setKeyConceptsData(keyconceptGenerated);
+
+
+            // console.log("formated quiz is:", concept)
+              //  console.log("the data in videoDetails is:", data)
+               const id = data._id
+              
+ 
+               //stroing the summary in database
+               ApiService.addKeyconcept(id, concept).catch((error) => {
+                 console.error("Error storing Key-concept:", error);
+               });
+            setKeyConceptsData(concept);
           } else {
             setKeyConceptsData(response.data.data);
           }
@@ -398,72 +406,81 @@ const VideoDetails = ({ data }) => {
         </div>
       </div>
   
-      {/* Right Section (Desktop) */}
-      <div className="hidden md:block md:flex-[7] w-full p-2 overflow-y-auto max-h-[calc(100vh-100px)]">
-        <Suspense fallback={<div>Loading...</div>}>
-          {!selectedSection && <Explanation />}
   
-          {selectedSection === "transcript" && (
-            <div className="p-2">
-              <Transcript data={transcriptData || data.transcript} />
-            </div>
-          )}
   
-          {selectedSection === "summary" && (
-            <div className="p-2">
-              <Summary data={summaryData || data.summary} />
-            </div>
-          )}
-  
-          {selectedSection === "keyConcepts" && (
-            <div className="p-2">
-              <KeyConcepts data={keyConceptsData} />
-            </div>
-          )}
-  
-          {selectedSection === "quiz" && (
-            <div className="p-2">
-              <Quiz data={qnaData} />
-            </div>
-          )}
-  
-          {selectedSection === "currentScore" && (
-            <div className="p-2">
-              <CurrentScore data={data._id} />
-            </div>
-          )}
-        </Suspense>
+
+  {/* Right Section (Desktop) */}
+<div className="hidden md:block md:flex-[7] w-full p-2 overflow-y-auto max-h-[calc(100vh-100px)]">
+  <Suspense fallback={<div>Loading...</div>}>
+    {!selectedSection && <Explanation />}
+
+    {selectedSection === "transcript" && (
+      <div className="p-2">
+        <Transcript data={transcriptData || data.transcript} videoId={data._id} />
       </div>
-  
+    )}
+
+    {selectedSection === "summary" && (
+      <div className="p-2">
+        <Summary data={summaryData || data.summary} videoId={data._id} />
+      </div>
+    )}
+
+    {selectedSection === "keyConcepts" && (
+      <div className="p-2">
+        <KeyConcepts data={keyConceptsData} videoId={data._id} />
+      </div>
+    )}
+
+    {selectedSection === "quiz" && (
+      <div className="p-2">
+        <Quiz data={qnaData} videoId={data._id} />
+      </div>
+    )}
+
+    {selectedSection === "currentScore" && (
+      <div className="p-2">
+        <CurrentScore data={data._id} />
+      </div>
+    )}
+  </Suspense>
+</div>
+
+
       {/* Popup (Mobile) */}
-      {isMobile && isPopupOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-11/12 max-h-[90vh] overflow-auto p-4">
-            <button
-              onClick={closePopup}
-              className="absolute top-2 right-2 bg-gray-100 text-gray-800 hover:text-gray-900 
-                        text-xl md:text-2xl w-6 h-6 md:w-12 md:h-12 
-                        flex items-center justify-center rounded-full shadow-md hover:bg-gray-200 leading-none"
-            >
-              &times;
-            </button>
-  
-            <Suspense fallback={<div>Loading...</div>}>
-              {selectedSection === "transcript" && (
-                <Transcript data={transcriptData || data.transcript} />
-              )}
-              {selectedSection === "summary" && (
-                <Summary data={summaryData || data.summary} />
-              )}
-              {selectedSection === "keyConcepts" && (
-                <KeyConcepts data={keyConceptsData} />
-              )}
-              {selectedSection === "quiz" && videoId && <Quiz data={qnaData} />}
-              {selectedSection === "currentScore" && <CurrentScore data={data._id} />}
-            </Suspense>
-          </div>
-        </div>
-      )}
+{isMobile && isPopupOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg w-11/12 max-h-[90vh] overflow-auto p-4">
+      <button
+        onClick={closePopup}
+        className="absolute top-2 right-2 bg-gray-100 text-gray-800 hover:text-gray-900 
+                  text-xl md:text-2xl w-6 h-6 md:w-12 md:h-12 
+                  flex items-center justify-center rounded-full shadow-md hover:bg-gray-200 leading-none"
+      >
+        &times;
+      </button>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        {selectedSection === "transcript" && (
+          <Transcript data={transcriptData || data.transcript} videoId={data._id} />
+        )}
+        {selectedSection === "summary" && (
+          <Summary data={summaryData || data.summary} videoId={data._id} />
+        )}
+        {selectedSection === "keyConcepts" && (
+          <KeyConcepts data={keyConceptsData} videoId={data._id} />
+        )}
+        {selectedSection === "quiz" && (
+          <Quiz data={qnaData} videoId={data._id} />
+        )}
+        {selectedSection === "currentScore" && (
+          <CurrentScore data={data._id} />
+        )}
+      </Suspense>
+    </div>
+  </div>
+)}
+
     </div>
   );
 
