@@ -78,43 +78,48 @@ const UserHistory = () => {
         }
     };
 
+    
+
     return (
-        <div className="p-2 bg-white rounded-lg shadow-lg h-screen flex flex-col">
+        <div className="p-4 bg-white rounded-lg shadow-lg h-screen flex flex-col">
             {/* Button Group */}
             <div className="flex justify-center gap-4 flex-wrap mb-4">
                 <button
                     onClick={() => fetchHistory(true)}
-                    className={`px-4 py-2 text-white rounded-3xl transition-all text-sm sm:text-base ${
+                    className={`px-4 py-2 text-white rounded-xl transition-all text-sm sm:text-base ${
                         isLoading
                             ? "bg-gray-400 cursor-not-allowed"
                             : fetchError
-                            ? "bg-red-500 hover:bg-red-600" // Show red if there was an error
+                            ? "bg-red-500 hover:bg-red-600"
                             : "bg-green-500 hover:bg-green-600"
                     }`}
                     disabled={isLoading}
                 >
                     {isLoading ? "Loading..." : fetchError ? "❌ Failed! Retry" : "🔄 Reload History"}
                 </button>
-
+    
                 {selectedVideo && (
                     <button
                         onClick={() => setSelectedVideo(null)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-3xl hover:bg-blue-600 transition-all text-sm sm:text-base"
+                        className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all text-sm sm:text-base"
                     >
                         &lt; Back
                     </button>
                 )}
             </div>
-
+    
             {selectedVideo ? (
                 <Suspense fallback={<p className="text-center">Loading details...</p>}>
                     <VideoDetails data={selectedVideo} />
                 </Suspense>
             ) : (
-                <div className="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-gray-50 p-4 mb-8 rounded-lg shadow-md">
+                <div className="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-3 mb-6 rounded-lg shadow-md auto-rows-min">
                     {userHistory.length > 0 ? (
                         userHistory.map((video) => (
-                            <div key={video._id} className="relative bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-gray-100 border-2 border-gray-200">
+                            <div
+                                key={video._id}
+                                className="relative bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 border border-gray-200 min-h-[200px] flex flex-col"
+                            >
                                 {/* Three-dot menu */}
                                 <div className="absolute top-2 right-2">
                                     <button onClick={() => setOpenMenu(openMenu === video._id ? null : video._id)}>
@@ -125,26 +130,25 @@ const UserHistory = () => {
                                             <button
                                                 onClick={() => handleDelete(video._id)}
                                                 className="text-red-500 px-4 py-1 text-sm hover:bg-red-100 rounded-md w-full disabled:opacity-50"
-                                                disabled={deletingVideoId === video._id} // Disable button while deleting
+                                                disabled={deletingVideoId === video._id}
                                             >
                                                 {deletingVideoId === video._id ? "Deleting..." : "Delete"}
                                             </button>
                                         </div>
                                     )}
                                 </div>
-
+    
                                 <h4 className="font-semibold text-lg text-gray-800 truncate">{video.title}</h4>
                                 <p className="text-sm text-gray-600 mt-2 truncate">Duration: {video.duration}</p>
                                 <p className="text-sm text-gray-600 mb-2 truncate">
                                     Watched: {new Date(video.createdAt).toLocaleString()}
                                 </p>
-
-                                <div className="flex justify-center items-center mb-4">
-                                    {/* Show video preview if thumbnail is default, otherwise show thumbnail */}
+    
+                                <div className="flex justify-center items-center mb-3 flex-grow">
                                     {video.thumbnailUrl === DEFAULT_THUMBNAIL ? (
                                         <video
                                             src={video.videoUrl}
-                                            className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer"
+                                            className="w-full h-36 object-cover rounded-md shadow-md cursor-pointer"
                                             controls
                                         >
                                             Your browser does not support the video tag.
@@ -153,13 +157,13 @@ const UserHistory = () => {
                                         <img
                                             src={video.thumbnailUrl}
                                             alt="Video Thumbnail"
-                                            className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer"
+                                            className="w-full h-36 object-cover rounded-md shadow-md cursor-pointer"
                                             loading="lazy"
                                             onClick={() => window.open(video.videoUrl, "_blank")}
                                         />
                                     )}
                                 </div>
-
+    
                                 <div className="flex justify-center">
                                     <button
                                         onClick={() => setSelectedVideo(video)}
@@ -177,6 +181,9 @@ const UserHistory = () => {
             )}
         </div>
     );
+    
+
+    
 };
 
 export default UserHistory;

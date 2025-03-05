@@ -74,12 +74,12 @@ const Header = ({ inputText, currentModel = "📑Watch To Work" }) => {
   };
 
   return (
-    <div className="sticky top-0 h-16 flex items-center justify-between bg-[#fff4f4] border-b border-gray-300 px-4 sm:px-6 lg:px-8">
+    <div className="sticky top-0 h-16 flex items-center justify-between bg-[#fff4f4] border-b border-gray-300 px-5">
       {/* Sidebar Toggle Button */}
       <button
         onClick={toggleSidebar}
         title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
-        className="flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
+        className="flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 transition-colors  duration-200"
       >
         {isSidebarOpen ? (
           <LuPanelRightOpen className="w-5 h-5 text-gray-700" />
