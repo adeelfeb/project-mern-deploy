@@ -2,6 +2,7 @@ import axios from 'axios';
 import conf from '../conf/conf.js'; // Configuration file for the API URL
 import Cookies from 'js-cookie';
 
+
 class VideoService {
     constructor() {
         this.apiUrl = conf.apiUrl; 
@@ -222,6 +223,8 @@ async getAllVideos() {
             throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
         }
     }
+
+
     async getTranscript(videoId) {
         try {
             // console.log("Inside the getTranscript:", videoId);
@@ -431,7 +434,7 @@ async getAllVideos() {
                 }
             );
     
-            // console.log('Server Response:', response.data); // Log response for debugging
+            // console.log('Server Response for get history:',  response.data); // Log response for debugging
             return response.data; // Return the full response
         } catch (error) {
             console.error('Error fetching user history:', error);

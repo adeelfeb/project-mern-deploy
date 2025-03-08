@@ -231,3 +231,100 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </Provider>
   </React.StrictMode>
 );
+
+
+
+
+// import React, { Suspense, lazy } from 'react';
+// import ReactDOM from 'react-dom/client';
+// import { Provider } from 'react-redux';
+// import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+// import store from './store/store.js';
+// import App from './App';
+// import { AuthLayout } from './components';
+// import Home from './pages/Home';
+// import Signup from './pages/Signup';
+// import Login from './pages/Login';
+// import './index.css';
+
+// // Lazy load components
+// const Dashboard = lazy(() => import('./dashboard/Dashboard.jsx'));
+// const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout.jsx'));
+// const Settings = lazy(() => import('./pages/Settings.jsx'));
+// const UserHistory = lazy(() => import('./pages/UserHistory.jsx'));
+// const Info = lazy(() => import('./info/Info.jsx'));
+// const UploadPdf = lazy(() => import('./chroma/UploadPdf.jsx'));
+// const InputURL = lazy(() => import('./pages/InputURL.jsx'));
+// const Transcript = lazy(() => import('./pages/Transcript'));
+// const Summary = lazy(() => import('./pages/Summary'));
+// const Quiz = lazy(() => import('./pages/Quiz'));
+// const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
+// const CurrentScore = lazy(() => import('./pages/CurrentScore'));
+// const VideoList = lazy(() => import('./pages/VideoList.jsx'));
+// const VideoUpload = lazy(() => import('./pages/VideoUpload.jsx'));
+// const ForgetPassword = lazy(() => import('./pages/ForgetPassword.jsx'));
+// const FrontendPage = lazy(() => import('./pages/FrontendPage.jsx'));
+// const ApiRequestForm = lazy(() => import('./pages/ApiRequestForm.jsx'));
+// const AddVideoDetailsInDataBase = lazy(() => import('./pages/AddVideoDetailsInDataBase.jsx'));
+
+// // Global fallback component
+// function GlobalFallback() {
+//   return (
+//     <div className="flex justify-center items-center h-screen">
+//       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+//     </div>
+//   );
+// }
+
+// // Define routes
+// const router = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: <App />,
+//     children: [
+//       { path: '/', element: <Home /> },
+//       { path: '/login', element: <AuthLayout authentication={false}><Login /></AuthLayout> },
+//       { path: '/signup', element: <AuthLayout authentication={false}><Signup /></AuthLayout> },
+//       { path: '/add-cors', element: <FrontendPage /> },
+//       { path: '/videos', element: <VideoList /> },
+//       { path: '/add-api', element: <ApiRequestForm /> },
+//       { path: '/add-VideoDetails', element: <AddVideoDetailsInDataBase /> },
+//       { path: '/forgot-password', element: <ForgetPassword /> },
+
+//       {
+//         path: '/dashboard',
+//         element: <AuthLayout authentication><DashboardLayout /></AuthLayout>,
+//         children: [
+//           { path: 'chat', element: <Dashboard /> },
+//           { path: 'upload-video', element: <VideoUpload /> },
+//           { path: 'uploadpdf', element: <UploadPdf /> },
+//           { path: 'settings', element: <Settings /> },
+//           { path: 'user-history', element: <UserHistory /> },
+//           { path: 'info', element: <Info /> },
+//           {
+//             path: 'input-url',
+//             element: <InputURL />,
+//             children: [
+//               { path: 'transcript', element: <Transcript /> },
+//               { path: 'summary', element: <Summary /> },
+//               { path: 'qna', element: <Quiz /> },
+//               { path: 'key-concepts', element: <KeyConcepts /> },
+//               { path: 'score', element: <CurrentScore /> },
+//             ],
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ]);
+
+// // Render App
+// ReactDOM.createRoot(document.getElementById('root')).render(
+//   <React.StrictMode>
+//     <Provider store={store}>
+//       <Suspense fallback={<GlobalFallback />}>
+//         <RouterProvider router={router} />
+//       </Suspense>
+//     </Provider>
+//   </React.StrictMode>
+// );

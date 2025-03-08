@@ -9,6 +9,7 @@ function CurrentUserDetails() {
     const fetchUserDetails = async () => {
       try {
         const user = await VideoService.getCurrentUser();
+        // console.log("the response from the user details is:", user)
         setUserDetails(user);
       } catch (err) {
         setError(err.message || "Failed to fetch user details.");
@@ -57,9 +58,9 @@ function CurrentUserDetails() {
           <p>
             <strong>User Name:</strong> {userDetails.username}
           </p>
-          <p>
+          {/* <p>
             <strong>ID:</strong> {userDetails._id}
-          </p>
+          </p> */}
           {/* Display the formatted "updatedAt" timestamp */}
           <p>
             <strong>Account Created:</strong> {formatDateToLocal(userDetails.createdAt)}
