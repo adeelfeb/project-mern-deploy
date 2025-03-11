@@ -115,7 +115,7 @@ export class AuthService {
                 payload, 
                 {
                     headers: { 'Content-Type': 'application/json' },
-                    withCredentials: false,
+                    withCredentials: true,
                 }
             );
 
@@ -197,7 +197,7 @@ export class AuthService {
             const response = await axios.post(
                 `${this.apiUrl}/users/current-user`, 
                 {},
-                { headers: { "Authorization": `Bearer ${accessToken}` }, withCredentials: false }
+                { headers: { "Authorization": `Bearer ${accessToken}` }, withCredentials: true }
             );
             // console.log("Inside the current user:", response.data.data)
             return response.data.data;

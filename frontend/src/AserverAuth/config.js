@@ -168,21 +168,15 @@ async getAllVideos() {
   async deleteFromHistory(videoId) {
     try {
         // console.log("Deleting video from history:", videoId);
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null; // Return null if access token is not found
-        }
+        
+        
 
         const response = await axios.delete(
             `${this.apiUrl}/users/delete-from-history`, // API endpoint for deleting from history
             {
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-                    "Content-Type": "application/json"
-                },
+                
                 data: { videoId }, // Send videoId in the request body
-                withCredentials: false, // No need to send cookies with this request
+                withCredentials: true, // No need to send cookies with this request
             }
         );
 
@@ -199,21 +193,17 @@ async getAllVideos() {
     
     async getvideoDetails(videoId) {
         try {
-            // console.log("Inside the getTranscript:", videoId);
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) {
-                console.log('No access token found in localStorage');
-                return null; // Return null if access token is not found
-            }
+            // console.log("Inside the get videoDetails:", videoId);
+           
+            
     
             const response = await axios.get(
                 `${this.apiUrl}/users/videoDetails`, // API endpoint for getting the transcript
                 {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-                    },
+                    
+                  
                     params: { videoId }, // Pass videoId as a query parameter
-                    withCredentials: false, // No need to send cookies with this request
+                    withCredentials: true, // No need to send cookies with this request
                 }
             );
             // console.log("transcript is:", response.data)
@@ -228,20 +218,13 @@ async getAllVideos() {
     async getTranscript(videoId) {
         try {
             // console.log("Inside the getTranscript:", videoId);
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) {
-                console.log('No access token found in localStorage');
-                return null; // Return null if access token is not found
-            }
+           
     
             const response = await axios.get(
                 `${this.apiUrl}/users/transcript`, // API endpoint for getting the transcript
                 {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-                    },
                     params: { videoId }, // Pass videoId as a query parameter
-                    withCredentials: false, // No need to send cookies with this request
+                    withCredentials: true, // No need to send cookies with this request
                 }
             );
             // console.log("transcript is:", response.data)
@@ -255,20 +238,15 @@ async getAllVideos() {
 
     async getSummary(videoId) {
         try {
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null; // Return null if access token is not found
-          }
+          
+          
     
           const response = await axios.get(
             `${this.apiUrl}/users/summary`, // API endpoint for getting the summary
             {
-              headers: {
-                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-              },
+              
               params: { videoId }, // Pass videoId as a query parameter
-              withCredentials: false, // No need to send cookies with this request
+              withCredentials: true, // No need to send cookies with this request
             }
           );
     
@@ -282,20 +260,14 @@ async getAllVideos() {
 
     async getKeyConcepts(videoId) {
         try {
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null; // Return null if access token is not found
-          }
+          
+          
     
           const response = await axios.get(
             `${this.apiUrl}/users/keyconcept`, // API endpoint for getting the summary
             {
-              headers: {
-                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-              },
               params: { videoId }, // Pass videoId as a query parameter
-              withCredentials: false, // No need to send cookies with this request
+              withCredentials: true, // No need to send cookies with this request
             }
           );
           // console.log("The api response was:", response.data.data)
@@ -310,20 +282,14 @@ async getAllVideos() {
       async getqnas(videoId) {
         try {
           // console.log(  "The Video id is: ",videoId)
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null; // Return null if access token is not found
-          }
+          
     
           const response = await axios.get(
             `${this.apiUrl}/users/qnas`, // API endpoint for getting the summary
             {
-              headers: {
-                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-              },
+              
               params: { videoId }, // Pass videoId as a query parameter
-              withCredentials: false, // No need to send cookies with this request
+              withCredentials: true, // No need to send cookies with this request
             }
           );
           // console.log("response of QNA is:", response.data)
@@ -339,20 +305,14 @@ async getAllVideos() {
       async getScore(videoId) {
         try {
           // console.log(  "The Video id is: ",videoId)
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null; // Return null if access token is not found
-          }
+          
     
           const response = await axios.get(
             `${this.apiUrl}/users/score`, // API endpoint for getting the summary
             {
-              headers: {
-                "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-              },
+              
               params: { videoId }, // Pass videoId as a query parameter
-              withCredentials: false, // No need to send cookies with this request
+              withCredentials: true, // No need to send cookies with this request
             }
           );
           // console.log("response of score is:", response.data)
@@ -418,19 +378,13 @@ async getAllVideos() {
     
       async getUserHistory() {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) {
-                console.error('No access token found in localStorage');
-                return { status: 401, message: 'Unauthorized: No access token found', success: false };
-            }
+            
     
             const response = await axios.get(
                 `${this.apiUrl}/users/history`, // API endpoint for getting the history
                 {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-                    },
-                    withCredentials: false, // No need to send cookies with this request
+                    
+                    withCredentials: true, // No need to send cookies with this request
                 }
             );
     
@@ -473,7 +427,7 @@ async getAllVideos() {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-              withCredentials: false,
+              withCredentials: true,
             }
           );
     
@@ -483,6 +437,8 @@ async getAllVideos() {
           throw new Error(error.response ? error.response.data.message : error.message);
         }
       }
+
+
     async changeCurrentPassword(oldPassword, newPassword) {
         try {
             // console.log("Passwords", oldPassword, newPassword)
