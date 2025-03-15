@@ -14,19 +14,17 @@ class VideoService {
       try {
           const accessToken = localStorage.getItem('accessToken');
   
-          if (!accessToken) {
-              console.error('No access token found in localStorage');
-              return { status: 401, message: 'Unauthorized: No access token found' }; // Return error object
-          }
+          // if (!accessToken) {
+          //     console.error('No access token found in localStorage');
+          //     return { status: 401, message: 'Unauthorized: No access token found' }; // Return error object
+          // }
           
           const response = await axios.post(
               `${this.apiUrl}/users/addVideo`, // API endpoint for adding the video
               { videoUrl }, // Send the video URL in the request body
               {
-                  headers: {
-                      "Authorization": `Bearer ${accessToken}`, // Attach the access token in the Authorization header
-                  },
-                  withCredentials: false, // No need to send cookies with this request
+                  
+                  withCredentials: true, // No need to send cookies with this request
               }
           );
   
@@ -330,21 +328,14 @@ async getAllVideos() {
       async submitQuiz(videoId, quiz) {
         try {
           // console.log("video id:", videoId)
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) {
-                console.log('No access token found in localStorage');
-                return null; // Return null if access token is not found
-            }
+            
     
             const response = await axios.post(
                 `${this.apiUrl}/users/qnas`, // API endpoint for submitting quiz
                 { videoId, quiz }, // Send videoId and quiz inside the request body
                 {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`, // Attach the access token
-                        "Content-Type": "application/json" // Ensure JSON request format
-                    },
-                    withCredentials: false // No cookies needed
+                    
+                    withCredentials: true // No cookies needed
                 }
             );
     

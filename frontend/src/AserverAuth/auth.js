@@ -189,6 +189,7 @@ export class AuthService {
             throw new Error(error.response ? error.response.data.message : error.message);
         }
     }
+    
     async getCurrentUser() {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -209,12 +210,10 @@ export class AuthService {
 
     async logout() {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) return null;
+            
 
-            await axios.post(`${this.apiUrl}/users/logout`, {}, {
-                headers: { "Authorization": `Bearer ${accessToken}` }, 
-                withCredentials: false 
+            await axios.post(`${this.apiUrl}/users/logout`, {}, { 
+                withCredentials: true 
             });
 
             localStorage.removeItem('accessToken');
