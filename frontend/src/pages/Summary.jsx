@@ -44,8 +44,8 @@ const Summary = ({ data, videoId }) => {
 
       // Generate new summaries using AI
       const [aiResponseEnglish, aiResponseOriginal] = await Promise.all([
-        startChatWithMessage([`Summarize this content. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText}`]),
-        startChatWithMessage([`Summarize this content in the language it is mostly in: ${transcriptTextOriginal}`]),
+        startChatWithMessage([`Summarize this content   and this is the previouse summary text ${summaryText}. It is a lecture transcript and will be displayed on the frontend, so format it well: ${transcriptText} `]),
+        startChatWithMessage([`Summarize this content and this is the previouse summary text ${summaryText} in the language it is mostly in: ${transcriptTextOriginal} `]),
       ]);
 
       const id = videoId

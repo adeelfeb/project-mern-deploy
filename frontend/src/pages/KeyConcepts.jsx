@@ -27,7 +27,7 @@ function KeyConcepts({ data, videoId }) {
 
     const { transcriptText } = transcriptResult;
     const aiResponse = await startChatWithMessage([
-      `Extract key concepts from this content this is transcript of an educational video so make it accordingly: ${transcriptText}`,
+      `this is the previous keyconcept text ${keyConcepts}  Extract key concepts from this content this is transcript of an educational video so make it accordingly: ${transcriptText} `,
     ]);
 
     const concept = {
