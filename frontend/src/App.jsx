@@ -16,15 +16,16 @@ function App() {
 
   // Only check authentication on login/signup pages
   useEffect(() => {
-    const authPages = ["/login", "/signup"]; // Add authentication-related routes here
+    const authPages = ["/login", "/signup"];
     if (!authPages.includes(location.pathname)) return;
-
+  
     let isMounted = true;
     setLoading(true);
-
-    async function fetchUserData() {
+  
+    const fetchUserData = async () => {
       try {
         const userData = await authService.getCurrentUser();
+        console.log("user is:", userData)
         if (isMounted) {
           if (userData) {
             dispatch(setLoginStatus(true));
@@ -39,14 +40,47 @@ function App() {
       } finally {
         if (isMounted) setLoading(false);
       }
-    }
-
+    };
+  
     fetchUserData();
-
+  
     return () => {
       isMounted = false;
     };
   }, [dispatch, location.pathname]);
+  // useEffect(() => {
+  //   const authPages = ["/login", "/signup"]; // Add authentication-related routes here
+  //   if (!authPages.includes(location.pathname)) return;
+
+  //   let isMounted = true;
+  //   setLoading(true);
+
+  //   async function fetchUserData() {
+  //     try {
+  //       const userData = await authService.getCurrentUser();
+  //       console.log("the user is :", userData)
+  //       if (isMounted) {
+  //         if (userData) {
+  //           dispatch(setLoginStatus(true));
+  //           dispatch(setUserData(userData));
+  //         } else {
+  //           dispatch(logout());
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       if (isMounted) setError(error.message || "Failed to load user data.");
+  //     } finally {
+  //       if (isMounted) setLoading(false);
+  //     }
+  //   }
+
+  //   fetchUserData();
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [dispatch, location.pathname]);
 
   return (
     <ImageProvider>

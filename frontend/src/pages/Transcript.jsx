@@ -15,7 +15,7 @@ const Transcript = ({ data }) => {
   const [toastMessage, setToastMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
 
-  console.log("Transcript data received:", data);
+  // console.log("Transcript data received:", data);
 
   const isTranscriptEmpty =
     (!data?.english || data.english.length === 0) &&

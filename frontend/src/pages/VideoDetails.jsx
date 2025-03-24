@@ -152,57 +152,151 @@ const VideoDetails = ({ data }) => {
           }
           break;
   
-        case "quiz":
-          response = await videoService.getqnas(data._id);      
-          // console.log("the quiz recieved is :", response)
+        // case "quiz":
+        //   response = await videoService.getqnas(data._id);      
+        //   console.log("the quiz recieved is :", response.status)
+        //   if(response.status === 269){
+        //     setQnatData(response.status)
+        //     return
+        //   }
   
-          // If QnA is empty, generate it using the transcript
-          if (!(response.qnas?.shortQuestions?.length || response.qnas?.mcqs?.length || response.qnas?.fillInTheBlanks?.length)) {
+        //   // If QnA is empty, generate it using the transcript
+        //   if (!(response.qnas?.shortQuestions?.length || response.qnas?.mcqs?.length || response.qnas?.fillInTheBlanks?.length)) {
   
-            setQuizIsLoading("generating");
-            setIsGenerating(true);
+        //     setQuizIsLoading("generating");
+        //     setIsGenerating(true);
           
-            // Fetch and process transcript
-            const transcriptResult = await transcriptFetchService.fetchAndProcessTranscript(data._id);
-            if (!transcriptResult) {
-              // console.log("Transcript is empty, cannot generate quiz.");
-              setQnatData({ qnas: "NA" });
-              return;
-            }
+        //     // Fetch and process transcript
+        //     const transcriptResult = await transcriptFetchService.fetchAndProcessTranscript(data._id);
+        //     if (!transcriptResult) {
+        //       // console.log("Transcript is empty, cannot generate quiz.");
+        //       setQnatData({ qnas: "NA" });
+        //       return;
+        //     }
           
-            const { transcriptText } = transcriptResult;
+        //     const { transcriptText } = transcriptResult;
           
-            // Prompt AI to generate structured quiz data
-            const aiResponse = await startChatWithMessage([
-              `Generate a structured quiz based on this transcript:
-               ${transcriptText}
-               The quiz should be formatted as JSON with three sections:
-               - "mcqs": An array of MCQs, each with a question, four options, and the correctAnswer.
-               - "shortQuestions": An array of short-answer questions, each with a question and answer.
-               - "fillInTheBlanks": An array of fill-in-the-blank questions, each with a sentence and the correct missing word.
-               Wrap the JSON inside a code block like this:
-               \`\`\`json
-               { "mcqs": [...], "shortQuestions": [...], "fillInTheBlanks": [...] }
-               \`\`\`
-               `
-            ]);
+        //     // Prompt AI to generate structured quiz data
+        //     const aiResponse = await startChatWithMessage([
+        //       `Generate a structured quiz based on this transcript:
+        //        ${transcriptText}
+        //        The quiz should be formatted as JSON with three sections:
+        //        - "mcqs": An array of MCQs, each with a question, four options, and the correctAnswer.
+        //        - "shortQuestions": An array of short-answer questions, each with a question and answer.
+        //        - "fillInTheBlanks": An array of fill-in-the-blank questions, each with a sentence and the correct missing word.
+        //        Wrap the JSON inside a code block like this:
+        //        \`\`\`json
+        //        { "mcqs": [...], "shortQuestions": [...], "fillInTheBlanks": [...] }
+        //        \`\`\`
+        //        `
+        //     ]);
           
             
           
 
-            // console.log("the Quiz generated is in raw here:", aiResponse)
+        //     // console.log("the Quiz generated is in raw here:", aiResponse)
+        //     // Extract JSON from AI response (removing the code block formatting)
+        //     const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
+        //     // console.log("QUiz is:", jsonMatch)
+        //     if (!jsonMatch) {
+        //       console.error("Failed to parse AI response as JSON.");
+        //       setQnatData({ qnas: "NA" });
+        //       return;
+        //     }
+          
+        //     try {
+        //       const parsedData = JSON.parse(jsonMatch[1].trim()); // Convert extracted JSON string to object
+          
+        //       // Ensure the response is properly formatted
+        //       const formattedQuizData = {
+        //         qnas: {
+        //           mcqs: parsedData.mcqs || [],
+        //           shortQuestions: parsedData.shortQuestions || [],
+        //           fillInTheBlanks: parsedData.fillInTheBlanks || [],
+        //         },
+        //         videoId:data._id
+        //       };
+
+
+
+        //       //storing the quiz in database
+
+        //       // console.log("formated quiz is:", formattedQuizData)
+        //       //  console.log("the data in videoDetails is:", data)
+        //        const id = data._id
+              
+ 
+        //        //stroing the summary in database
+        //        ApiService.addQnas(id, formattedQuizData).catch((error) => {
+        //          console.error("Error storing Quiz:", error);
+        //        });
+
+
+          
+        //       setQnatData(formattedQuizData);
+        //     } catch (error) {
+        //       console.error("Error parsing AI response JSON:", error);
+        //       setQnatData({ qnas: "NA" });
+        //     }
+        //   }
+          
+        //    else {
+        //     setQnatData(response);
+        //   }
+        //   break;
+        case "quiz":
+          
+          if (isMobile) setIsPopupOpen(true); // Open the popup for mobile view
+          
+          response = await videoService.getqnas(data._id);
+          // console.log("Quiz response:", response); // Debugging log
+          
+          if (response.status === 269) {
+            setSelectedSection("quiz"); // Explicitly set the selected section
+            setQnatData({ status: 269, message: "You have already submitted this quiz.", response });
+            return;
+          }
+
+          // If QnA is empty, generate it using the transcript
+          if (!(response.qnas?.shortQuestions?.length || response.qnas?.mcqs?.length || response.qnas?.fillInTheBlanks?.length)) {
+            setQuizIsLoading("generating");
+            setIsGenerating(true);
+
+            // Fetch and process transcript
+            const transcriptResult = await transcriptFetchService.fetchAndProcessTranscript(data._id);
+            if (!transcriptResult) {
+              setQnatData({ qnas: "NA" });
+              return;
+            }
+
+            const { transcriptText } = transcriptResult;
+
+            // Prompt AI to generate structured quiz data
+            const aiResponse = await startChatWithMessage([
+              `Generate a structured quiz based on this transcript:
+              ${transcriptText}
+              The quiz should be formatted as JSON with three sections:
+              - "mcqs": An array of MCQs, each with a question, four options, and the correctAnswer.
+              - "shortQuestions": An array of short-answer questions, each with a question and answer.
+              - "fillInTheBlanks": An array of fill-in-the-blank questions, each with a sentence and the correct missing word.
+              Wrap the JSON inside a code block like this:
+              \`\`\`json
+              { "mcqs": [...], "shortQuestions": [...], "fillInTheBlanks": [...] }
+              \`\`\`
+              `
+            ]);
+
             // Extract JSON from AI response (removing the code block formatting)
             const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
-            // console.log("QUiz is:", jsonMatch)
             if (!jsonMatch) {
               console.error("Failed to parse AI response as JSON.");
               setQnatData({ qnas: "NA" });
               return;
             }
-          
+
             try {
               const parsedData = JSON.parse(jsonMatch[1].trim()); // Convert extracted JSON string to object
-          
+
               // Ensure the response is properly formatted
               const formattedQuizData = {
                 qnas: {
@@ -210,33 +304,23 @@ const VideoDetails = ({ data }) => {
                   shortQuestions: parsedData.shortQuestions || [],
                   fillInTheBlanks: parsedData.fillInTheBlanks || [],
                 },
-                videoId:data._id
+                videoId: data._id,
               };
 
+              // Store the quiz in the database
+              ApiService.addQnas(data._id, formattedQuizData).catch((error) => {
+                console.error("Error storing Quiz:", error);
+              });
+              // console.log("the generated quiz is:'", formattedQuizData)
 
-
-              //storing the quiz in database
-
-              // console.log("formated quiz is:", formattedQuizData)
-              //  console.log("the data in videoDetails is:", data)
-               const id = data._id
-              
- 
-               //stroing the summary in database
-               ApiService.addQnas(id, formattedQuizData).catch((error) => {
-                 console.error("Error storing Quiz:", error);
-               });
-
-
-          
               setQnatData(formattedQuizData);
             } catch (error) {
               console.error("Error parsing AI response JSON:", error);
               setQnatData({ qnas: "NA" });
             }
-          }
-          
-           else {
+          } else {
+            
+            console.log("the generated quiz is:'", response)
             setQnatData(response);
           }
           break;

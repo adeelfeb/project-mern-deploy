@@ -192,15 +192,12 @@ export class AuthService {
     
     async getCurrentUser() {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) return null;
-
             const response = await axios.post(
                 `${this.apiUrl}/users/current-user`, 
                 {},
-                { headers: { "Authorization": `Bearer ${accessToken}` }, withCredentials: true }
+                {withCredentials: true }
             );
-            // console.log("Inside the current user:", response.data.data)
+            // console.log("Inside the current user auth.js Function getCurrentUser:", response.data.data)
             return response.data.data;
         } catch (error) {
             console.error("Error fetching current user:", error);

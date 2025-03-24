@@ -28,7 +28,7 @@ const CurrentScore = ({ data }) => {
     setErrorMessage(null); // Clear any previous error message
     try {
       const response = await videoService.getScore(data);
-      // console.log("the response is:", response)
+      console.log("the response is:", response)
       
       if (!response.data.scoreIsEvaluated) {
         setButtonState("calculating"); // Show 'Calculating...' for 3 seconds
@@ -45,6 +45,7 @@ const CurrentScore = ({ data }) => {
         const aiResponse = await startChatWithMessage([prompt]);
         
         // Extract scores and evaluations from AI response
+        // console.log("the short ansers are like this:", response.data.shortAnswers)
         const shortAnswersWithScores = response.data.shortAnswers.map((q, index) => {
           const scoreRegex = new RegExp(`Q${index + 1}: Score: (\\d+)/10, Evaluation: (.+)`);
           const match = aiResponse.match(scoreRegex);
@@ -71,21 +72,44 @@ const CurrentScore = ({ data }) => {
         
         // Calculate total score
         const totalScore = shortAnswersWithScores.reduce((sum, q) => sum + q.score, 0);
+        // Calculate individual scores
+      const mcqScore = calculatePercentage(response.data.mcqs.filter((q) => q.isCorrect).length, response.data.mcqs.length);
+      const fillInTheBlanksScore = calculatePercentage(
+        response.data.fillInTheBlanks.filter((q) => q.score).length,
+        response.data.fillInTheBlanks.length
+      );
+      const shortQuestionsScore = calculatePercentage(
+        totalScore,
+        totalScore.length
+      );
+
+      // Calculate overall score (unweighted average)
+      const formattedScore = (
+        parseFloat(mcqScore) +
+        parseFloat(fillInTheBlanksScore) +
+        parseFloat(shortQuestionsScore)
+      ) / 3;
+      
+      const overallScore = formattedScore.toFixed(2); // Ensures 2 decimal places as a string
+      
+
         
         const updatedResponse = {
           ...response.data,
           shortAnswers: shortAnswersWithScores,
-          totalScore, // Add total score to the response
+          overallScore: overallScore, // Add total score to the response
+
         };
         // console.log("Updated response for quiz evaluation: ", updatedResponse);
         
         // Calculate scores based on the updated response
-        const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = updatedResponse;
+        const { shortAnswers, mcqs, fillInTheBlanks } = updatedResponse;
+        
         const quizTaken = [
           ...shortAnswers.map((q) => ({
             question: q.question,
             userAnswer: q.givenAnswer,
-            correctAnswer: q.correctAnswer,
+            correctAnswer: q.correctAnswer || q.correctAnswer,
             type: 'shortAnswer',
             isCorrect: q.isCorrect, 
             evaluation: q.evaluation, 
@@ -101,39 +125,37 @@ const CurrentScore = ({ data }) => {
           ...fillInTheBlanks.map((q) => ({
             question: q.sentence,
             userAnswer: q.givenAnswer,
+            score: q.score,
             correctAnswer: q.correctAnswer,
             type: 'fillInTheBlank',
-            isCorrect: q.score ? true: false,
-            score: q.score
+            isCorrect: q.score ? true: false
           })),
+          overallScore
         ];
-  
-        setScores({
-          mcqScore: calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length),
-          fillInTheBlanksScore: calculatePercentage(
-            fillInTheBlanks.filter((q) => q.isCorrect).length,
-            fillInTheBlanks.length
-          ),
-          shortQuestionsScore: calculatePercentage(
-            shortAnswers.filter((q) => q.isCorrect).length,
-            shortAnswers.length
-          ),
-          quizTaken,
-          overallScore: totalScore,
-        });
-
 
         const scoreData = {
           userId: response.data.userId,
           videoId: response.data.videoId,
           evaluation: quizTaken
         }
+        // console.log("before seting the overall score:", scoreData)
 
         
 
         ApiService.setScore(scoreData).catch((error) => {
           console.error("Error storing score evaluation:", error);
         });
+  
+        setScores({
+          mcqScore: mcqScore,
+          fillInTheBlanksScore: fillInTheBlanksScore,
+          shortQuestionsScore: shortQuestionsScore,
+          quizTaken,
+          overallScore: overallScore,
+        });
+
+
+        
         
         
 
@@ -142,16 +164,39 @@ const CurrentScore = ({ data }) => {
         return; // Exit function early
       }
   
-      const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = response.data;
+      const { shortAnswers, mcqs, fillInTheBlanks } = response.data;
+
+      // Calculate individual scores
+      const mcqScore = calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length);
+      const fillInTheBlanksScore = calculatePercentage(
+        fillInTheBlanks.filter((q) => q.score).length,
+        fillInTheBlanks.length
+      );
+      const shortQuestionsScore = calculatePercentage(
+        shortAnswers.filter((q) => q.score >= 5).length,
+        shortAnswers.length
+      );
+
+      // Calculate overall score (unweighted average)
+      const formattedScore = (
+        parseFloat(mcqScore) +
+        parseFloat(fillInTheBlanksScore) +
+        parseFloat(shortQuestionsScore)
+      ) / 3;
+      
+      const overallScore = formattedScore.toFixed(2); // Ensures 2 decimal places as a string
+      
+
+      // Prepare quizTaken array
       const quizTaken = [
         ...shortAnswers.map((q) => ({
           question: q.question,
           userAnswer: q.givenAnswer,
           correctAnswer: q.correctAnswer,
-          evaluation: q.aiEvaluation, 
+          evaluation: q.aiEvaluation,
           type: 'shortAnswer',
-          isCorrect: q.score >= 5, // Add isCorrect based on score
-          score: q.score, // Add the score field
+          isCorrect: q.score >= 5,
+          score: q.score,
         })),
         ...mcqs.map((q) => ({
           question: q.question,
@@ -165,23 +210,62 @@ const CurrentScore = ({ data }) => {
           userAnswer: q.givenAnswer,
           correctAnswer: q.correctAnswer,
           type: 'fillInTheBlank',
-          isCorrect: q.score ? true: false,
+          isCorrect: q.score ? true : false,
+          score: q.score,
         })),
       ];
-  
+
+      // Update scores state
       setScores({
-        mcqScore: calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length),
-        fillInTheBlanksScore: calculatePercentage(
-          fillInTheBlanks.filter((q) => q.isCorrect).length,
-          fillInTheBlanks.length
-        ),
-        shortQuestionsScore: calculatePercentage(
-          shortAnswers.filter((q) => q.score >= 5).length, // Use isCorrect logic
-          shortAnswers.length
-        ),
+        mcqScore,
+        fillInTheBlanksScore,
+        shortQuestionsScore,
         quizTaken,
-        overallScore,
+        overallScore, // Use the calculated overall score
       });
+
+      // const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = response.data;
+      // const quizTaken = [
+      //   ...shortAnswers.map((q) => ({
+      //     question: q.question,
+      //     userAnswer: q.givenAnswer,
+      //     correctAnswer: q.correctAnswer,
+      //     evaluation: q.aiEvaluation, 
+      //     type: 'shortAnswer',
+      //     isCorrect: q.score >= 5, // Add isCorrect based on score
+      //     score: q.score, // Add the score field
+      //   })),
+      //   ...mcqs.map((q) => ({
+      //     question: q.question,
+      //     userAnswer: q.selectedOption,
+      //     correctAnswer: q.correctOption,
+      //     type: 'mcq',
+      //     isCorrect: q.isCorrect,
+      //   })),
+      //   ...fillInTheBlanks.map((q) => ({
+      //     question: q.sentence,
+      //     userAnswer: q.givenAnswer,
+      //     correctAnswer: q.correctAnswer,
+      //     type: 'fillInTheBlank',
+      //     isCorrect: q.score ? true: false,
+      //     score: q.score
+      //   })),
+      // ];
+  
+      // setScores({
+      //   mcqScore: calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length),
+      //   fillInTheBlanksScore: calculatePercentage(
+      //     fillInTheBlanks.filter((q) => q.score).length,
+      //     fillInTheBlanks.length
+      //   ),
+      //   shortQuestionsScore: calculatePercentage(
+      //     shortAnswers.filter((q) => q.score >= 5).length, // Use isCorrect logic
+      //     shortAnswers.length
+      //   ),
+      //   quizTaken,
+      //   overallScore,
+      // });
+    
     } catch (error) {
       setErrorMessage("Error getting quiz score. Please submit a quiz or try later."); // Set error message
     } finally {
@@ -191,6 +275,7 @@ const CurrentScore = ({ data }) => {
     }
   };
 
+  
 
   const calculatePercentage = (correct, total) => {
     return total === 0 ? 0 : ((correct / total) * 100).toFixed(2);

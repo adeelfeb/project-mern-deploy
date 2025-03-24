@@ -280,12 +280,9 @@ async getAllVideos() {
       async getqnas(videoId) {
         try {
           // console.log(  "The Video id is: ",videoId)
-          
-    
           const response = await axios.get(
             `${this.apiUrl}/users/qnas`, // API endpoint for getting the summary
             {
-              
               params: { videoId }, // Pass videoId as a query parameter
               withCredentials: true, // No need to send cookies with this request
             }
@@ -293,6 +290,9 @@ async getAllVideos() {
           // console.log("response of QNA is:", response.data)
           return response.data; 
         } catch (error) {
+          if(error.response.data.status === 269){
+            return error.response.data.message
+          }
           console.error('Error fetching Quiz:', error);
           throw new Error(error.response ? error.response.data.message : error.message); // Propagate the error
         }
