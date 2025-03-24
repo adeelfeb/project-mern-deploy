@@ -320,7 +320,7 @@ const VideoDetails = ({ data }) => {
             }
           } else {
             
-            console.log("the generated quiz is:'", response)
+            // console.log("the generated quiz is:'", response)
             setQnatData(response);
           }
           break;

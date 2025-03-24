@@ -12,18 +12,12 @@ class VideoService {
 
     async addVideo(videoUrl) {
       try {
-          const accessToken = localStorage.getItem('accessToken');
-  
-          // if (!accessToken) {
-          //     console.error('No access token found in localStorage');
-          //     return { status: 401, message: 'Unauthorized: No access token found' }; // Return error object
-          // }
+        
           
           const response = await axios.post(
               `${this.apiUrl}/users/addVideo`, // API endpoint for adding the video
               { videoUrl }, // Send the video URL in the request body
               {
-                  
                   withCredentials: true, // No need to send cookies with this request
               }
           );
@@ -31,33 +25,29 @@ class VideoService {
           // console.log('Server Response:', response.data); // Log the response from the server
           return response.data; // Return the response data (e.g., success message or video data)
       } catch (error) {
-          console.error('Error adding video to watch history:', error);
+          // console.error('Error adding video to watch history:', error);
           
           if (error.response) {
               // Handle specific status codes
-              const { status, data } = error.response;
-              console.log('Server Error Response:', data); // Log the error response from the server
+              const {  data } = error.response;
+              // console.log('Server Error Response:', data.statusCode, "and data is:", data); // Log the error response from the server
   
-              // Handle error with new structure
-              if (data && data.statusCode && data.messsage) {
-                  return {
-                      status: data.statusCode,
-                      message: data.messsage,
-                      success: data.success,
-                  };
-              }
-  
-              switch (status) {
+              const statusCode = data.statusCode
+            
+              switch (statusCode) {
                   case 400:
-                      return { status, message: data.message || 'Bad Request' };
+                      return { statusCode, message: data.message || 'Bad Request' };
+                  case 409:
+                      // console.log("limit exceeded")
+                      return { statusCode, message: data.message || 'Limit exceeded' };
                   case 404:
-                      return { status, message: data.message || 'Resource Not Found' };
+                      return { statusCode, message: data.message || 'Resource Not Found' };
                   case 502:
-                      return { status, message: 'Bad Gateway: Unable to connect to the external API' };
+                      return { statusCode, message: 'Bad Gateway: Unable to connect to the external API' };
                   case 500:
-                      return { status, message: 'Internal Server Error: Please try again later' };
+                      return { statusCode, message: 'Internal Server Error: Please try again later' };
                   default:
-                      return { status, message: data.message || 'An unexpected error occurred' };
+                      return { statusCode, message: data.message || 'An unexpected error occurred' };
               }
           } else {
               console.log('Unknown Error:', error.message); // Log unknown errors

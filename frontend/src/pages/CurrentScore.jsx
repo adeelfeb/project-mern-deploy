@@ -28,7 +28,7 @@ const CurrentScore = ({ data }) => {
     setErrorMessage(null); // Clear any previous error message
     try {
       const response = await videoService.getScore(data);
-      console.log("the response is:", response)
+      // console.log("the response is:", response)
       
       if (!response.data.scoreIsEvaluated) {
         setButtonState("calculating"); // Show 'Calculating...' for 3 seconds
@@ -79,8 +79,8 @@ const CurrentScore = ({ data }) => {
         response.data.fillInTheBlanks.length
       );
       const shortQuestionsScore = calculatePercentage(
-        totalScore,
-        totalScore.length
+        totalScore/10,
+        shortAnswersWithScores.length
       );
 
       // Calculate overall score (unweighted average)
@@ -172,10 +172,15 @@ const CurrentScore = ({ data }) => {
         fillInTheBlanks.filter((q) => q.score).length,
         fillInTheBlanks.length
       );
-      const shortQuestionsScore = calculatePercentage(
-        shortAnswers.filter((q) => q.score >= 5).length,
-        shortAnswers.length
-      );
+      // const shortQuestionsScore = calculatePercentage(
+      //   shortAnswers.filter((q) => q.score >= 5).length,
+      //   shortAnswers.length
+      // );
+
+
+      const totalShortAnswersScore = shortAnswers.reduce((sum, q) => sum + q.score, 0);
+      const shortQuestionsScore = calculatePercentage(totalShortAnswersScore, shortAnswers.length * 10);
+
 
       // Calculate overall score (unweighted average)
       const formattedScore = (
@@ -224,48 +229,7 @@ const CurrentScore = ({ data }) => {
         overallScore, // Use the calculated overall score
       });
 
-      // const { shortAnswers, mcqs, fillInTheBlanks, overallScore } = response.data;
-      // const quizTaken = [
-      //   ...shortAnswers.map((q) => ({
-      //     question: q.question,
-      //     userAnswer: q.givenAnswer,
-      //     correctAnswer: q.correctAnswer,
-      //     evaluation: q.aiEvaluation, 
-      //     type: 'shortAnswer',
-      //     isCorrect: q.score >= 5, // Add isCorrect based on score
-      //     score: q.score, // Add the score field
-      //   })),
-      //   ...mcqs.map((q) => ({
-      //     question: q.question,
-      //     userAnswer: q.selectedOption,
-      //     correctAnswer: q.correctOption,
-      //     type: 'mcq',
-      //     isCorrect: q.isCorrect,
-      //   })),
-      //   ...fillInTheBlanks.map((q) => ({
-      //     question: q.sentence,
-      //     userAnswer: q.givenAnswer,
-      //     correctAnswer: q.correctAnswer,
-      //     type: 'fillInTheBlank',
-      //     isCorrect: q.score ? true: false,
-      //     score: q.score
-      //   })),
-      // ];
-  
-      // setScores({
-      //   mcqScore: calculatePercentage(mcqs.filter((q) => q.isCorrect).length, mcqs.length),
-      //   fillInTheBlanksScore: calculatePercentage(
-      //     fillInTheBlanks.filter((q) => q.score).length,
-      //     fillInTheBlanks.length
-      //   ),
-      //   shortQuestionsScore: calculatePercentage(
-      //     shortAnswers.filter((q) => q.score >= 5).length, // Use isCorrect logic
-      //     shortAnswers.length
-      //   ),
-      //   quizTaken,
-      //   overallScore,
-      // });
-    
+      
     } catch (error) {
       setErrorMessage("Error getting quiz score. Please submit a quiz or try later."); // Set error message
     } finally {
@@ -293,6 +257,19 @@ const CurrentScore = ({ data }) => {
   return (
     <div className="max-w-4xl mx-auto py-8 px-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl font-extrabold text-center text-indigo-600 mb-6">Your Current Scores</h2>
+      <div className="mt-8 text-center">
+        <button
+          onClick={handleGetScores}
+          disabled={buttonState !== "default"}
+          className="px-8 py-4 font-medium text-white bg-blue-500 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {buttonState === "loading"
+            ? "Fetching Scores..."
+            : buttonState === "calculating"
+            ? "Calculating..."
+            : "Get Current Scores"}
+        </button>
+      </div>
 
       {/* Display Error Toast Notification */}
       {errorMessage && (
@@ -304,9 +281,10 @@ const CurrentScore = ({ data }) => {
       )}
 
       <div className="space-y-6">
+        <br />
         {scores.mcqScore === null ? (
           <p className="text-lg text-gray-700 text-center mb-4">
-            Click the button below to fetch your current scores.
+            Click the button to fetch your current scores.
           </p>
         ) : (
           <>
@@ -443,7 +421,7 @@ const CurrentScore = ({ data }) => {
         )}
       </div>
 
-      <div className="mt-8 text-center">
+      {/* <div className="mt-8 text-center">
         <button
           onClick={handleGetScores}
           disabled={buttonState !== "default"}
@@ -455,7 +433,7 @@ const CurrentScore = ({ data }) => {
             ? "Calculating..."
             : "Get Current Scores"}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

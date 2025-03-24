@@ -25,7 +25,7 @@ function App() {
     const fetchUserData = async () => {
       try {
         const userData = await authService.getCurrentUser();
-        console.log("user is:", userData)
+        // console.log("user is:", userData)
         if (isMounted) {
           if (userData) {
             dispatch(setLoginStatus(true));
