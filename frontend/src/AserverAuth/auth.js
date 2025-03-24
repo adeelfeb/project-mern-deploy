@@ -207,20 +207,52 @@ export class AuthService {
 
     async logout() {
         try {
-            
-
             await axios.post(`${this.apiUrl}/users/logout`, {}, { 
                 withCredentials: true 
             });
-
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+    
+            // Clear ALL client-side storage
+            localStorage.clear();
+            sessionStorage.clear();
             
+            // Clear cookies more aggressively
+            const cookies = document.cookie.split(";");
+            for (const cookie of cookies) {
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = `${name.trim()}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure`;
+            }
+    
+            // Force a hard refresh to clear all memory state
+            window.location.href = "/login"; // or your login route
         } catch (error) {
             console.error('Error logging out:', error);
-            throw new Error(error.response ? error.response.data.message : error.message);
+            throw error;
         }
     }
+
+    // async logout() {
+    //     try {
+    //         await axios.post(`${this.apiUrl}/users/logout`, {}, { 
+    //             withCredentials: true 
+    //         });
+    
+    //         // Clear local storage
+    //         localStorage.removeItem('accessToken');
+    //         localStorage.removeItem('refreshToken');
+            
+    //         // Additional step: Clear cookies by setting expired date
+    //         document.cookie = 'accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    //         document.cookie = 'refreshToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            
+    //         // Optional: Force reload to ensure all state is cleared
+    //         window.location.reload();
+            
+    //     } catch (error) {
+    //         console.error('Error logging out:', error);
+    //         throw new Error(error.response ? error.response.data.message : error.message);
+    //     }
+    // }
 }
 
 const authService = new AuthService();

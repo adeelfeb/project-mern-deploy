@@ -7,6 +7,47 @@ import { ImageProvider } from "./contexts/ImageContext";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import { SidebarProvider } from "./contexts/SidebarContext";
 
+// function App() {
+  // const [loading, setLoading] = useState(false); // Initially false for faster page load
+  // const [error, setError] = useState(null);
+  // const dispatch = useDispatch();
+  // const location = useLocation();
+  // const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+//   // Only check authentication on login/signup pages
+//   useEffect(() => {
+//     const authPages = ["/login"];
+//     if (!authPages.includes(location.pathname)) return;
+  
+//     let isMounted = true;
+//     setLoading(true);
+  
+//     const fetchUserData = async () => {
+//       try {
+//         const userData = await authService.getCurrentUser();
+//         // console.log("user is:", userData)
+//         if (isMounted) {
+//           if (userData) {
+//             dispatch(setLoginStatus(true));
+//             dispatch(setUserData(userData));
+//           } else {
+//             dispatch(logout());
+//           }
+//         }
+//       } catch (error) {
+//         console.error("Error fetching user data:", error);
+//         if (isMounted) setError(error.message || "Failed to load user data.");
+//       } finally {
+//         if (isMounted) setLoading(false);
+//       }
+//     };
+  
+//     fetchUserData();
+  
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, [dispatch, location.pathname]);
 function App() {
   const [loading, setLoading] = useState(false); // Initially false for faster page load
   const [error, setError] = useState(null);
@@ -14,40 +55,45 @@ function App() {
   const location = useLocation();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // Only check authentication on login/signup pages
   useEffect(() => {
-    const authPages = ["/login", "/signup"];
-    if (!authPages.includes(location.pathname)) return;
-  
     let isMounted = true;
-    setLoading(true);
-  
-    const fetchUserData = async () => {
+    
+    const checkAuth = async () => {
       try {
         const userData = await authService.getCurrentUser();
-        // console.log("user is:", userData)
-        if (isMounted) {
-          if (userData) {
-            dispatch(setLoginStatus(true));
-            dispatch(setUserData(userData));
-          } else {
-            dispatch(logout());
+        if (!isMounted) return;
+        
+        if (userData) {
+          dispatch(setLoginStatus(true));
+          dispatch(setUserData(userData));
+          
+          // If on auth pages and logged in, redirect away
+          if (['/login', '/signup'].includes(location.pathname)) {
+            window.location.replace('/'); // or your dashboard route
+          }
+        } else {
+          dispatch(logout());
+          
+          // If not on auth pages and not logged in, redirect to login
+          if (!['/login', '/signup'].includes(location.pathname)) {
+            window.location.replace('/login');
           }
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        if (isMounted) setError(error.message || "Failed to load user data.");
+        console.error("Auth check failed:", error);
+        dispatch(logout());
       } finally {
         if (isMounted) setLoading(false);
       }
     };
-  
-    fetchUserData();
-  
-    return () => {
-      isMounted = false;
-    };
+
+    // Run auth check on initial load and when pathname changes
+    checkAuth();
+
+    return () => { isMounted = false };
   }, [dispatch, location.pathname]);
+
+  // ... rest of your component
   // useEffect(() => {
   //   const authPages = ["/login", "/signup"]; // Add authentication-related routes here
   //   if (!authPages.includes(location.pathname)) return;
