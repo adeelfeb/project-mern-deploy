@@ -1,6 +1,6 @@
 import axios from 'axios';
 import conf from '../conf/conf.js';  // Configuration file for the API URL
-import Cookies from 'js-cookie';
+
 
 
 export class AuthService {
@@ -232,7 +232,7 @@ async logout() {
     }
   }
 
-  
+
     // async logout() {
     //     try {
     //         await axios.post(`${this.apiUrl}/users/logout`, {}, { 
