@@ -29,20 +29,23 @@ function ChatList() {
     fetchCurrentUser();
   }, []);
 
+  
   const handleLogout = async () => {
     try {
       setLogoutLoading(true);
       await authService.logout();
-      // Redirect happens inside logout
+      
     } catch (error) {
       console.error("Logout failed:", error);
-      localStorage.clear();
-      sessionStorage.clear();
-      window.location.href = "/login";
+      // Fallback cleanup
+      authService.forceCleanup(); // Add this method to authService
     } finally {
       setLogoutLoading(false);
     }
   };
+
+  
+
 
   const handleReload = () => {
     sessionStorage.clear();

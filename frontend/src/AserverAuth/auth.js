@@ -205,60 +205,54 @@ export class AuthService {
         }
     }
 
-    // In your authService file
-async logout() {
-    try {
-      await axios.post(`${this.apiUrl}/users/logout`, {}, { 
-        withCredentials: true 
-      });
+    
+// async logout() {
+//     try {
+//       await axios.post(`${this.apiUrl}/users/logout`, {}, { 
+//         withCredentials: true 
+//       });
   
-      // Clear ALL client-side storage
-      localStorage.clear();
-      sessionStorage.clear();
+//       // Clear ALL client-side storage
+//       localStorage.clear();
+//       sessionStorage.clear();
       
-      // Clear cookies more aggressively
-      const cookies = document.cookie.split(";");
-      for (const cookie of cookies) {
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = `${name.trim()}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure`;
-      }
+//       // Clear cookies more aggressively
+//       const cookies = document.cookie.split(";");
+//       for (const cookie of cookies) {
+//         const eqPos = cookie.indexOf("=");
+//         const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+//         document.cookie = `${name.trim()}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure`;
+//       }
   
-      // Force redirect to login
-      window.location.href = "/login";
-    } catch (error) {
-      console.error('Error logging out:', error);
-      throw error;
+//       // Force redirect to login
+//       window.location.href = "/login";
+//     } catch (error) {
+//       console.error('Error logging out:', error);
+//       throw error;
+//     }
+//   }
+
+    async logout() {
+        try {
+        await axios.post(`${this.apiUrl}/users/logout`, {}, { 
+            withCredentials: true 
+        });
+        } finally {
+        this.forceCleanup();
+        window.location.href = "/login?logout=true"; // Add query param
+        }
     }
-  }
-
-
-    // async logout() {
-    //     try {
-    //         await axios.post(`${this.apiUrl}/users/logout`, {}, { 
-    //             withCredentials: true 
-    //         });
     
-    //         // Clear ALL client-side storage
-    //         localStorage.clear();
-    //         sessionStorage.clear();
-            
-    //         // Clear cookies more aggressively
-    //         const cookies = document.cookie.split(";");
-    //         for (const cookie of cookies) {
-    //             const eqPos = cookie.indexOf("=");
-    //             const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    //             document.cookie = `${name.trim()}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure`;
-    //         }
-    
-    //         // Force a hard refresh to clear all memory state
-    //         window.location.href = "/login"; // or your login route
-    //     } catch (error) {
-    //         console.error('Error logging out:', error);
-    //         throw error;
-    //     }
-    // }
-
+    forceCleanup() {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear cookies
+        document.cookie.split(";").forEach(cookie => {
+        const [name] = cookie.split("=");
+        document.cookie = `${name.trim()}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure${process.env.NODE_ENV === 'production' ? '; Domain=' + (process.env.COOKIE_DOMAIN || 'yourdomain.com') : ''}`;
+        });
+    }  
     
     
 }

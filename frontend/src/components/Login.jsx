@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLoginStatus, setUserData } from "../store/authSlice";
@@ -20,6 +20,12 @@ function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  // useEffect(() => {
+  //   if (new URLSearchParams(window.location.search).has('logout')) {
+  //     window.history.replaceState(null, '', '/login');
+  //   }
+  // }, []);
 
   // Handle Google Login
   const handleGoogleLogin = async () => {
@@ -157,145 +163,3 @@ function Login() {
 
 export default Login;
 
-// import React, { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { setLoginStatus, setUserData } from "../store/authSlice";
-// import { Button, Input } from "./index";
-// import { useForm } from "react-hook-form";
-// import { auth, googleProvider } from "../utils/firebase";
-// import { FiEye, FiEyeOff } from "react-icons/fi";
-// import { signInWithPopup } from "firebase/auth";
-// import authService from "../AserverAuth/auth";
-
-// // Email validation regex
-// const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-// // Username validation regex (only alphanumeric, dots, and underscores)
-// const usernameRegex = /^[a-zA-Z0-9._]+$/;
-
-// function Login() {
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-//   const { register, handleSubmit, formState: { errors }, watch } = useForm();
-//   const [error, setError] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [showPassword, setShowPassword] = useState(false);
-
-//   const togglePasswordVisibility = () => {
-//     setShowPassword(!showPassword);
-//   };
-
-//   const handleGoogleLogin = async () => {
-//     setLoading(true);
-//     setError("");
-//     try {
-//       const result = await signInWithPopup(auth, googleProvider);
-//       const user = result.user;
-//       const idToken = await user.getIdToken();
-
-//       const response = await authService.googleLogin(idToken);
-//       const { user: backendUser } = response.data;
-
-//       dispatch(setUserData(backendUser));
-//       dispatch(setLoginStatus(true));
-//       navigate("/dashboard");
-//     } catch (error) {
-//       console.error("Google Sign-in failed:", error);
-//       setError(error.response?.data?.message || error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const login = async (data) => {
-//     setError("");
-//     setLoading(true);
-//     try {
-//       const { accessToken, refreshToken } = await authService.login({
-//         emailOrUsername: data.emailOrUsername,
-//         password: data.password,
-//       });
-
-//       const userData = await authService.getCurrentUser();
-//       dispatch(setUserData(userData));
-//       dispatch(setLoginStatus(true));
-//       navigate("/dashboard");
-//     } catch (error) {
-//       setError(error.response ? error.response.data.message : error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <>
-//       {loading && (
-//         <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 z-50">
-//           <div className="w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-//         </div>
-//       )}
-
-//       <div className="flex items-center justify-center min-h-screen">
-//         <div className="w-full max-w-lg bg-white rounded-xl p-8 shadow-2xl border border-gray-100">
-//           <h2 className="text-center text-3xl font-bold text-gray-800 mb-6">Welcome Back!</h2>
-//           <p className="text-center text-gray-600 mb-8">
-//             Don&apos;t have an account?&nbsp;
-//             <Link to="/signup" className="font-medium text-blue-500 hover:underline">
-//               Sign Up
-//             </Link>
-//           </p>
-
-//           {error && <div className="text-red-600 text-center mb-6">{error}</div>}
-
-//           <form onSubmit={handleSubmit(login)} className="space-y-6">
-//             {/* Combined Email/Username Input with Validation */}
-//             <Input
-//               label="Username or Email"
-//               placeholder="Enter your username or email"
-//               type="input"
-//               {...register("emailOrUsername", {
-//                 required: "Username or Email is required",
-//                 validate: (value) => {
-//                   if (!emailRegex.test(value) && !usernameRegex.test(value)) {
-//                     return "Invalid username or email format";
-//                   }
-//                   return true;
-//                 },
-//               })}
-//             />
-//             {errors.emailOrUsername && <p className="text-red-500 text-sm">{errors.emailOrUsername.message}</p>}
-
-//             {/* Password Input */}
-//             <div className="relative">
-//               <Input
-//                 label="Password"
-//                 type={showPassword ? "text" : "password"}
-//                 placeholder="Enter your password"
-//                 {...register("password", { required: "Password is required" })}
-//                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-//               />
-//               <button
-//                 type="button"
-//                 onClick={togglePasswordVisibility}
-//                 className="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-lg leading-0"
-//               >
-//                 {showPassword ? <FiEyeOff className="text-gray-500" /> : <FiEye className="text-gray-500" />}
-//               </button>
-//             </div>
-//             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-
-//             <Button
-//               type="submit"
-//               className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-//             >
-//               Sign In
-//             </Button>
-//           </form>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Login;
