@@ -472,7 +472,7 @@ const VideoDetails = ({ data }) => {
             { label: "Transcript", loading: transcriptisLoading, section: "transcript" },
             { label: "Summary", loading: summaryIsLoading, section: "summary" },
             { label: "Key Concepts", loading: keyConceptsIsLoading, section: "keyConcepts" },
-            { label: "Take Quiz", loading: quizIsLoading, section: "quiz" },
+            { label: "Quiz", loading: quizIsLoading, section: "quiz" },
             { label: "Current Score", loading: false, section: "currentScore" },
           ].map(({ label, loading, section }) => (
             <button

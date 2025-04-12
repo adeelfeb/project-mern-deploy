@@ -66,7 +66,7 @@ const AdminDashboard = () => {
   const quickActions = [
     { icon: <FaUsers className="text-blue-500" />, title: 'Manage Users', link: '/admin/users' },
     { icon: <FaVideo className="text-green-500" />, title: 'View Content', link: '/admin/videos' },
-    { icon: <FaFileUpload className="text-purple-500" />, title: 'Upload Rules', link: '/admin/rules' },
+    { icon: <FaFileUpload className="text-purple-500" />, title: 'Upload Video', link: '/admin/upload-video' },
     { icon: <FaCog className="text-yellow-500" />, title: 'Settings', link: '/admin/settings' }
   ];
 

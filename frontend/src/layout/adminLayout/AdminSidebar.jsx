@@ -52,14 +52,16 @@ export const AdminSidebar = () => {
     `}>
       {/* Top Navigation */}
       <div className="flex flex-col flex-1 gap-4 mt-2">
+        
         {/* Admin Dashboard Link */}
         <Link 
           to="/admin/dashboard" 
-          className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/admin/dashboard') ? 'bg-gray-100' : ''}`}
+          className={`flex flex-col items-center justify-center p-2 rounded-md mt-8 hover:bg-gray-200 ${isActive('/admin/dashboard') ? 'bg-gray-100' : ''}`}
         >
           <FaBoxOpen className="w-4 h-4" />
           <span className="text-xs mt-1 text-gray-600">Dashboard</span>
         </Link>
+        
 
         {/* User Management Link */}
         <Link 
@@ -78,6 +80,9 @@ export const AdminSidebar = () => {
           <FaVideo className="w-4 h-4" />
           <span className="text-xs mt-1 text-gray-600">Videos</span>
         </Link>
+
+        <br />
+        <br />
 
         {/* Input URL Link */}
         <Link 

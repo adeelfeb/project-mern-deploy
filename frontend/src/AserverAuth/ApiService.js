@@ -7,19 +7,12 @@ const apiUrl = `${conf.apiUrl}/videos`;
 const ApiService = {
     async sendRequest(endpoint, data) {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-
-            if (!accessToken) {
-                console.error('No access token found in localStorage');
-                return { status: 401, message: 'Unauthorized: No access token found' };
-            }
 
             const response = await axios.post(
                 `${apiUrl}/${endpoint}`, // Ensures proper URL formatting
                 data,
                 {
                     headers: {
-                        "Authorization": `Bearer ${accessToken}`,
                         "Content-Type": "application/json"
                     },
                     withCredentials: false,

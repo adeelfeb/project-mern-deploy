@@ -62,7 +62,7 @@ function UserManagement() {
                          user._id === userId ? { ...user, isActive: response.data.isActive } : user
                      )
                  );
-                console.log(response.message);
+                // console.log(response.message);
             } else {
                 throw new Error(response.message || `Failed to ${actionText} user.`);
             }
