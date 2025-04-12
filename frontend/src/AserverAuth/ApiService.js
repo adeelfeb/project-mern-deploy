@@ -15,7 +15,7 @@ const ApiService = {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    withCredentials: false,
+                    withCredentials: true,
                 }
             );
 

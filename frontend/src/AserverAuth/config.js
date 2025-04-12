@@ -418,13 +418,12 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
       
       async getCurrentUser() {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) return null;
+          
 
             const response = await axios.post(
                 `${this.apiUrl}/users/current-user`, 
                 {},
-                { headers: { "Authorization": `Bearer ${accessToken}` }, withCredentials: false }
+                {  withCredentials: true }
             );
             
             return response.data.data;
@@ -472,20 +471,13 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
     async setNewPassword(newPassword) {
         try {
             // console.log("Passwords", oldPassword, newPassword)
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null;
-          }
+        
           const oldPassword = null
     
           const response = await axios.patch(
             `${this.apiUrl}/users/change-password`,
             { oldPassword, newPassword },
             {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
               withCredentials: true,
             }
           );
@@ -501,20 +493,13 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
     async changeCurrentPassword(oldPassword, newPassword) {
         try {
             // console.log("Passwords", oldPassword, newPassword)
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null;
-          }
+          
     
           const response = await axios.patch(
             `${this.apiUrl}/users/change-password`,
             { oldPassword, newPassword },
             {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-              withCredentials: false,
+              withCredentials: true,
             }
           );
     
@@ -528,21 +513,13 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
 
     async checkUserPasswordStatus() {
         try {
-          
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null;
-          }
     
           const response = await axios.patch(
             `${this.apiUrl}/users/check-password`,
             {  },
             {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-              withCredentials: false,
+              
+              withCredentials: true,
             }
           );
           // console.log("The repsonse was:", response)
@@ -556,19 +533,11 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
     
       async updateAccountDetails(data) {
         try {
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null;
-          }
-      
+         
           const response = await axios.patch(
             `${this.apiUrl}/users/update-account`,
             data, // Send only the provided fields
             {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
               withCredentials: false,
             }
           );
@@ -586,20 +555,13 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
     
       async updateUserAvatar(file) {
         try {
-          const accessToken = localStorage.getItem('accessToken');
-          if (!accessToken) {
-            console.log('No access token found in localStorage');
-            return null;
-          }
+          
     
           const formData = new FormData();
           formData.append('avatar', file);
     
           const response = await axios.patch(`${this.apiUrl}/users/update-avatar`, formData, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Content-Type': 'multipart/form-data',
-            },
+           
             withCredentials: false,
           });
     
