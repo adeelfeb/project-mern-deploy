@@ -9,6 +9,7 @@ import { AuthLayout } from './components';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import RootLayout from './layout/rootLayout/RootLayout.jsx';
 
 // Lazy load all components
 const Dashboard = lazy(() => import('./dashboard/Dashboard.jsx'));
@@ -25,12 +26,16 @@ const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
 const CurrentScore = lazy(() => import('./pages/CurrentScore'));
 const VideoList = lazy(() => import('./pages/VideoList.jsx'));
 const VideoUpload = lazy(() => import('./pages/VideoUpload.jsx'));
-
 // Lazy load additional components
 const ForgetPassword = lazy(() => import('./pages/ForgetPassword.jsx'));
 const FrontendPage = lazy(() => import('./pages/FrontendPage.jsx'));
 const ApiRequestForm = lazy(() => import('./pages/ApiRequestForm.jsx'));
 const AddVideoDetailsInDataBase = lazy(() => import('./pages/AddVideoDetailsInDataBase.jsx'));
+
+// Lazy load all admin components
+import AdminLayout from './layout/adminLayout/AdminLayout';
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const UserManagement = lazy(() => import('./pages/admin/UserManagement'));
 
 // Global fallback component
 function GlobalFallback() {
@@ -74,6 +79,82 @@ const router = createBrowserRouter([
             <ApiRequestForm />
           </Suspense>
         ),
+      },
+      {
+        path: '/admin',
+        element: <App />,
+        children: [
+          {
+            element: <AdminLayout />, // Directly render without Suspense
+            children: [
+              { 
+                path: 'dashboard', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <AdminDashboard />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'users', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <UserManagement />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'upload-video', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <VideoUpload />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'input-url', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <InputURL />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'chat', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <Dashboard />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'history', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <UserHistory />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'settings', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <Settings />
+                  </Suspense>
+                ) 
+              },
+              { 
+                path: 'videos', // Note: removed leading slash to make it relative
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <VideoList />
+                  </Suspense>
+                ) 
+              },
+              // ... other admin routes
+            ],
+          },
+        ],
       },
       {
         path: '/add-VideoDetails',
@@ -232,99 +313,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-
-
-
-// import React, { Suspense, lazy } from 'react';
-// import ReactDOM from 'react-dom/client';
-// import { Provider } from 'react-redux';
-// import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-// import store from './store/store.js';
-// import App from './App';
-// import { AuthLayout } from './components';
-// import Home from './pages/Home';
-// import Signup from './pages/Signup';
-// import Login from './pages/Login';
-// import './index.css';
-
-// // Lazy load components
-// const Dashboard = lazy(() => import('./dashboard/Dashboard.jsx'));
-// const DashboardLayout = lazy(() => import('./dashboard/DashboardLayout.jsx'));
-// const Settings = lazy(() => import('./pages/Settings.jsx'));
-// const UserHistory = lazy(() => import('./pages/UserHistory.jsx'));
-// const Info = lazy(() => import('./info/Info.jsx'));
-// const UploadPdf = lazy(() => import('./chroma/UploadPdf.jsx'));
-// const InputURL = lazy(() => import('./pages/InputURL.jsx'));
-// const Transcript = lazy(() => import('./pages/Transcript'));
-// const Summary = lazy(() => import('./pages/Summary'));
-// const Quiz = lazy(() => import('./pages/Quiz'));
-// const KeyConcepts = lazy(() => import('./pages/KeyConcepts'));
-// const CurrentScore = lazy(() => import('./pages/CurrentScore'));
-// const VideoList = lazy(() => import('./pages/VideoList.jsx'));
-// const VideoUpload = lazy(() => import('./pages/VideoUpload.jsx'));
-// const ForgetPassword = lazy(() => import('./pages/ForgetPassword.jsx'));
-// const FrontendPage = lazy(() => import('./pages/FrontendPage.jsx'));
-// const ApiRequestForm = lazy(() => import('./pages/ApiRequestForm.jsx'));
-// const AddVideoDetailsInDataBase = lazy(() => import('./pages/AddVideoDetailsInDataBase.jsx'));
-
-// // Global fallback component
-// function GlobalFallback() {
-//   return (
-//     <div className="flex justify-center items-center h-screen">
-//       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-//     </div>
-//   );
-// }
-
-// // Define routes
-// const router = createBrowserRouter([
-//   {
-//     path: '/',
-//     element: <App />,
-//     children: [
-//       { path: '/', element: <Home /> },
-//       { path: '/login', element: <AuthLayout authentication={false}><Login /></AuthLayout> },
-//       { path: '/signup', element: <AuthLayout authentication={false}><Signup /></AuthLayout> },
-//       { path: '/add-cors', element: <FrontendPage /> },
-//       { path: '/videos', element: <VideoList /> },
-//       { path: '/add-api', element: <ApiRequestForm /> },
-//       { path: '/add-VideoDetails', element: <AddVideoDetailsInDataBase /> },
-//       { path: '/forgot-password', element: <ForgetPassword /> },
-
-//       {
-//         path: '/dashboard',
-//         element: <AuthLayout authentication><DashboardLayout /></AuthLayout>,
-//         children: [
-//           { path: 'chat', element: <Dashboard /> },
-//           { path: 'upload-video', element: <VideoUpload /> },
-//           { path: 'uploadpdf', element: <UploadPdf /> },
-//           { path: 'settings', element: <Settings /> },
-//           { path: 'user-history', element: <UserHistory /> },
-//           { path: 'info', element: <Info /> },
-//           {
-//             path: 'input-url',
-//             element: <InputURL />,
-//             children: [
-//               { path: 'transcript', element: <Transcript /> },
-//               { path: 'summary', element: <Summary /> },
-//               { path: 'qna', element: <Quiz /> },
-//               { path: 'key-concepts', element: <KeyConcepts /> },
-//               { path: 'score', element: <CurrentScore /> },
-//             ],
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ]);
-
-// // Render App
-// ReactDOM.createRoot(document.getElementById('root')).render(
-//   <React.StrictMode>
-//     <Provider store={store}>
-//       <Suspense fallback={<GlobalFallback />}>
-//         <RouterProvider router={router} />
-//       </Suspense>
-//     </Provider>
-//   </React.StrictMode>
-// );

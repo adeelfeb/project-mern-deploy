@@ -125,32 +125,110 @@ class VideoService {
 }
 
 
-async getAllVideos() {
+
+async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with defaults
   try {
       const accessToken = localStorage.getItem('accessToken');
       if (!accessToken) {
-          console.log('No access token found in localStorage');
-          return null; // Return null if access token is missing
+          console.error('Authentication Error: No access token found.');
+          // Throwing an error is generally better for handling auth issues
+          throw new Error('User is not authenticated. Please log in.');
       }
 
+      // --- Construct URL with query parameters ---
+      const params = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+          // You could add other params here later if needed:
+          // sortBy: 'createdAt',
+          // sortOrder: 'desc'
+      });
+      // Ensure the route matches your backend setup for the paginated video list
+      const url = `${this.apiUrl}/admin/videos?${params.toString()}`;
+
+      // console.log(`Fetching videos from: ${url}`); // Log the URL being requested
+
       const response = await axios.get(
-          `${this.apiUrl}/users/getAllVideo`, // Ensure this matches your backend route
+          url, // Use the constructed URL
           {
               headers: {
                   "Authorization": `Bearer ${accessToken}`,
-                  "Content-Type": "application/json"
+                  // Content-Type is usually not needed for GET requests
+                  // "Content-Type": "application/json"
               },
-              withCredentials: false, // No cookies needed
+              // Ensure 'withCredentials' matches your backend CORS setup if using cookies elsewhere,
+              // but likely false if only using Bearer tokens.
+              withCredentials: false,
           }
       );
-      // console.log("the response is:", response.data)
 
-      return response.data; // Return the video data
+      // --- Process Backend Response ---
+      // Axios puts the response body in `response.data`
+      // Your backend ApiResponse wraps the actual data in another `data` field
+      if (response.data && response.data.success && response.data.data) {
+          // console.log("Paginated video data received successfully.");
+          // Return the inner 'data' object which contains { docs, totalPages, page, etc. }
+          return response.data.data;
+      } else {
+          // Handle cases where the API request might have succeeded (status 2xx)
+          // but the backend indicates a logical failure (success: false or missing data)
+          const serverMessage = response.data?.message || "Received invalid data structure from server.";
+          console.warn("Warning fetching videos:", serverMessage, response.data);
+          throw new Error(serverMessage);
+      }
+
   } catch (error) {
-      console.error('Error Getting videos:', error);
-      throw new Error(error.response ? error.response.data.message : error.message);
+      console.error('Error getting paginated videos:', error);
+
+      // Construct a more informative error message
+      let errorMessage = "An unknown error occurred while fetching videos.";
+      if (error.response) {
+          // Error response from server (status code outside 2xx)
+          errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+          console.error('Server Response Error:', error.response.status, error.response.data);
+      } else if (error.request) {
+          // Request was made but no response received (network error, CORS issue, etc.)
+          errorMessage = "Could not connect to the server. Please check your network connection.";
+          console.error('Network/Request Error:', error.request);
+      } else if (error.message === 'User is not authenticated. Please log in.') {
+           // Handle the specific authentication error thrown above
+           errorMessage = error.message;
+      }
+       else {
+          // Other errors (e.g., setup error, error thrown manually)
+          errorMessage = error.message || errorMessage;
+          console.error('Error:', error.message);
+      }
+      // Re-throw the processed error message
+      throw new Error(errorMessage);
   }
 }
+// async getAllVideos() {
+//   try {
+//       const accessToken = localStorage.getItem('accessToken');
+//       if (!accessToken) {
+//           console.log('No access token found in localStorage');
+//           return null; // Return null if access token is missing
+//       }
+
+//       const response = await axios.get(
+//           `${this.apiUrl}/admin/videos`, // Ensure this matches your backend route
+//           {
+//               headers: {
+//                   "Authorization": `Bearer ${accessToken}`,
+//                   "Content-Type": "application/json"
+//               },
+//               withCredentials: false, // No cookies needed
+//           }
+//       );
+//       // console.log("the response is:", response.data)
+
+//       return response.data; // Return the video data
+//   } catch (error) {
+//       console.error('Error Getting videos:', error);
+//       throw new Error(error.response ? error.response.data.message : error.message);
+//   }
+// }
 
 
   async deleteFromHistory(videoId) {

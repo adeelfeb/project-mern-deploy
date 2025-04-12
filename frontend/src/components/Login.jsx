@@ -21,12 +21,7 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
-  // useEffect(() => {
-  //   if (new URLSearchParams(window.location.search).has('logout')) {
-  //     window.history.replaceState(null, '', '/login');
-  //   }
-  // }, []);
-
+  
   // Handle Google Login
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -56,25 +51,34 @@ function Login() {
     }
   };
 
+
+
+
+
   const login = async (data) => {
     setError("");
     setLoading(true);
     try {
+      // Perform login and get tokens
       const { accessToken, refreshToken } = await authService.login({
         emailOrUsername: data.email,
         password: data.password,
       });
-
+  
+      // // Get current user data
       const userData = await authService.getCurrentUser();
+      
+      // Update Redux store
       dispatch(setUserData(userData));
       dispatch(setLoginStatus(true));
-      navigate("/dashboard");
+  
     } catch (error) {
-      setError(error.response ? error.response.data.message : error.message);
+      setError(error.response?.data?.message || error.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <>

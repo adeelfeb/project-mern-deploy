@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoginStatus, setUserData, logout } from "./store/authSlice";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import authService from "./AserverAuth/auth";
 import { ImageProvider } from "./contexts/ImageContext";
 import { LoadingProvider } from "./contexts/LoadingContext";
@@ -9,15 +9,17 @@ import { SidebarProvider } from "./contexts/SidebarContext";
 
 
 function App() {
-  const [loading, setLoading] = useState(true); // Start with true for initial auth check
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate(); // Add this
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const userData = useSelector((state) => state.auth.userData); // Get user data from Redux
 
   useEffect(() => {
     let isMounted = true;
-    setError(null); // Clear previous errors
+    setError(null);
 
     const authPages = ["/login", "/signup"];
     const shouldCheckAuth = !authPages.includes(location.pathname) || isLoggedIn;
@@ -30,21 +32,33 @@ function App() {
         if (userData) {
           dispatch(setLoginStatus(true));
           dispatch(setUserData(userData));
-          // Redirect if on auth page while logged in
+          
+          // Enhanced redirect logic
           if (authPages.includes(location.pathname)) {
-            window.location.replace('/dashboard'); // or your preferred route
+            navigate(userData.isAdmin ? '/admin/dashboard' : '/dashboard', { replace: true });
+          } else if (location.pathname === '/') {
+            navigate(userData.isAdmin ? '/admin/dashboard' : '/dashboard', { replace: true });
+          }
+          // Ensure admin stays on admin routes and vice versa
+          else if (userData.isAdmin && !location.pathname.startsWith('/admin')) {
+            navigate('/admin/dashboard', { replace: true });
+          }
+          else if (!userData.isAdmin && location.pathname.startsWith('/admin')) {
+            navigate('/dashboard', { replace: true });
           }
         } else {
           dispatch(logout());
-          // Redirect if not on auth page and not logged in
           if (!authPages.includes(location.pathname)) {
-            window.location.replace('/login');
+            navigate('/login', { replace: true });
           }
         }
       } catch (error) {
         console.error("Auth check failed:", error);
         if (isMounted) setError(error.message || "Authentication error");
         dispatch(logout());
+        if (!authPages.includes(location.pathname)) {
+          navigate('/login', { replace: true });
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -57,7 +71,10 @@ function App() {
     }
 
     return () => { isMounted = false };
-  }, [dispatch, isLoggedIn]);
+  }, [dispatch, location.pathname, isLoggedIn, navigate]);
+
+
+  
 
   return (
     <ImageProvider>
