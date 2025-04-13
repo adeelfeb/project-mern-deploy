@@ -3,6 +3,8 @@ import videoService from "../AserverAuth/config";
 import { startChatWithMessage } from "../lib/geminiHelperFunc";
 import ApiService from "../AserverAuth/ApiService";
 import transcriptFetchService from "../utils/transcriptFetch";
+import authService from "../AserverAuth/auth";
+import { useSelector } from "react-redux";
 
 
 // Lazy load components
@@ -12,6 +14,7 @@ const Quiz = lazy(() => import("./Quiz"));
 const KeyConcepts = lazy(() => import("./KeyConcepts"));
 const Explanation = lazy(() => import("./Explanation"));
 const CurrentScore = lazy(() => import("./CurrentScore"));
+
 
 
 const VideoDetails = ({ data }) => {
@@ -27,8 +30,17 @@ const VideoDetails = ({ data }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); 
   const [isPopupOpen, setIsPopupOpen] = useState(false); 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [userLoading, setUserLoading] = useState(true); // State to track user data loading
+  const localuser = useSelector((state) => state.auth.userData);
+  
 
-  // console.log("Video details are :", data)
+
+
+  
+
+  
 
   // Reset state when data changes
   useEffect(() => {
@@ -42,17 +54,49 @@ const VideoDetails = ({ data }) => {
     setQuizIsLoading(false);
     setKeyConceptsIsLoading(false);
     setIsGenerating(false);
+    setCurrentUser(localuser);
+    setIsAdmin(localuser.isAdmin)
   }, [data]);
 
-  // Detect screen size changes
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  
 
+  // Detect screen size changes
+// Effect for fetching user data
+// useEffect(() => {
+//   const fetchUser = async () => {
+//     setUserLoading(true);
+//     try {
+//       const user = await authService.getCurrentUser();
+//       const isAdminUser = user?.isAdmin || user?.role === 'admin';
+//       setCurrentUser(user);
+//       setIsAdmin(isAdminUser);
+//     } catch (error) {
+//       console.error("Error fetching current user:", error);
+//       setCurrentUser(null);
+//       setIsAdmin(false);
+//     } finally {
+//       setUserLoading(false);
+//     }
+//   };
+
+//   fetchUser();
+
+//   // No cleanup needed here unless you implement request cancellation
+// }, []); // Run once on mount
+
+// Effect for handling resize
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  // Cleanup function for this specific effect
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+}, []); // Run once on mount
 
   
 
@@ -473,7 +517,14 @@ const VideoDetails = ({ data }) => {
             { label: "Summary", loading: summaryIsLoading, section: "summary" },
             { label: "Key Concepts", loading: keyConceptsIsLoading, section: "keyConcepts" },
             { label: "Quiz", loading: quizIsLoading, section: "quiz" },
-            { label: "Current Score", loading: false, section: "currentScore" },
+            // --- Conditionally included button ---
+      // Use the spread operator with a conditional array.
+      // If !isAdmin is true, it spreads [{...score button...}] into the array.
+      // If !isAdmin is false, it spreads an empty array [], adding nothing.
+      ...(!isAdmin // Condition: Only add if the user is NOT an admin
+        ? [{ label: "Current Score", loading: false, section: "currentScore" }]
+        : [] // If admin, add nothing
+  )
           ].map(({ label, loading, section }) => (
             <button
               key={section}
@@ -522,7 +573,7 @@ const VideoDetails = ({ data }) => {
       </div>
     )}
 
-    {selectedSection === "currentScore" && (
+    {selectedSection === "currentScore" && !isAdmin && (
       <div className="p-2">
         <CurrentScore data={data._id} />
       </div>
@@ -557,7 +608,7 @@ const VideoDetails = ({ data }) => {
         {selectedSection === "quiz" && (
           <Quiz data={qnaData} videoId={data._id} />
         )}
-        {selectedSection === "currentScore" && (
+        {selectedSection === "currentScore" && !isAdmin && (
           <CurrentScore data={data._id} />
         )}
       </Suspense>

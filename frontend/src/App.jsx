@@ -33,6 +33,7 @@ function App() {
           dispatch(setLoginStatus(true));
           dispatch(setUserData(userData));
           
+          
           // Enhanced redirect logic
           if (authPages.includes(location.pathname)) {
             navigate(userData.isAdmin ? '/admin/dashboard' : '/dashboard', { replace: true });
