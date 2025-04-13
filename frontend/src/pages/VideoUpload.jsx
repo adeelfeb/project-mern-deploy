@@ -29,7 +29,7 @@ const VideoUpload = () => {
     setToastMessage("");
 
     try {
-      const details = await authService.uploadVideo(videoFile);
+      const details = await authService.uploadVideo(videoFile); 
       setVideoDetails(details);
       setIsSuccess(true);
       setToastMessage("Video uploaded successfully!");

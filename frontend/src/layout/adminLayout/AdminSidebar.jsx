@@ -8,7 +8,7 @@ import { BiUpload } from "react-icons/bi";
 import { PiTreeStructureLight } from "react-icons/pi";
 import { CiSettings } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { FaUsersCog, FaBoxOpen, FaCog, FaVideo } from "react-icons/fa"; // Admin-specific icons
+import { FaUsersCog, FaBoxOpen, FaCog, FaVideo, FaPlusCircle  } from "react-icons/fa"; // Admin-specific icons
 import authService from '../../AserverAuth/auth';
 
 export const AdminSidebar = () => {
@@ -79,6 +79,14 @@ export const AdminSidebar = () => {
         >
           <FaVideo className="w-4 h-4" />
           <span className="text-xs mt-1 text-gray-600">Videos</span>
+        </Link>
+
+        <Link 
+          to="/admin/add" 
+          className={`flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-200 ${isActive('/admin/add') ? 'bg-gray-100' : ''}`}
+        >
+          <FaPlusCircle className="w-4 h-4" />
+          <span className="text-xs mt-1 text-gray-600">Add</span>
         </Link>
 
         <br />

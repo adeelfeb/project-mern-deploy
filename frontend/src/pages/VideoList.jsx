@@ -5,7 +5,7 @@ import { ImSpinner8 } from "react-icons/im"; // Loading spinner
 
 const VideoDetails = lazy(() => import("./VideoDetails")); // Adjust path if needed
 const PLACEHOLDER_THUMBNAIL = 'https://placehold.co/320x180';
-const DEFAULT_LIMIT = 20; // Match backend or set desired default
+const DEFAULT_LIMIT = 8; // Match backend or set desired default
 
 const VideoList = () => {
     // --- Existing State ---

@@ -32,6 +32,7 @@ const FrontendPage = lazy(() => import('./pages/FrontendPage.jsx'));
 const ApiRequestForm = lazy(() => import('./pages/ApiRequestForm.jsx'));
 const AddVideoDetailsInDataBase = lazy(() => import('./pages/AddVideoDetailsInDataBase.jsx'));
 
+
 // Lazy load all admin components
 import AdminLayout from './layout/adminLayout/AdminLayout';
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -49,6 +50,7 @@ function GlobalFallback() {
 // Create routes
 const router = createBrowserRouter([
   {
+    
     path: '/',
     element: <App />,
     children: [
@@ -102,6 +104,14 @@ const router = createBrowserRouter([
                     <UserManagement />
                   </Suspense>
                 ) 
+              },
+              {
+                path: 'add',
+                element: (
+                  <Suspense fallback={<GlobalFallback />}>
+                    <FrontendPage />
+                  </Suspense>
+                ),
               },
               { 
                 path: 'upload-video', // Note: removed leading slash to make it relative
@@ -299,6 +309,14 @@ const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: '/add-cors',
+    element: (
+      <Suspense fallback={<GlobalFallback />}>
+        <FrontendPage />
+      </Suspense>
+    ),
   },
 ]);
 

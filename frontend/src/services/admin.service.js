@@ -91,14 +91,52 @@ class AdminService {
    * Fetches all videos for admin management.
    * @returns {Promise<object>} Backend ApiResponse structure { success, data: [video...], message } or formatted error object.
    */
-  async getAllVideos() {
+  async getAllVideos(page = 1, limit = 10) { // Accept page and limit parameters
     try {
-      const response = await this.api.get('/videos');
-      return response.data.data; // Return the full ApiResponse object
+      // Construct query parameters
+      const params = new URLSearchParams({
+        page: page.toString(), // Ensure values are strings for URLSearchParams
+        limit: limit.toString(),
+        // You could add sortBy and sortOrder here too if needed later
+        // sortBy: 'createdAt',
+        // sortOrder: 'desc'
+      });
+
+      // Make the GET request with query parameters
+      // The final URL will be like '/videos?page=1&limit=10'
+      const response = await this.api.get(`/videos?${params.toString()}`);
+
+      // The backend wraps the data in response.data.data due to ApiResponse
+      if (response && response.data && response.data.data) {
+         return response.data.data; // Return the paginationData object
+      } else {
+        console.error("getAllVideos Error: Unexpected response structure", response);
+        // You might want to throw an error or return a more specific error object
+        return null; // Or throw new Error("Invalid response from server");
+      }
+
     } catch (error) {
-      return this.handleError(error);
+      // Pass the specific context to the error handler if it supports it
+      return this.handleError(error, 'getAllVideos');
     }
   }
+
+  async deleteVideo(videoId) {
+    if (!videoId) {
+      console.error("deleteVideo Error: Video ID is required.");
+      // Return a consistent error structure if possible
+      return { success: false, status: 400, message: "Video ID is required." };
+      // Or throw new Error("Video ID is required."); depending on your error handling strategy
+    }
+    try {
+      const response = await this.api.delete(`/videos/${videoId}`);
+      // Assuming response.data contains { success: true, message: "..." } or similar
+      return response.data;
+    } catch (error) {
+      return this.handleError(error, 'deleteVideo');
+    }
+  }
+
 
   
   async deleteVideo(videoId) {

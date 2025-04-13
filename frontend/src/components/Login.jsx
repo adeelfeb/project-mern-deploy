@@ -21,8 +21,6 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
-  
-  // Handle Google Login
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError(""); // Clear previous errors
@@ -38,46 +36,106 @@ function Login() {
       // Extract user data & tokens
       const { user: backendUser } = response.data;
 
-      // Update Redux state
+      // Update Redux state - This will trigger the useEffect in App.js
       dispatch(setUserData(backendUser));
       dispatch(setLoginStatus(true));
 
-      navigate("/dashboard");
+      // REMOVED: navigate("/dashboard");
+      // Let App.js handle the redirect based on user role after state update.
+
     } catch (error) {
       console.error("Google Sign-in failed:", error);
       setError(error.response?.data?.message || error.message);
+      // Ensure Redux state is consistent on error if needed
+      // dispatch(logout()); // Consider if logout is needed on google login failure
     } finally {
       setLoading(false);
     }
   };
 
-
-
-
-
   const login = async (data) => {
+    // ... your existing email/password login logic ...
+    // This function correctly doesn't have a navigate() call after success
     setError("");
     setLoading(true);
     try {
-      // Perform login and get tokens
       const { accessToken, refreshToken } = await authService.login({
         emailOrUsername: data.email,
         password: data.password,
       });
-  
-      // // Get current user data
-      const userData = await authService.getCurrentUser();
-      
-      // Update Redux store
+
+      const userData = await authService.getCurrentUser(); // Fetches fresh data
+
+      // Update Redux store - This triggers useEffect in App.js
       dispatch(setUserData(userData));
       dispatch(setLoginStatus(true));
-  
+
+      // No navigate() here is CORRECT. App.js handles it.
+
     } catch (error) {
       setError(error.response?.data?.message || error.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
+
+  
+  // Handle Google Login
+  // const handleGoogleLogin = async () => {
+  //   setLoading(true);
+  //   setError(""); // Clear previous errors
+
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
+  //     const user = result.user;
+  //     const idToken = await user.getIdToken(); // Get Firebase ID token
+
+  //     // Send token to your backend
+  //     const response = await authService.googleLogin(idToken);
+
+  //     // Extract user data & tokens
+  //     const { user: backendUser } = response.data;
+
+  //     // Update Redux state
+  //     dispatch(setUserData(backendUser));
+  //     dispatch(setLoginStatus(true));
+
+  //     navigate("/dashboard");
+  //   } catch (error) {
+  //     console.error("Google Sign-in failed:", error);
+  //     setError(error.response?.data?.message || error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
+
+  // const login = async (data) => {
+  //   setError("");
+  //   setLoading(true);
+  //   try {
+  //     // Perform login and get tokens
+  //     const { accessToken, refreshToken } = await authService.login({
+  //       emailOrUsername: data.email,
+  //       password: data.password,
+  //     });
+  
+  //     // // Get current user data
+  //     const userData = await authService.getCurrentUser();
+      
+  //     // Update Redux store
+  //     dispatch(setUserData(userData));
+  //     dispatch(setLoginStatus(true));
+  
+  //   } catch (error) {
+  //     setError(error.response?.data?.message || error.message || "Login failed");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
 
   return (

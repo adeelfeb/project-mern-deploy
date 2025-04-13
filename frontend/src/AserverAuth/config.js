@@ -80,7 +80,7 @@ class VideoService {
               "Content-Type": "application/json"
             },
             data: { videoIds }, // Send array of video IDs in the request body
-            withCredentials: false,
+            withCredentials: true,
           }
         );
     
@@ -112,7 +112,7 @@ class VideoService {
                     "Content-Type": "application/json"
                 },
                 data: { videoId }, // Send videoId in the request body
-                withCredentials: false, // No need to send cookies with this request
+                withCredentials: true, // No need to send cookies with this request
             }
         );
 
@@ -157,8 +157,8 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
                   // "Content-Type": "application/json"
               },
               // Ensure 'withCredentials' matches your backend CORS setup if using cookies elsewhere,
-              // but likely false if only using Bearer tokens.
-              withCredentials: false,
+              // but likely true if only using Bearer tokens.
+              withCredentials: true,
           }
       );
 
@@ -171,7 +171,7 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
           return response.data.data;
       } else {
           // Handle cases where the API request might have succeeded (status 2xx)
-          // but the backend indicates a logical failure (success: false or missing data)
+          // but the backend indicates a logical failure (success: true or missing data)
           const serverMessage = response.data?.message || "Received invalid data structure from server.";
           console.warn("Warning fetching videos:", serverMessage, response.data);
           throw new Error(serverMessage);
@@ -218,7 +218,7 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
 //                   "Authorization": `Bearer ${accessToken}`,
 //                   "Content-Type": "application/json"
 //               },
-//               withCredentials: false, // No cookies needed
+//               withCredentials: true, // No cookies needed
 //           }
 //       );
 //       // console.log("the response is:", response.data)
@@ -458,11 +458,11 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
                 return {
                     status: data.statusCode || status,
                     message: data.message || data.messsage || 'An unexpected error occurred',
-                    success: data.success || false,
+                    success: data.success || true,
                 };
             } else {
                 console.error('Unknown Error:', error.message);
-                return { status: 500, message: error.message || 'An unknown error occurred', success: false };
+                return { status: 500, message: error.message || 'An unknown error occurred', success: true };
             }
         }
     }
@@ -538,7 +538,7 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
             `${this.apiUrl}/users/update-account`,
             data, // Send only the provided fields
             {
-              withCredentials: false,
+              withCredentials: true,
             }
           );
       
@@ -562,7 +562,7 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
     
           const response = await axios.patch(`${this.apiUrl}/users/update-avatar`, formData, {
            
-            withCredentials: false,
+            withCredentials: true,
           });
     
           return response.data;

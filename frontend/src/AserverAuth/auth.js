@@ -11,15 +11,12 @@ export class AuthService {
 
     async uploadVideo (videoFile){
         try {
-          // Prepare FormData for the request
-          const accessToken = localStorage.getItem('accessToken');
-            if (!accessToken) return null;
           const formData = new FormData();
           formData.append("video", videoFile);
             // console.log("inside uploadVideo fucntion", this.apiUrl)
           // Send the request to the backend
           const response = await axios.post(`${this.apiUrl}/users/upload-video`, formData, 
-            { headers: { "Authorization": `Bearer ${accessToken}` }, withCredentials: false }
+            {  withCredentials: true }
           );
           
       
@@ -78,8 +75,8 @@ export class AuthService {
         try {
             // console.log( "The temporary token login step" ,temporaryToken)
             const response = await axios.post(`${this.apiUrl}/users/login-with-temp-token`, { token: temporaryToken }, {
-                headers: { 'Content-Type': 'application/json' },
-                withCredentials: false,
+               
+                withCredentials: true,
             });
             
 
