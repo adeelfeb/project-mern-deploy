@@ -203,32 +203,8 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
       throw new Error(errorMessage);
   }
 }
-// async getAllVideos() {
-//   try {
-//       const accessToken = localStorage.getItem('accessToken');
-//       if (!accessToken) {
-//           console.log('No access token found in localStorage');
-//           return null; // Return null if access token is missing
-//       }
 
-//       const response = await axios.get(
-//           `${this.apiUrl}/admin/videos`, // Ensure this matches your backend route
-//           {
-//               headers: {
-//                   "Authorization": `Bearer ${accessToken}`,
-//                   "Content-Type": "application/json"
-//               },
-//               withCredentials: true, // No cookies needed
-//           }
-//       );
-//       // console.log("the response is:", response.data)
 
-//       return response.data; // Return the video data
-//   } catch (error) {
-//       console.error('Error Getting videos:', error);
-//       throw new Error(error.response ? error.response.data.message : error.message);
-//   }
-// }
 
 
   async deleteFromHistory(videoId) {
@@ -420,11 +396,16 @@ async getAllVideos(page = 1, limit = 20) { // Add page and limit parameters with
         try {
           
 
-            const response = await axios.post(
-                `${this.apiUrl}/users/current-user`, 
-                {},
-                {  withCredentials: true }
-            );
+          const response = await axios.get(
+            `${this.apiUrl}/users/current-user`, 
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true,
+            }
+        );
+        
             
             return response.data.data;
         } catch (error) {

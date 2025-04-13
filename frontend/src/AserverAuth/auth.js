@@ -148,8 +148,12 @@ export class AuthService {
             // console.log("Request sent for current user")
             const response = await axios.get(
                 `${this.apiUrl}/users/current-user`, 
-                {headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,}
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    withCredentials: true,
+                }
             );
             
             // console.log("Inside the current user auth.js Function getCurrentUser:", response.data.data)

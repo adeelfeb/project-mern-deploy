@@ -1,10 +1,7 @@
-
-
-
 import React, { useEffect, useState } from "react";
 import VideoService from "../../AserverAuth/config.js"; // Assuming correct path
 
-// Simple Spinner component (optional, but nice for loading)
+
 const Spinner = () => (
   <div className="flex justify-center items-center h-20">
     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -21,18 +18,10 @@ function CurrentUserDetails() {
       setLoading(true); // Start loading
       setError(""); // Clear previous errors
       try {
-        // Make sure the service method returns the data structure you posted
-        // If it returns { statusCode, data, message }, you might need user.data
+        
         const response = await VideoService.getCurrentUser();
-
-        // --- IMPORTANT: Adjust based on actual response structure ---
-        // If VideoService.getCurrentUser() returns the user object directly:
         const user = response;
-        // If it returns an object like { statusCode: 200, data: { user object }, message: ... }
-        // const user = response?.data;
-        // -----------------------------------------------------------
-
-        // console.log("User details response:", user); // Log the exact data received
+        
 
         if (user && typeof user === 'object' && user.email) { // Basic check if user data looks valid
           setUserDetails(user);
