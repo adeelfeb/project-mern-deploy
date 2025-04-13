@@ -83,6 +83,9 @@ const UserHistory = () => {
         }
     };
 
+      
+
+
     return (
         <div className="p-4 bg-white rounded-lg shadow-lg h-screen flex flex-col">
             {/* Button Group */}
@@ -104,7 +107,7 @@ const UserHistory = () => {
                 {selectedVideo && (
                     <button
                         onClick={() => setSelectedVideo(null)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all text-sm sm:text-base"
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all text-sm sm:text-base"
                     >
                         &lt; Back
                     </button>
@@ -170,7 +173,7 @@ const UserHistory = () => {
                                 <div className="flex justify-center">
                                     <button
                                         onClick={() => setSelectedVideo(video)}
-                                        className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all text-sm sm:text-base"
+                                        className="px-4 py-2 text-white   rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all text-sm sm:text-base"
                                     >
                                         View Details
                                     </button>

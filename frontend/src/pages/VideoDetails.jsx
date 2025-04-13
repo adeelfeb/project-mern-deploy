@@ -60,31 +60,6 @@ const VideoDetails = ({ data }) => {
 
   
 
-  // Detect screen size changes
-// Effect for fetching user data
-// useEffect(() => {
-//   const fetchUser = async () => {
-//     setUserLoading(true);
-//     try {
-//       const user = await authService.getCurrentUser();
-//       const isAdminUser = user?.isAdmin || user?.role === 'admin';
-//       setCurrentUser(user);
-//       setIsAdmin(isAdminUser);
-//     } catch (error) {
-//       console.error("Error fetching current user:", error);
-//       setCurrentUser(null);
-//       setIsAdmin(false);
-//     } finally {
-//       setUserLoading(false);
-//     }
-//   };
-
-//   fetchUser();
-
-//   // No cleanup needed here unless you implement request cancellation
-// }, []); // Run once on mount
-
-// Effect for handling resize
 useEffect(() => {
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -458,6 +433,241 @@ useEffect(() => {
     }
   }, [data]);
 
+
+  return (
+    // --- Base Layout: Subtle background, full height ---
+    <div className="flex flex-col md:flex-row h-screen max-h-screen overflow-hidden bg-slate-50">
+
+      {/* --- Left Section: Fixed width on desktop, internal scrolling --- */}
+      <div className="w-full md:w-[350px] lg:w-[400px] flex-shrink-0 bg-white md:border-r border-slate-200 flex flex-col md:h-screen"> {/* Fixed width, border */}
+
+        {/* --- Inner Padding & Scrolling Container --- */}
+        <div className="flex-1 flex flex-col p-4 md:p-5 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300">
+
+          {/* Video Section: Rounded, subtle shadow */}
+          <div className="w-full mb-5 rounded-lg overflow-hidden shadow-sm border border-slate-200">
+            {data.videoUrl ? (
+              // Check if the video is from YouTube (Improved Check)
+              (() => {
+                try {
+                  const url = new URL(data.videoUrl);
+                  const videoId = url.hostname === 'youtu.be'
+                    ? url.pathname.slice(1)
+                    : url.searchParams.get('v');
+                  if ((url.hostname.includes('youtube.com') || url.hostname === 'youtu.be') && videoId) {
+                    // Render YouTube embed
+                    return (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        className="w-full aspect-video block" // Use block
+                        title="YouTube Video"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    );
+                  }
+                } catch (e) {
+                  // Invalid URL or not YouTube, fallback to video tag
+                }
+                // Render a video player for non-YouTube or invalid URLs
+                return (
+                  <video
+                    src={data.videoUrl}
+                    className="w-full aspect-video block bg-black" // Added black bg
+                    controls
+                    title="Video Player"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                );
+              })()
+            ) : (
+              // Placeholder - Improved Styling
+              <div className="w-full aspect-video bg-slate-100 flex items-center justify-center text-slate-500">
+                {/* Placeholder Icon */}
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mr-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                <span>No video available</span>
+              </div>
+            )}
+          </div>
+
+          {/* Video Details: Improved Typography & Spacing */}
+          <div className="mb-6 px-1">
+            <h4 className="font-semibold text-lg text-slate-800 mb-1.5 leading-tight">{data.title}</h4>
+            <div className="text-xs text-slate-500 space-x-4"> {/* Slightly more space */}
+              <span>
+                Duration: <span className="font-medium text-slate-600">{data.duration}</span>
+              </span>
+              <span>
+                Added: <span className="font-medium text-slate-600">{new Date(data.createdAt).toLocaleDateString()}</span> {/* Cleaner Date */}
+              </span>
+            </div>
+          </div>
+
+          {/* Buttons Section: Enhanced Styling */}
+          <div className="flex flex-col gap-2.5 flex-grow pb-2"> {/* Ensure button area can grow */}
+            {[
+              { label: "Transcript", loading: transcriptisLoading, section: "transcript" },
+              { label: "Summary", loading: summaryIsLoading, section: "summary" },
+              { label: "Key Concepts", loading: keyConceptsIsLoading, section: "keyConcepts" },
+              { label: "Quiz", loading: quizIsLoading, section: "quiz" },
+              ...(!isAdmin
+                ? [{ label: "Current Score", loading: false, section: "currentScore" }]
+                : []
+              )
+            ].map(({ label, loading, section }) => (
+              <button
+                key={section}
+                onClick={() => handleSectionClick(section)}
+                disabled={!!loading} // Disable button when loading
+                className={`
+                  w-full px-4 py-2.5 text-sm font-medium rounded-md transition-all duration-200 ease-in-out text-left flex items-center justify-between group
+                  focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400 focus:ring-opacity-75
+                  ${ selectedSection === section
+                      ? "bg-indigo-600 text-white shadow-sm hover:bg-indigo-700" // Enhanced selected state
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-slate-100 disabled:hover:text-slate-700" // Enhanced default, hover, active, disabled states
+                  }
+                `}
+              >
+                {/* Label or Loading Text */}
+                <span className="truncate"> {/* Prevent long text overflow */}
+                  {loading === "generating" ? "Generating..." : loading ? "Fetching..." : label}
+                </span>
+
+                {/* Loading Spinner or Chevron */}
+                {loading ? (
+                  <svg className="animate-spin ml-2 h-4 w-4 text-current shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`
+                    h-4 w-4 ml-2 text-slate-400 group-hover:text-slate-500 shrink-0 transition-colors
+                    ${selectedSection === section ? 'text-indigo-200 group-hover:text-white' : ''}
+                  `} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                )}
+              </button>
+            ))}
+          </div>
+        </div> {/* End Inner Padding & Scrolling Container */}
+      </div> {/* End Left Section */}
+
+
+      {/* --- Right Section (Desktop): Takes remaining space, scrolls independently --- */}
+      <div className="hidden md:block flex-1 overflow-y-auto h-screen"> {/* Independent scroll */}
+         {/* Inner Padding & Content Card */}
+         <div className="p-6 lg:p-10 h-full">
+             <div className="bg-white rounded-xl shadow-lg p-6 lg:p-8 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300"> {/* Content card */}
+                <Suspense fallback={
+                    <div className="flex justify-center items-center h-40 text-slate-500">
+                        {/* Nicer Loader */}
+                        <svg className="animate-spin h-6 w-6 text-indigo-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading content...
+                    </div>
+                }>
+                    {/* Initial state message */}
+                    {!selectedSection && (
+                        <div className="flex flex-col items-center justify-center h-full text-center text-slate-500">
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                            </svg>
+                            <h3 className="text-lg font-medium text-slate-700 mb-1">Select an Option</h3>
+                            <p className="text-sm">Choose an item from the left panel to view its details here.</p>
+                        </div>
+                     )}
+
+                    {/* Render selected section component */}
+                    {selectedSection === "transcript" && (
+                        <Transcript data={transcriptData || data.transcript} videoId={data._id} />
+                    )}
+                    {selectedSection === "summary" && (
+                        <Summary data={summaryData || data.summary} videoId={data._id} />
+                    )}
+                    {selectedSection === "keyConcepts" && (
+                        <KeyConcepts data={keyConceptsData} videoId={data._id} />
+                    )}
+                    {selectedSection === "quiz" && (
+                        <Quiz data={qnaData} videoId={data._id} />
+                    )}
+                    {selectedSection === "currentScore" && !isAdmin && (
+                        <CurrentScore data={data._id} />
+                    )}
+                </Suspense>
+             </div>
+        </div>
+      </div> {/* End Right Section */}
+
+
+      {/* --- Popup (Mobile): Backdrop, Centered Modal --- */}
+      {isMobile && isPopupOpen && (
+        // Backdrop
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300 ease-in-out"
+          onClick={closePopup} // Close on backdrop click
+        >
+          {/* Modal Container */}
+          <div
+            className="bg-white rounded-xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden" // Use flex-col for structure
+            onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside modal
+          >
+            {/* Optional Modal Header (for context and close button) */}
+            <div className="flex justify-between items-center p-4 border-b border-slate-200 shrink-0">
+                <h2 className="text-lg font-semibold text-slate-700 capitalize">
+                    {selectedSection ? selectedSection.replace(/([A-Z])/g, ' $1').trim() : 'Details'} {/* Format section name */}
+                </h2>
+                <button
+                onClick={closePopup}
+                className="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-1 w-7 h-7 flex items-center justify-center transition-colors"
+                aria-label="Close modal"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            {/* Scrollable Content Area */}
+            <div className="p-5 overflow-y-auto flex-1"> {/* Content padding and scroll */}
+                <Suspense fallback={
+                    <div className="flex justify-center items-center h-32 text-slate-500">
+                        <svg className="animate-spin h-6 w-6 text-indigo-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading...
+                    </div>
+                }>
+                    {selectedSection === "transcript" && (
+                        <Transcript data={transcriptData || data.transcript} videoId={data._id} />
+                    )}
+                    {selectedSection === "summary" && (
+                        <Summary data={summaryData || data.summary} videoId={data._id} />
+                    )}
+                    {selectedSection === "keyConcepts" && (
+                        <KeyConcepts data={keyConceptsData} videoId={data._id} />
+                    )}
+                    {selectedSection === "quiz" && (
+                        <Quiz data={qnaData} videoId={data._id} />
+                    )}
+                    {selectedSection === "currentScore" && !isAdmin && (
+                        <CurrentScore data={data._id} />
+                    )}
+                </Suspense>
+            </div> {/* End Scrollable Content Area */}
+          </div> {/* End Modal Container */}
+        </div> // End Backdrop
+      )}
+
+    </div> // End Base Layout
+  );
 
 
   return (

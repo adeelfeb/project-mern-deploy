@@ -78,7 +78,7 @@ const Summary = ({ data, videoId }) => {
         <div className="flex gap-4">
           <button
             className={`p-2 px-4 rounded-full ${
-              selectedLanguage === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+              selectedLanguage === "english" ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-slate-200 hover:bg-slate-300 text-black"
             }`}
             onClick={() => setSelectedLanguage("english")}
           >
@@ -86,7 +86,7 @@ const Summary = ({ data, videoId }) => {
           </button>
           <button
             className={`p-2 px-4 rounded-full ${
-              selectedLanguage === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+              selectedLanguage === "original" ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-slate-200 hover:bg-slate-300 text-black"
             }`}
             onClick={() => setSelectedLanguage("original")}
           >
@@ -97,7 +97,7 @@ const Summary = ({ data, videoId }) => {
         {/* Copy and Regenerate Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 w-full sm:w-auto">
           <button
-            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 w-full sm:w-auto flex justify-center items-center"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-full w-full sm:w-auto flex justify-center items-center"
             onClick={handleCopy}
           >
             <MdContentCopy size={20} />
@@ -136,68 +136,7 @@ const Summary = ({ data, videoId }) => {
     </div>
   );
 
-  return (
-    <div className="min-w-[250px] max-w-[80vw] mx-auto flex flex-col h-screen">
-      {/* Fixed Heading and Buttons */}
-      <div className="flex justify-between items-center mb-4 p-4 bg-white shadow-md">
-        <div className="flex gap-4">
-          <button
-            className={`p-2 px-4 rounded ${
-              selectedLanguage === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
-            }`}
-            onClick={() => setSelectedLanguage("english")}
-          >
-            English
-          </button>
-          <button
-            className={`p-2 px-4 rounded ${
-              selectedLanguage === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
-            }`}
-            onClick={() => setSelectedLanguage("original")}
-          >
-            Original
-          </button>
-        </div>
-        <div className="flex gap-4">
-          <button
-            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-            onClick={handleCopy}
-          >
-            <MdContentCopy size={20} />
-          </button>
-          <button
-            className="bg-green-500 text-white p-2 px-4 rounded hover:bg-green-600 flex items-center gap-2"
-            onClick={regenerateSummary}
-            disabled={buttonState === "Regenerating..."}
-          >
-            <MdRefresh size={20} />
-            {buttonState}
-          </button>
-        </div>
-      </div>
-
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 bg-white rounded-md border shadow-inner">
-        <p>
-          <strong>{selectedLanguage === "english" ? "English" : "Original"} Summary:</strong>
-        </p>
-        <ReactMarkdown className="prose max-w-none">
-          {summaryText !== "NA" ? summaryText : "Not yet provided"}
-        </ReactMarkdown>
-      </div>
-
-      {/* ToastNotification for feedback */}
-      {toastMessage && (
-        <ToastNotification
-          message={toastMessage}
-          duration={3000}
-          onClose={() => setToastMessage("")}
-          position="right"
-          isSuccess={isSuccess}
-        />
-      )}
-    </div>
-  );
+ 
 };
 
 

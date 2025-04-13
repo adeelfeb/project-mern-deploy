@@ -29,7 +29,7 @@ const Transcript = ({ data }) => {
       >
         <span
           className="inline-block px-2 py-1 text-white rounded-md mr-3 font-semibold 
-          bg-blue-500 sm:text-sm text-xs" // Smaller text on mobile
+          bg-indigo-600 sm:text-sm text-xs" // Smaller text on mobile
         >
           {formatTimestamp(entry.timestamp[0])} - {formatTimestamp(entry.timestamp[1])}
         </span>
@@ -65,7 +65,7 @@ const Transcript = ({ data }) => {
           <h5 className="font-semibold text-lg">Transcript</h5>
         </div>
         <div className="flex-1 overflow-y-auto p-4 bg-white rounded-md shadow-inner flex items-center justify-center">
-          <p className="text-gray-500 text-lg">Transcript is Not Available</p>
+          <p className="text-slate-600 text-lg">Transcript is Not Available</p>
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ const Transcript = ({ data }) => {
         <div className="flex gap-4">
           <button
             className={`p-2 px-4 rounded ${
-              view === "english" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+              view === "english" ? "bg-indigo-600 text-white" : "bg-slate-200 hover:bg-slate-300 text-black"
             }`}
             onClick={() => setView("english")}
           >
@@ -88,14 +88,14 @@ const Transcript = ({ data }) => {
           </button>
           <button
             className={`p-2 px-4 rounded ${
-              view === "original" ? "bg-blue-500 text-white" : "bg-gray-400 text-black"
+              view === "original" ? "bg-indigo-600 text-white" : "bg-slate-200 hover:bg-slate-300 text-black"
             }`}
             onClick={() => setView("original")}
           >
             Original
           </button>
           <button
-            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
+            className="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700"
             onClick={copyTranscript}
           >
             <MdContentCopy size={20} />

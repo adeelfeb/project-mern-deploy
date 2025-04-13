@@ -638,7 +638,7 @@ const Quiz = ({ data }) => {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-700 transition w-full disabled:opacity-50 disabled:cursor-not-allowed" // Adjusted disabled style
+                className="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition w-full disabled:opacity-50 disabled:cursor-not-allowed" // Adjusted disabled style
               >
                 {isSubmitting ? "Submitting..." : "Submit Quiz"}
               </button>

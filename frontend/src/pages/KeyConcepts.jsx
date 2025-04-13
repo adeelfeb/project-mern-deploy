@@ -108,7 +108,7 @@ function KeyConcepts({ data, videoId }) {
         {/* Copy Button */}
         <button
           onClick={copyToClipboard}
-          className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition flex items-center justify-center"
+          className="p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition flex items-center justify-center"
           title="Copy to Clipboard"
         >
           <MdContentCopy size={20} />

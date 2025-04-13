@@ -261,7 +261,7 @@ const CurrentScore = ({ data }) => {
         <button
           onClick={handleGetScores}
           disabled={buttonState !== "default"}
-          className="px-8 py-4 font-medium text-white bg-blue-500 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-8 py-4 font-medium text-white bg-indigo-600 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-indigo-700 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {buttonState === "loading"
             ? "Fetching Scores..."
