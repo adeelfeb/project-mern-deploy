@@ -63,6 +63,7 @@ function Login() {
         emailOrUsername: data.email,
         password: data.password,
       });
+      // console.log("Login is working", accessToken, refreshToken)
 
       const userData = await authService.getCurrentUser(); // Fetches fresh data
 
@@ -70,7 +71,6 @@ function Login() {
       dispatch(setUserData(userData));
       dispatch(setLoginStatus(true));
 
-      // No navigate() here is CORRECT. App.js handles it.
 
     } catch (error) {
       setError(error.response?.data?.message || error.message || "Login failed");

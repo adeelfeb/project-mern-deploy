@@ -143,6 +143,23 @@ export class AuthService {
         }
     }
 
+    async getCurrentUser() {
+        try {
+            // console.log("Request sent for current user")
+            const response = await axios.get(
+                `${this.apiUrl}/users/current-user`, 
+                
+                {withCredentials: true }
+            );
+            
+            // console.log("Inside the current user auth.js Function getCurrentUser:", response.data.data)
+            return response.data.data;
+        } catch (error) {
+            console.error("Error fetching current user:", error);
+            return null;
+        }
+    }
+
     
     async googleLogin(idToken) {
         try {
@@ -187,20 +204,7 @@ export class AuthService {
         }
     }
     
-    async getCurrentUser() {
-        try {
-            const response = await axios.post(
-                `${this.apiUrl}/users/current-user`, 
-                {},
-                {withCredentials: true }
-            );
-            // console.log("Inside the current user auth.js Function getCurrentUser:", response.data.data)
-            return response.data.data;
-        } catch (error) {
-            console.error("Error fetching current user:", error);
-            return null;
-        }
-    }
+ 
 
     
 // async logout() {
