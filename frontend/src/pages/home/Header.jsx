@@ -40,7 +40,7 @@ function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-md shadow-lg">
       <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
         <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
-          LearnSmarter {/* Or your project name */}
+          Watch To Work {/* Or your project name */}
         </div>
         <ul className="hidden md:flex space-x-6 items-center">
           {navLinks.map((link) => (
