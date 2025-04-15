@@ -36,14 +36,14 @@ function SignupPage() { // Renamed slightly for clarity (optional)
 
   return (
     // Apply page background and layout controls here
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center p-4 pt-10 sm:pt-16">
+    <div className="  bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center  pt-4 sm:pt-4">
 
       {/* Render the Header */}
       <SignupHeader navigate={navigate} />
 
       {/* Signup Card Container - Centered horizontally by items-center */}
       {/* Add margin-top for spacing from the header */}
-      <div className="mt-8 w-full max-w-lg bg-white rounded-xl shadow-xl overflow-hidden">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-xl overflow-hidden">
         {/* Add padding *around* the SignupComponent */}
         <div className="p-6 md:p-8">
           {/* Render the actual Signup Form Component */}

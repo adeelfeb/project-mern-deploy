@@ -37,6 +37,7 @@ export class AuthService {
 
     async createAccount({ email, password, fullname, username, avatar, coverImage }) {
         try {
+            // console.log("the form data :", email, password, fullname, username, avatar, coverImage)
             const formData = new FormData();
             formData.append("email", email);
             formData.append("password", password);
@@ -50,10 +51,12 @@ export class AuthService {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true,
             });
-            console.log("The reposne after signup is:", response)
-    
+            
             if (response.data.success) {
-                const { temporaryToken } = response.data.data;
+                // console.log("The reposne after signup is:", response)
+                const  temporaryToken = response.data.data.temporaryToken;
+                
+                // console.log("The temp tokken is:", temporaryToken)
                 return await this.loginWithTemporaryToken({ temporaryToken });
             }
         } catch (error) {
@@ -75,7 +78,7 @@ export class AuthService {
     async loginWithTemporaryToken({ temporaryToken }) {
         try {
             // console.log( "The temporary token login step" ,temporaryToken)
-            const response = await axios.post(`${this.apiUrl}/users/login-with-temp-token`, { token: temporaryToken }, {
+            const response = await axios.post(`${this.apiUrl}/users/login-with-temp-token`, { temporaryToken }, {
                
                 withCredentials: true,
             });
