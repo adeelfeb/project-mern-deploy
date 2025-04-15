@@ -1,50 +1,64 @@
+// import React from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import {Signup as SignupComponent } from '../components';
+// import HeaderForLogin from './HeaderForLogin';
+
+// function Signup() {
+//   const navigate = useNavigate();
+
+//   return (
+//     <div className="min-h-screen flex flex-col items-center justify-center ">
+   
+//       <HeaderForLogin  navigate={navigate}/>
+
+//       {/* Signup Form */}
+//       <div className="w-full rounded-lg shadow-2xl">
+//         <SignupComponent />
+//       </div>
+
+
+//     </div>
+//   );
+// }
+
+// export default Signup;
+
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Signup as SignupComponent } from '../components';
+// Assuming SignupComponent is the form component located at '../components/Signup'
+import { Signup as SignupComponent } from '../components';
 
-function Signup() {
+import SignupHeader from './SignupHeader';
+
+function SignupPage() { // Renamed slightly for clarity (optional)
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center ">
-      <div className="w-full p-4 bg-gray-200 shadow-lg">
-        <div className="flex justify-between space-x-4">
-          {/* Homepage Button */}
-          <button
-            onClick={() => navigate('/')}
-            className="px-4 py-2 bg-white text-purple-600 rounded-lg shadow-md hover:bg-gray-100 transition duration-200"
-          >
-            Homepage
-          </button>
+    // Apply page background and layout controls here
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center p-4 pt-10 sm:pt-16">
 
-          {/* Login Button */}
-          <div>
-          <button
-            onClick={() => navigate('/forgot-password')}
-            className="px-4 mx-2 py-2 bg-white text-purple-600 rounded-lg shadow-md hover:bg-gray-100 transition duration-200"
-          >
-            Forget
-          </button>
+      {/* Render the Header */}
+      <SignupHeader navigate={navigate} />
 
-          {/* Signup Button */}
-          <button
-            onClick={() => navigate('/login')}
-            className="px-4 mx-2 py-2 bg-white text-purple-600 rounded-lg shadow-md hover:bg-gray-100 transition duration-200"
-          >
-            Login
-          </button>
-          </div>
+      {/* Signup Card Container - Centered horizontally by items-center */}
+      {/* Add margin-top for spacing from the header */}
+      <div className="mt-8 w-full max-w-lg bg-white rounded-xl shadow-xl overflow-hidden">
+        {/* Add padding *around* the SignupComponent */}
+        <div className="p-6 md:p-8">
+          {/* Render the actual Signup Form Component */}
+          <SignupComponent />
         </div>
       </div>
 
-      {/* Signup Form */}
-      <div className="w-full rounded-lg shadow-2xl">
-        <SignupComponent />
-      </div>
-
+      {/* Optional: Footer text */}
+      <p className="text-center text-gray-500 text-xs mt-8">
+           ©{new Date().getFullYear()} Your Company Name. All rights reserved.
+      </p>
 
     </div>
   );
 }
 
-export default Signup;
+// Make sure default export matches the desired name if you renamed the function
+export default SignupPage; // or export default Signup;

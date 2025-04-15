@@ -50,6 +50,7 @@ export class AuthService {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true,
             });
+            console.log("The reposne after signup is:", response)
     
             if (response.data.success) {
                 const { temporaryToken } = response.data.data;

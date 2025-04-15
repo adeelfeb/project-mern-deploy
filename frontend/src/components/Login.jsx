@@ -80,78 +80,22 @@ function Login() {
   };
 
   
-  // Handle Google Login
-  // const handleGoogleLogin = async () => {
-  //   setLoading(true);
-  //   setError(""); // Clear previous errors
-
-  //   try {
-  //     const result = await signInWithPopup(auth, googleProvider);
-  //     const user = result.user;
-  //     const idToken = await user.getIdToken(); // Get Firebase ID token
-
-  //     // Send token to your backend
-  //     const response = await authService.googleLogin(idToken);
-
-  //     // Extract user data & tokens
-  //     const { user: backendUser } = response.data;
-
-  //     // Update Redux state
-  //     dispatch(setUserData(backendUser));
-  //     dispatch(setLoginStatus(true));
-
-  //     navigate("/dashboard");
-  //   } catch (error) {
-  //     console.error("Google Sign-in failed:", error);
-  //     setError(error.response?.data?.message || error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-
-
-
-  // const login = async (data) => {
-  //   setError("");
-  //   setLoading(true);
-  //   try {
-  //     // Perform login and get tokens
-  //     const { accessToken, refreshToken } = await authService.login({
-  //       emailOrUsername: data.email,
-  //       password: data.password,
-  //     });
   
-  //     // // Get current user data
-  //     const userData = await authService.getCurrentUser();
-      
-  //     // Update Redux store
-  //     dispatch(setUserData(userData));
-  //     dispatch(setLoginStatus(true));
   
-  //   } catch (error) {
-  //     setError(error.response?.data?.message || error.message || "Login failed");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
 
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 z-50">
-          <div className="w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+        <div className="fixed inset-0 flex  bg-gray-100 bg-opacity-75 z-50">
+          <div className=" border-4 border-black-600 rounded-full border-t-transparent animate-spin"></div>
         </div>
       )}
 
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center ">
         <div className="w-full max-w-lg bg-white rounded-xl p-8 shadow-2xl border border-gray-100">
-          <h2 className="text-center text-3xl font-bold text-gray-800 mb-6">Welcome Back!</h2>
           <p className="text-center text-gray-600 mb-8">
             Don&apos;t have an account?&nbsp;
-            <Link to="/signup" className="font-medium text-blue-500 hover:underline">
+            <Link to="/signup" className="font-medium text-indigo-500 hover:underline">
               Sign Up
             </Link>
           </p>
@@ -174,7 +118,7 @@ function Login() {
                   required: "Password is required",
                  
                 })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
               <button
                 type="button"
@@ -187,12 +131,12 @@ function Login() {
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
             <Button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
             >
               Sign In
             </Button>
 
-            <div className="flex items-center justify-between my-6">
+            {/* <div className="flex items-center justify-between my-6">
               <hr className="border-gray-300 flex-grow" />
               <span className="text-gray-500 mx-4">or</span>
               <hr className="border-gray-300 flex-grow" />
@@ -209,10 +153,10 @@ function Login() {
                 className="w-6 h-6"
               />
               <span className="text-black">Login with Google</span>
-            </Button>
+            </Button> */}
 
             <p className="text-center text-sm text-gray-500">
-              <Link to="/forgot-password" className="font-medium text-blue-500 hover:underline">
+              <Link to="/forgot-password" className="font-medium text-indigo-500 hover:underline">
                 Forgot Password?
               </Link>
             </p>

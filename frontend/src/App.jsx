@@ -21,7 +21,7 @@ function App() {
     let isMounted = true;
     setError(null);
 
-    const authPages = ["/login", "/signup", "/", "forget-password"];
+    const authPages = ["/login", "/signup", "/", "/forgot-password"];
     const shouldCheckAuth = !authPages.includes(location.pathname) || isLoggedIn;
 
     async function checkAuth() {
@@ -107,8 +107,6 @@ export default App;
 
 
 
-
-// import { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 // import { setLoginStatus, setUserData, logout } from "./store/authSlice";
 // import { Outlet, useLocation, useNavigate } from "react-router-dom";
