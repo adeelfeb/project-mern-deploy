@@ -51,7 +51,7 @@ export const AdminSidebar = () => {
       bg-gray-50 border-r shadow-md flex flex-col h-screen transition-all duration-300 w-20 p-2
     `}>
       {/* Top Navigation */}
-      <div className="flex flex-col flex-1 gap-4 mt-2">
+      <div className="flex flex-col flex-1 gap-2 ">
         
         {/* Admin Dashboard Link */}
         <Link 
@@ -59,7 +59,7 @@ export const AdminSidebar = () => {
           className={`flex flex-col items-center justify-center p-2 rounded-md mt-8 hover:bg-gray-200 ${isActive('/admin/dashboard') ? 'bg-gray-100' : ''}`}
         >
           <FaBoxOpen className="w-4 h-4" />
-          <span className="text-xs mt-1 text-gray-600">Dashboard</span>
+          <span className="text-xs text-gray-600">Dashboard</span>
         </Link>
         
 

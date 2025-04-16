@@ -329,14 +329,14 @@
 
 
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux"; // Keep only if dispatch is used in the non-admin path
+import { useDispatch, useSelector } from "react-redux"; // Keep only if dispatch is used in the non-admin path
 import { saveQuizResponse } from "../store/currentVideoSlice"; // Keep only if dispatch is used
 import ToastNotification from "../components/toastNotification/ToastNotification";
 import videoService from "../AserverAuth/config";
 import authService from "../AserverAuth/auth";
 import AdminQuizView from "./AdminQuizView";
 
-const Quiz = ({ data }) => {
+const Quiz = ({ data}) => {
   // --- HOOKS MUST BE CALLED AT THE TOP ---
   const dispatch = useDispatch(); // Called always
 
@@ -356,24 +356,16 @@ const Quiz = ({ data }) => {
     fillInTheBlanks: {},
   });
 
+  const user = useSelector((state) => state.auth.userData);
+
   // --- EFFECTS ---
   useEffect(() => { // Called always
-    const fetchAndCheckUser = async () => {
-      setIsLoadingUser(true);
-      try {
-        const user = await authService.getCurrentUser();
-        setCurrentUser(user);
-        const isAdminCheck = user?.isAdmin ?? false;
-        setIsAdmin(isAdminCheck);
-      } catch (error) {
-        console.error("Quiz: Error fetching current user:", error);
-        setCurrentUser(null);
-        setIsAdmin(false);
-      } finally {
-        setIsLoadingUser(false);
-      }
-    };
-    fetchAndCheckUser();
+
+    setCurrentUser(user);
+    const isAdminCheck = user?.isAdmin ?? false;
+    setIsAdmin(isAdminCheck);
+    setIsLoadingUser(false)
+  
   }, []); // Empty dependency array: runs only on mount
 
   // --- CONDITIONAL RETURNS (After all hooks) ---

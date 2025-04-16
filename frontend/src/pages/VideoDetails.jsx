@@ -17,7 +17,7 @@ const CurrentScore = lazy(() => import("./CurrentScore"));
 
 
 
-const VideoDetails = ({ data }) => {
+const VideoDetails = ({ data}) => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [transcriptData, setTranscriptData] = useState(null);
   const [summaryData, setSummaryData] = useState(null);
@@ -595,7 +595,7 @@ useEffect(() => {
                         <KeyConcepts data={keyConceptsData} videoId={data._id} />
                     )}
                     {selectedSection === "quiz" && (
-                        <Quiz data={qnaData} videoId={data._id} />
+                        <Quiz data={qnaData}  videoId={data._id} />
                     )}
                     {selectedSection === "currentScore" && !isAdmin && (
                         <CurrentScore data={data._id} />
