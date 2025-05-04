@@ -1,3 +1,103 @@
+### 📘 **Setting Up and Running the Frontend (React) Codebase**
+
+#### ✅ **1. Prerequisites**
+
+Before proceeding, ensure that the following are installed on your system:
+
+* **Node.js** (LTS version recommended — e.g., v18.x or v20.x):
+  Node.js is a JavaScript runtime required for building and running React applications. It comes bundled with **npm** (Node Package Manager), which manages your project's dependencies.
+
+  > 📌 To check if Node.js and npm are installed:
+
+  ```bash
+  node -v
+  npm -v
+  ```
+
+If not installed, download from the official site: [https://nodejs.org](https://nodejs.org)
+
+---
+
+#### 📁 **2. Project Setup**
+
+Once Node.js is installed, follow these steps:
+
+1. **Clone the Repository** (if applicable):
+
+   ```bash
+   git clone https://github.com/adeelfeb/project-mern-deploy
+   cd frontend
+   ```
+
+2. **Install Dependencies**:
+   Inside the project directory (usually the root), run:
+
+   ```bash
+   npm install
+   ```
+
+   This will install all dependencies listed in the `package.json` file.
+
+---
+
+#### 🔐 **3. Environment Variables**
+
+Many React projects depend on API keys or configuration values stored in a `.env` file. This file must exist in the project root and contain all required variables.
+
+**Example of a `.env` file:**
+
+```env
+VITE_API_BASE_URL=https://api.example.com
+VITE_AUTH_TOKEN=your_token_here
+```
+
+> 📌 **Important:**
+
+* Prefix environment variables with `VITE_` if you're using Vite, as React apps built with Vite only expose variables with this prefix to the client.
+* Ensure your `.env` file is **not** committed to version control (check `.gitignore`).
+
+---
+
+#### ▶️ **4. Running the Application in Development**
+
+To start the development server:
+
+```bash
+npm run dev
+```
+
+This will:
+
+* Start the React application.
+* Automatically open it in your default browser (if configured).
+* Enable hot-reloading (any code changes reflect in real-time).
+
+> 📌 The default URL is usually `http://localhost:5173` (for Vite) or `http://localhost:3000` (for Create React App).
+
+---
+
+To build the app for deployment:
+
+```bash
+npm run build
+```
+
+---
+
+### 🔚 **Final Notes**
+
+* Always verify that all required `.env` variables are present and correctly configured.
+* If you encounter issues like missing modules or version mismatches, try:
+
+  ```bash
+  rm -rf node_modules
+  npm install
+  ```
+* Consider using **nvm (Node Version Manager)** for managing multiple Node versions if working on different projects.
+
+
+
+---
 ## **1️⃣ Tech Stack for Frontend**  
 - **Framework:** React (Switching to TypeScript for better type safety)  
 - **State Management:** Redux Toolkit (RTK)  
